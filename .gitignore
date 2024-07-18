@@ -1,0 +1,7 @@
+node_modules/
+tests/
+dist/
+srcold/
+src_*/
+tests/*
+pnpm-lock.yaml

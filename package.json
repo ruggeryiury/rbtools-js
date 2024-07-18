@@ -1,0 +1,61 @@
+{
+  "name": "rbtools-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Server-side module to manipulate several Rock Band game files.",
+  "type": "module",
+  "main": "module/index.js",
+  "module": "module/index.js",
+  "types": "module/index.d.ts",
+  "author": "Ruggery Iury Corrêa <ruggeryiury@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "tool",
+    "rock-band",
+    "javascript",
+    "typescript"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "eslint": "^9.3.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.2.5",
+    "eslint-plugin-n": "^17.7.0",
+    "globals": "^15.3.0",
+    "prettier": "^3.2.5",
+    "tsx": "^4.10.5",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.9.0"
+  },
+  "scripts": {
+    "build": "pnpm run clear && tsc --project ./prod.tsconfig.json",
+    "clear": "rimraf dist",
+    "dev": "tsx tests/test.ts",
+    "format": "prettier --write src",
+    "lint": "eslint src/**/*.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./database": {
+      "import": "./dist/database.js"
+    },
+    "./dta": {
+      "import": "./dist/dta.js"
+    },
+    "./magma": {
+      "import": "./dist/magma.js"
+    },
+    "./utils": {
+      "import": "./dist/utils.js"
+    }
+  },
+  "dependencies": {
+    "dta-parser": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/dta-parser",
+    "jschardet": "^3.1.2",
+    "path-js": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/path-js",
+    "winston": "^3.13.0"
+  }
+}
