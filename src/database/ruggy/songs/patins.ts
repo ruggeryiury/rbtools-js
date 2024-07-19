@@ -29,6 +29,5 @@ export const patins: DTAFileRecipe = {
   key: 'G',
   CATemh: true,
   author: 'Ruggy',
-  loading_phrase:
-    'The name of the band (Cansei de Ser Sexy) was taken from a reported quote by Beyoncé, who allegedly declared that she was "tired of being sexy".',
+  loading_phrase: 'The name of the band (Cansei de Ser Sexy) was taken from a reported quote by Beyoncé, who allegedly declared that she was "tired of being sexy".',
 }

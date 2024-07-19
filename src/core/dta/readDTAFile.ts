@@ -1,8 +1,4 @@
-import DTAParser, {
-  type DTAParserExportTypes,
-  type DTAParserOptions,
-  type DTAParserReturnType,
-} from 'dta-parser'
+import DTAParser, { type DTAParserExportTypes, type DTAParserOptions, type DTAParserReturnType } from 'dta-parser'
 import { useDefaultOptions, detectBufferEncoding } from 'dta-parser/utils'
 import Path from 'path-js'
 
@@ -13,10 +9,7 @@ import Path from 'path-js'
  * @param {DTAParserOptions<RT>} options `OPTIONAL` An object that changes the behavior of the parsing process.
  * @returns {Promise<DTAParserReturnType<RT>>}
  */
-export const readDTAFile = async <RT extends DTAParserExportTypes = undefined>(
-  dtaFilePath: string,
-  options?: DTAParserOptions<RT>
-): Promise<DTAParserReturnType<RT>> => {
+export const readDTAFile = async <RT extends DTAParserExportTypes = undefined>(dtaFilePath: string, options?: DTAParserOptions<RT>): Promise<DTAParserReturnType<RT>> => {
   const opts = useDefaultOptions<DTAParserOptions<RT>, true>(
     {
       format: 'SongClass' as RT,
@@ -45,8 +38,5 @@ export const readDTAFile = async <RT extends DTAParserExportTypes = undefined>(
       }
     }
     return DTAParser<RT>(allSongs, opts)
-  } else
-    throw new Error(
-      'ReadDTAFileError: Provided path is not a valid .dta file or a directory'
-    )
+  } else throw new Error('ReadDTAFileError: Provided path is not a valid .dta file or a directory')
 }

@@ -77,9 +77,7 @@ export interface SpotifyAlbumSearchDocument {
 export type SearchAlbumArtworkImageSize = 'small' | 'medium' | 'large'
 
 const getSpotifyAuthToken = async (): Promise<string | undefined> => {
-  const authorization = Buffer.from(
-    '6cfb201730dd4d0093eef69a96623fe9:796f9f01577f4104891dbda684d25463'
-  ).toString('base64')
+  const authorization = Buffer.from('6cfb201730dd4d0093eef69a96623fe9:796f9f01577f4104891dbda684d25463').toString('base64')
   return await fetch('https://accounts.spotify.com/api/token', {
     method: 'post',
     body: 'grant_type=client_credentials',
@@ -101,10 +99,7 @@ const getSpotifyAuthToken = async (): Promise<string | undefined> => {
  * @returns {Promise<string | undefined>} The album artwork URL as string. Returns `undefined` if the connection to the API has been refused
  * at any point, if the provided song has no album name, or if no album has been found on the Spotify database.
  */
-export const searchArtworkOnSpotify = async (
-  song: Song | DTAFile | DTAFileRecipe,
-  imageSize: SearchAlbumArtworkImageSize = 'large'
-): Promise<string | undefined> => {
+export const searchArtworkOnSpotify = async (song: Song | DTAFile | DTAFileRecipe, imageSize: SearchAlbumArtworkImageSize = 'large'): Promise<string | undefined> => {
   let artist = '',
     albumName = ''
 

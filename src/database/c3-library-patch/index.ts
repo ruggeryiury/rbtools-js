@@ -1818,9 +1818,7 @@ export const C3LibraryPatch: SongUpdateObject = {
 }
 
 export const stringifyC3LibraryPatch = (): LibraryStringifyReturnObject => {
-  const content = Buffer.from(
-    stringifySongUpdates(C3LibraryPatch, { inline: true })
-  )
+  const content = Buffer.from(stringifySongUpdates(C3LibraryPatch, { inline: true }))
   const enc = detectBufferEncoding(content)
 
   return {

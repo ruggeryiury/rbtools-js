@@ -25,6 +25,5 @@ export const itstimetojump: DTAFileRecipe = {
   key: 'Eb',
   multitrack: true,
   author: 'Ruggy',
-  loading_phrase:
-    "This song is a bonus track from \"Moonstone\" and it doesn't show on the album's track list on Dream Avenue's BandCamp website.",
+  loading_phrase: "This song is a bonus track from \"Moonstone\" and it doesn't show on the album's track list on Dream Avenue's BandCamp website.",
 }

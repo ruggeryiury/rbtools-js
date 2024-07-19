@@ -6,9 +6,7 @@ export type GetImageExtResults = 'jpg' | 'png' | 'webp' | 'bmp' | null
  * @param {Buffer} imageBuffer The image buffer.
  * @returns {GetImageExtResults}
  */
-export const getImageExtFromBuffer = (
-  imageBuffer: Buffer
-): GetImageExtResults => {
+export const getImageExtFromBuffer = (imageBuffer: Buffer): GetImageExtResults => {
   // Convert the ArrayBuffer to a Uint8Array
   const uintArray = new Uint8Array(imageBuffer)
 
@@ -23,24 +21,14 @@ export const getImageExtFromBuffer = (
   // Check the header to determine the file type
   if (header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff) {
     return 'jpg'
-  } else if (
-    header[0] === 0x89 &&
-    header[1] === 0x50 &&
-    header[2] === 0x4e &&
-    header[3] === 0x47
-  ) {
+  } else if (header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4e && header[3] === 0x47) {
     return 'png'
   }
 
   // else if (header[0] === 0x47 && header[1] === 0x49 && header[2] === 0x46 && header[3] === 0x38) {
   //   return "gif";
   // }
-  else if (
-    header[8] === 0x57 &&
-    header[9] === 0x45 &&
-    header[10] === 0x42 &&
-    header[11] === 0x50
-  ) {
+  else if (header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50) {
     return 'webp'
   } else if (header[0] === 0x42 && header[1] === 0x4d) {
     return 'bmp'

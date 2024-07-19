@@ -5,9 +5,4 @@
  * @param {string} extension The extension you want to put into the path.
  * @returns {string}
  */
-export const normalizeExtensionOnPath = (
-  path: string,
-  extension: string
-): string => {
-  return path.endsWith(`.${extension}`) ? path : `${path}.${extension}`
-}
+export const normalizeExtensionOnPath = (path: string, extension: string): string => path.endsWith(`.${extension}`) ? path : `${path}.${extension}`

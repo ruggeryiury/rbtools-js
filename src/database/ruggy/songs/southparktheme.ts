@@ -27,6 +27,5 @@ export const southparktheme: DTAFileRecipe = {
   },
   key: 'D#m',
   author: 'Ruggy',
-  loading_phrase:
-    "This song can't be gold starred on vocals because it only has 33 seconds and there's no space for the vocalist to activate the Overdrive.",
+  loading_phrase: "This song can't be gold starred on vocals because it only has 33 seconds and there's no space for the vocalist to activate the Overdrive.",
 }

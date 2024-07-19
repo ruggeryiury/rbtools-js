@@ -24,6 +24,5 @@ export const paintwar: DTAFileRecipe = {
   key: 'A',
   multitrack: true,
   author: 'Ruggy',
-  loading_phrase:
-    'This song is the favorite song of the "Our Shared Universes EP" for Dream Avenue\'s frontmen, Ruggery Iury.',
+  loading_phrase: 'This song is the favorite song of the "Our Shared Universes EP" for Dream Avenue\'s frontmen, Ruggery Iury.',
 }

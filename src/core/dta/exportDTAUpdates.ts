@@ -18,11 +18,7 @@ export interface ExportDTAUpdatesOptions {
  * @param {ExportDTAUpdatesOptions | undefined} options `OPTIONAL`An object that changes the behavior of the exporting process.
  * @returns {Promise<string>} The path of the created DTA file.
  */
-export const exportDTAUpdates = async (
-  content: SongUpdateObject,
-  destinationPath: string,
-  options?: ExportDTAUpdatesOptions
-): Promise<string> => {
+export const exportDTAUpdates = async (content: SongUpdateObject, destinationPath: string, options?: ExportDTAUpdatesOptions): Promise<string> => {
   const { inline } = useDefaultOptions<ExportDTAUpdatesOptions, true>(
     {
       inline: true,
@@ -30,9 +26,7 @@ export const exportDTAUpdates = async (
     options
   )
 
-  const destPath = new Path(
-    Path.resolve(normalizeExtensionOnPath(destinationPath, 'dta'))
-  )
+  const destPath = new Path(Path.resolve(normalizeExtensionOnPath(destinationPath, 'dta')))
 
   if (destPath.exists()) await destPath.deleteFile()
 

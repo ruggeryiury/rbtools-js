@@ -5,8 +5,7 @@ import { createMAGMAProjectObject, type MAGMAProject } from '../../magma.js'
 import * as ruggy from './songs.js'
 
 export const RuggyCustomsPaths = {
-  songsFolder:
-    'C:/Users/Ruggery/Documents/Visual Studio Code/projects/ruggy-customs-projects/songs',
+  songsFolder: 'C:/Users/Ruggery/Documents/Visual Studio Code/projects/ruggy-customs-projects/songs',
   magmaC3Folder: 'C:/Users/Ruggery/Desktop/Rock Band/Magma',
   destinationFolder: 'C:/Users/Ruggery/Desktop',
 } as const

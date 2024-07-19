@@ -30,6 +30,5 @@ export const hippiebattle: DTAFileRecipe = {
   multitrack: true,
   author: 'Ruggy',
   pack_name: 'MOTHER Pack 01',
-  loading_phrase:
-    'Composed by Hirokazu Tanaka, "Hippie Battle" was heavily inspired on Chuck Barry\'s "Johnny B. Goode".',
+  loading_phrase: 'Composed by Hirokazu Tanaka, "Hippie Battle" was heavily inspired on Chuck Barry\'s "Johnny B. Goode".',
 }

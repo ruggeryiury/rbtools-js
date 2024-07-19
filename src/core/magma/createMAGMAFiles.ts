@@ -1,17 +1,5 @@
-import {
-  createDTA,
-  type DTAFileExpanded,
-  type DTAFileRecipe,
-  extendDTAFile,
-  type ExtendNewValuesOnlyObject,
-  type UpdateDataOptions,
-} from 'dta-parser/core'
-import {
-  useDefaultOptions,
-  genAudioFileStructure,
-  genTabs as t,
-  rankCalculator as r,
-} from 'dta-parser/utils'
+import { createDTA, type DTAFileExpanded, type DTAFileRecipe, extendDTAFile, type ExtendNewValuesOnlyObject, type UpdateDataOptions } from 'dta-parser/core'
+import { useDefaultOptions, genAudioFileStructure, genTabs as t, rankCalculator as r } from 'dta-parser/utils'
 import Path from 'path-js'
 
 /**
@@ -22,25 +10,9 @@ import Path from 'path-js'
  * @param {UpdateDataOptions | undefined} update An object with values to update any default `DTAFile` value.
  * @returns {MAGMAProject}
  */
-export const createMAGMAProjectObject = (
-  songValues: DTAFileRecipe,
-  magmaValues: ExtendNewValuesOnlyObject<MAGMAProject>,
-  update?: UpdateDataOptions
-): MAGMAProject =>
-  extendDTAFile<MAGMAProject>(createDTA(songValues, true), magmaValues, update)
+export const createMAGMAProjectObject = (songValues: DTAFileRecipe, magmaValues: ExtendNewValuesOnlyObject<MAGMAProject>, update?: UpdateDataOptions): MAGMAProject => extendDTAFile<MAGMAProject>(createDTA(songValues, true), magmaValues, update)
 
-export type AutogenValues =
-  | 'Default'
-  | 'AggressiveMetal'
-  | 'ArenaRock'
-  | 'DarkHeavyRock'
-  | 'DustyVintage'
-  | 'EdgyProgRock'
-  | 'FeelGoodPopRock'
-  | 'GaragePunkRock'
-  | 'PsychJamRock'
-  | 'SlowJam'
-  | 'SynthPop'
+export type AutogenValues = 'Default' | 'AggressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
 
 export interface MAGMAFileValues {
   /**
@@ -125,13 +97,7 @@ export interface CreateMAGMAFilesPaths {
  * All paths needed to create MAGMA files are placed on this object.
  * @returns {Promise<CreateMAGMAFilesPaths>} An object with the paths of all generated files.
  */
-export const createMAGMAFiles = async (
-  song: MAGMAProject,
-  songsFolderPath: string,
-  MAGMAC3Path: string,
-  destPath: string,
-  options: CreateMAGMAFilesOptions
-): Promise<CreateMAGMAFilesPaths> => {
+export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: string, MAGMAC3Path: string, destPath: string, options: CreateMAGMAFilesOptions): Promise<CreateMAGMAFilesPaths> => {
   const opts = useDefaultOptions<CreateMAGMAFilesOptions, true>(
     {
       useLatestVersion: true,
@@ -145,10 +111,7 @@ export const createMAGMAFiles = async (
   const magmaC3Path = new Path(Path.resolve(MAGMAC3Path))
   const dest = new Path(Path.resolve(destPath))
 
-  const songnameFolder = Path.resolve(
-    songsPath.path,
-    song.doubleKick ? song.songname.slice(0, -2) : song.songname
-  )
+  const songnameFolder = Path.resolve(songsPath.path, song.doubleKick ? song.songname.slice(0, -2) : song.songname)
   const { songname } = song
 
   const RBPROJFilePath = new Path(Path.resolve(dest.path, `${songname}.rbproj`))
@@ -156,123 +119,33 @@ export const createMAGMAFiles = async (
 
   let output = ''
   const MonoBlank = new Path(Path.resolve(magmaC3Path.path, `audio/mono44.wav`))
-  const StereoBlank = new Path(
-    Path.resolve(magmaC3Path.path, `audio/stereo44.wav`)
-  )
-  const DryVox = new Path(
-    Path.resolve(magmaC3Path.path, `audio/blank_dryvox.wav`)
-  )
+  const StereoBlank = new Path(Path.resolve(magmaC3Path.path, `audio/stereo44.wav`))
+  const DryVox = new Path(Path.resolve(magmaC3Path.path, `audio/blank_dryvox.wav`))
 
   const RBAPath = new Path(Path.resolve(dest.path, `${song.songname}.rba`))
   const MIDIFilePath = new Path(Path.resolve(songnameFolder, `${songname}.mid`))
 
-  const DV0Path = song.hasLipSyncFiles
-    ? song.vocal_parts > 0
-      ? Path.resolve(songnameFolder, 'magma/HARM1.wav')
-      : ''
-    : song.vocal_parts > 0
-      ? DryVox.path
-      : ''
+  const DV0Path = song.hasLipSyncFiles ? (song.vocal_parts > 0 ? Path.resolve(songnameFolder, 'magma/HARM1.wav') : '') : song.vocal_parts > 0 ? DryVox.path : ''
 
-  const DV1Path = song.hasLipSyncFiles
-    ? song.fakeHarm === 2 || song.fakeHarm === 3
-      ? Path.resolve(songnameFolder, 'magma/HARM2.wav')
-      : song.vocal_parts > 1
-        ? Path.resolve(songnameFolder, 'magma/HARM2.wav')
-        : ''
-    : song.vocal_parts > 1
-      ? DryVox.path
-      : ''
+  const DV1Path = song.hasLipSyncFiles ? (song.fakeHarm === 2 || song.fakeHarm === 3 ? Path.resolve(songnameFolder, 'magma/HARM2.wav') : song.vocal_parts > 1 ? Path.resolve(songnameFolder, 'magma/HARM2.wav') : '') : song.vocal_parts > 1 ? DryVox.path : ''
 
-  const DV2Path = song.hasLipSyncFiles
-    ? song.fakeHarm === 3
-      ? Path.resolve(songnameFolder, 'magma/HARM3.wav')
-      : song.vocal_parts > 2
-        ? Path.resolve(songnameFolder, 'magma/HARM3.wav')
-        : ''
-    : song.vocal_parts > 2
-      ? DryVox.path
-      : ''
+  const DV2Path = song.hasLipSyncFiles ? (song.fakeHarm === 3 ? Path.resolve(songnameFolder, 'magma/HARM3.wav') : song.vocal_parts > 2 ? Path.resolve(songnameFolder, 'magma/HARM3.wav') : '') : song.vocal_parts > 2 ? DryVox.path : ''
 
-  const AlbumArtPath = song.album_art
-    ? Path.resolve(songnameFolder, `magma/${songname}_keep_x256.bmp`)
-    : ''
+  const AlbumArtPath = song.album_art ? Path.resolve(songnameFolder, `magma/${songname}_keep_x256.bmp`) : ''
 
-  const KickWavPath = song.multitrack
-    ? song.tracks_count[0] > 2
-      ? Path.resolve(
-          songnameFolder,
-          `wav/${song.doubleKick && song.doubleKickWav ? 'kick2x' : 'kick'}.wav`
-        )
-      : ''
-    : song.tracks_count[0] > 2
-      ? MonoBlank.path
-      : song.tracks_count[0] > 5
-        ? StereoBlank.path
-        : ''
+  const KickWavPath = song.multitrack ? (song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, `wav/${song.doubleKick && song.doubleKickWav ? 'kick2x' : 'kick'}.wav`) : '') : song.tracks_count[0] > 2 ? MonoBlank.path : song.tracks_count[0] > 5 ? StereoBlank.path : ''
 
-  const SnareWavPath = song.multitrack
-    ? song.tracks_count[0] > 3
-      ? Path.resolve(songnameFolder, `wav/snare.wav`)
-      : ''
-    : song.tracks_count[0] > 3
-      ? MonoBlank.path
-      : song.tracks_count[0] > 4
-        ? StereoBlank.path
-        : ''
+  const SnareWavPath = song.multitrack ? (song.tracks_count[0] > 3 ? Path.resolve(songnameFolder, `wav/snare.wav`) : '') : song.tracks_count[0] > 3 ? MonoBlank.path : song.tracks_count[0] > 4 ? StereoBlank.path : ''
 
-  const DrumKitWavPath = song.multitrack
-    ? song.tracks_count[0] === 2
-      ? Path.resolve(
-          songnameFolder,
-          `wav/${song.doubleKick && song.doubleKickWav ? 'drums2x' : 'drums'}.wav`
-        )
-      : song.tracks_count[0] > 2
-        ? Path.resolve(songnameFolder, 'wav/kit.wav')
-        : ''
-    : song.tracks_count[0] > 0
-      ? StereoBlank.path
-      : ''
+  const DrumKitWavPath = song.multitrack ? (song.tracks_count[0] === 2 ? Path.resolve(songnameFolder, `wav/${song.doubleKick && song.doubleKickWav ? 'drums2x' : 'drums'}.wav`) : song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, 'wav/kit.wav') : '') : song.tracks_count[0] > 0 ? StereoBlank.path : ''
 
-  const BassWavPath = song.multitrack
-    ? song.tracks_count[1] !== 0
-      ? Path.resolve(songnameFolder, 'wav/bass.wav')
-      : ''
-    : song.tracks_count[1] === 1
-      ? MonoBlank.path
-      : song.tracks_count[1] === 2
-        ? StereoBlank.path
-        : ''
+  const BassWavPath = song.multitrack ? (song.tracks_count[1] !== 0 ? Path.resolve(songnameFolder, 'wav/bass.wav') : '') : song.tracks_count[1] === 1 ? MonoBlank.path : song.tracks_count[1] === 2 ? StereoBlank.path : ''
 
-  const GuitarWavPath = song.multitrack
-    ? song.tracks_count[2] !== 0
-      ? Path.resolve(songnameFolder, 'wav/guitar.wav')
-      : ''
-    : song.tracks_count[2] === 1
-      ? MonoBlank.path
-      : song.tracks_count[2] === 2
-        ? StereoBlank.path
-        : ''
+  const GuitarWavPath = song.multitrack ? (song.tracks_count[2] !== 0 ? Path.resolve(songnameFolder, 'wav/guitar.wav') : '') : song.tracks_count[2] === 1 ? MonoBlank.path : song.tracks_count[2] === 2 ? StereoBlank.path : ''
 
-  const VocalsWavPath = song.multitrack
-    ? song.tracks_count[3] !== 0
-      ? Path.resolve(songnameFolder, 'wav/vocals.wav')
-      : ''
-    : song.tracks_count[3] === 1
-      ? MonoBlank.path
-      : song.tracks_count[3] === 2
-        ? StereoBlank.path
-        : ''
+  const VocalsWavPath = song.multitrack ? (song.tracks_count[3] !== 0 ? Path.resolve(songnameFolder, 'wav/vocals.wav') : '') : song.tracks_count[3] === 1 ? MonoBlank.path : song.tracks_count[3] === 2 ? StereoBlank.path : ''
 
-  const KeysWavPath = song.multitrack
-    ? song.tracks_count[4] !== 0
-      ? Path.resolve(songnameFolder, 'wav/keys.wav')
-      : ''
-    : song.tracks_count[4] === 1
-      ? MonoBlank.path
-      : song.tracks_count[4] === 2
-        ? StereoBlank.path
-        : ''
+  const KeysWavPath = song.multitrack ? (song.tracks_count[4] !== 0 ? Path.resolve(songnameFolder, 'wav/keys.wav') : '') : song.tracks_count[4] === 1 ? MonoBlank.path : song.tracks_count[4] === 2 ? StereoBlank.path : ''
 
   const BackingWavPath = Path.resolve(songnameFolder, 'wav/backing.wav')
 
@@ -321,26 +194,13 @@ export const createMAGMAFiles = async (
   output += `${t(2, 'start')}('track_number' ${song.album_track_number?.toString() ?? '1'})`
   output += `${t(2, 'start')}('has_album' ${song.album_name ? '1' : '0'})`
 
-  const rank_guitar =
-    r('guitar', song.rank_guitar) + 1 === 0
-      ? 1
-      : r('guitar', song.rank_guitar) + 1
-  const rank_bass =
-    r('bass', song.rank_bass) + 1 === 0 ? 1 : r('bass', song.rank_bass) + 1
-  const rank_drum =
-    r('drum', song.rank_drum) + 1 === 0 ? 1 : r('drum', song.rank_drum) + 1
-  const rank_vocals =
-    r('vocals', song.rank_vocals) + 1 === 0
-      ? 1
-      : r('vocals', song.rank_vocals) + 1
-  const rank_keys =
-    r('keys', song.rank_keys) + 1 === 0 ? 1 : r('keys', song.rank_keys) + 1
-  const rank_real_keys =
-    r('real_keys', song.rank_real_keys) + 1 === 0
-      ? 1
-      : r('real_keys', song.rank_real_keys) + 1
-  const rank_band =
-    r('band', song.rank_band) + 1 === 0 ? 1 : r('band', song.rank_band) + 1
+  const rank_guitar = r('guitar', song.rank_guitar) + 1 === 0 ? 1 : r('guitar', song.rank_guitar) + 1
+  const rank_bass = r('bass', song.rank_bass) + 1 === 0 ? 1 : r('bass', song.rank_bass) + 1
+  const rank_drum = r('drum', song.rank_drum) + 1 === 0 ? 1 : r('drum', song.rank_drum) + 1
+  const rank_vocals = r('vocals', song.rank_vocals) + 1 === 0 ? 1 : r('vocals', song.rank_vocals) + 1
+  const rank_keys = r('keys', song.rank_keys) + 1 === 0 ? 1 : r('keys', song.rank_keys) + 1
+  const rank_real_keys = r('real_keys', song.rank_real_keys) + 1 === 0 ? 1 : r('real_keys', song.rank_real_keys) + 1
+  const rank_band = r('band', song.rank_band) + 1 === 0 ? 1 : r('band', song.rank_band) + 1
 
   output += `${t(1, 'start')})`
   output += `${t(1, 'start')}(`
@@ -432,13 +292,7 @@ export const createMAGMAFiles = async (
 
   output += `${t(1, 'start')}(`
   output += `${t(2, 'start')}'tracks'`
-  output += `${t(2, 'start')}('drum_layout' '${
-    panvol.drum.channels === 0 || panvol.drum.channels === 2
-      ? 'drum_layout_kit'
-      : panvol.drum.channels === 3
-        ? 'drum_layout_kit_kick'
-        : 'drum_layout_kit_kick_snare'
-  }')`
+  output += `${t(2, 'start')}('drum_layout' '${panvol.drum.channels === 0 || panvol.drum.channels === 2 ? 'drum_layout_kit' : panvol.drum.channels === 3 ? 'drum_layout_kit_kick' : 'drum_layout_kit_kick_snare'}')`
 
   output += `${t(2, 'start')}(`
   output += `${t(3, 'start')}'drum_kit'`
@@ -538,15 +392,7 @@ export const createMAGMAFiles = async (
   output += `${t(1, 'start')})`
   output += `${t(0, 'start')})`
 
-  let c3out = `\\\\Created by Magma: C3 Roks Edition v3.3.5\n\\\\DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${
-    !useLatestVersion ? '1' : song.releaseVer ? song.releaseVer.toString() : '1'
-  }\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=7\n${
-    song.tracks_count[6] !== undefined
-      ? `CrowdAudio=${StereoBlank.path}\nCrowdVol=${panvol.crowd.vol?.toString() ?? '-5'}\n`
-      : ''
-  }${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.doubleKick ? 'True' : 'False'}\nRhythmKeys=${song.rhythmOnKeys ? 'True' : 'False'}\nRhythmBass=${
-    song.rhythmOnBass ? 'True' : 'False'
-  }\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expertOnly ? 'True' : 'False'}\n`
+  let c3out = `\\\\Created by Magma: C3 Roks Edition v3.3.5\n\\\\DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${!useLatestVersion ? '1' : song.releaseVer ? song.releaseVer.toString() : '1'}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=7\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${StereoBlank.path}\nCrowdVol=${panvol.crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.doubleKick ? 'True' : 'False'}\nRhythmKeys=${song.rhythmOnKeys ? 'True' : 'False'}\nRhythmBass=${song.rhythmOnBass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expertOnly ? 'True' : 'False'}\n`
 
   if (song.rank_real_bass && song.real_bass_tuning) {
     c3out += `ProBassDiff=${song.rank_real_bass.toString()}\nProBassTuning4=(real_bass_tuning (${song.real_bass_tuning.join(' ')}))\n`
@@ -556,42 +402,15 @@ export const createMAGMAFiles = async (
     c3out += `ProGuitarDiff=${song.rank_real_guitar.toString()}\nProGuitarTuning=(real_guitar_tuning (${song.real_guitar_tuning.join(' ')}))\n`
   }
 
-  c3out += `DisableProKeys=False\nTonicNote=${song.vocal_tonic_note?.toString() ?? '0'}\nTuningCents=${song.tuning_offset_cents?.toString() ?? '0'}\nSongRating=${song.rating.toString()}\nDrumKitSFX=${
-    song.drum_bank === 'sfx/kit01_bank.milo'
-      ? '0'
-      : song.drum_bank === 'sfx/kit02_bank.milo'
-        ? '1'
-        : song.drum_bank === 'sfx/kit03_bank.milo'
-          ? '2'
-          : song.drum_bank === 'sfx/kit04_bank.milo'
-            ? '3'
-            : '4'
-  }\nHopoTresholdIndex=${song.hopo_threshold === 90 ? '0' : song.hopo_threshold === 130 ? '1' : song.hopo_threshold === 170 ? '2' : song.hopo_threshold === 250 ? '3' : '2'}\n`
+  c3out += `DisableProKeys=False\nTonicNote=${song.vocal_tonic_note?.toString() ?? '0'}\nTuningCents=${song.tuning_offset_cents?.toString() ?? '0'}\nSongRating=${song.rating.toString()}\nDrumKitSFX=${song.drum_bank === 'sfx/kit01_bank.milo' ? '0' : song.drum_bank === 'sfx/kit02_bank.milo' ? '1' : song.drum_bank === 'sfx/kit03_bank.milo' ? '2' : song.drum_bank === 'sfx/kit04_bank.milo' ? '3' : '4'}\nHopoTresholdIndex=${song.hopo_threshold === 90 ? '0' : song.hopo_threshold === 130 ? '1' : song.hopo_threshold === 170 ? '2' : song.hopo_threshold === 250 ? '3' : '2'}\n`
 
-  const drumSolo = song.solo?.find((flags) => flags === 'drum')
-    ? 'True'
-    : 'False'
-  const guitarSolo = song.solo?.find((flags) => flags === 'guitar')
-    ? 'True'
-    : 'False'
-  const bassSolo = song.solo?.find((flags) => flags === 'bass')
-    ? 'True'
-    : 'False'
-  const keysSolo = song.solo?.find((flags) => flags === 'keys')
-    ? 'True'
-    : 'False'
-  const vocalsSolo = song.solo?.find((flags) => flags === 'vocal_percussion')
-    ? 'True'
-    : 'False'
+  const drumSolo = song.solo?.find((flags) => flags === 'drum') ? 'True' : 'False'
+  const guitarSolo = song.solo?.find((flags) => flags === 'guitar') ? 'True' : 'False'
+  const bassSolo = song.solo?.find((flags) => flags === 'bass') ? 'True' : 'False'
+  const keysSolo = song.solo?.find((flags) => flags === 'keys') ? 'True' : 'False'
+  const vocalsSolo = song.solo?.find((flags) => flags === 'vocal_percussion') ? 'True' : 'False'
 
-  c3out += `MuteVol=${song.mute_volume?.toString() ?? '-96'}\nVocalMuteVol=${
-    song.mute_volume_vocals?.toString() ?? '-12'
-  }\nSoloDrums=${drumSolo}\nSoloGuitar=${guitarSolo}\nSoloBass=${bassSolo}\nSoloKeys=${keysSolo}\nSoloVocals=${vocalsSolo}\nSongPreview=${song.preview[0].toString()}\nCheckTempoMap=True\nWiiMode=False\nDoDrumMixEvents=True\nPackageDisplay=${song.artist} - ${
-    song.name
-  }\nPackageDescription=Created with Magma: C3 Roks Edition. For more great customs authoring tools, visit forums.customscreators.com\nSongAlbumArt=${Path.resolve(
-    songnameFolder,
-    `magma/${songname}_keep.png`
-  )}\nPackageThumb=\n${song.encoding === 'utf8' ? 'EncodeANSI=False\nEncodeUTF8=True' : 'EncodeANSI=True\nEncodeUTF8=False'}\nUseNumericID=True\nUniqueNumericID=${song.song_id.toString()}\nUniqueNumericID2X=\n\nTO DO List Begin\nToDo1=Verify the accuracy of all metadata,False,False\nToDo2=Grab official *.png_xbox art file if applicable,False,False\nToDo3=Chart reductions in all instruments,False,False\nToDo4=Add drum fills,False,False\nToDo5=Add overdrive for all instruments,False,False\nToDo6=Add overdrive for vocals,False,False\nToDo7=Create practice sessions [EVENTS],False,False\nToDo8=Draw sing-along notes in VENUE,False,False\nToDo9=Record dry vocals for lipsync,False,False\nToDo10=Render audio with RB limiter and count-in,False,False\nToDo12=Click to add new item...,False,False\nToDo13=Click to add new item...,False,False\nToDo14=Click to add new item...,False,False\nToDo15=Click to add new item...,False,False\nTO DO List End\n`
+  c3out += `MuteVol=${song.mute_volume?.toString() ?? '-96'}\nVocalMuteVol=${song.mute_volume_vocals?.toString() ?? '-12'}\nSoloDrums=${drumSolo}\nSoloGuitar=${guitarSolo}\nSoloBass=${bassSolo}\nSoloKeys=${keysSolo}\nSoloVocals=${vocalsSolo}\nSongPreview=${song.preview[0].toString()}\nCheckTempoMap=True\nWiiMode=False\nDoDrumMixEvents=True\nPackageDisplay=${song.artist} - ${song.name}\nPackageDescription=Created with Magma: C3 Roks Edition. For more great customs authoring tools, visit forums.customscreators.com\nSongAlbumArt=${Path.resolve(songnameFolder, `magma/${songname}_keep.png`)}\nPackageThumb=\n${song.encoding === 'utf8' ? 'EncodeANSI=False\nEncodeUTF8=True' : 'EncodeANSI=True\nEncodeUTF8=False'}\nUseNumericID=True\nUniqueNumericID=${song.song_id.toString()}\nUniqueNumericID2X=\n\nTO DO List Begin\nToDo1=Verify the accuracy of all metadata,False,False\nToDo2=Grab official *.png_xbox art file if applicable,False,False\nToDo3=Chart reductions in all instruments,False,False\nToDo4=Add drum fills,False,False\nToDo5=Add overdrive for all instruments,False,False\nToDo6=Add overdrive for vocals,False,False\nToDo7=Create practice sessions [EVENTS],False,False\nToDo8=Draw sing-along notes in VENUE,False,False\nToDo9=Record dry vocals for lipsync,False,False\nToDo10=Render audio with RB limiter and count-in,False,False\nToDo12=Click to add new item...,False,False\nToDo13=Click to add new item...,False,False\nToDo14=Click to add new item...,False,False\nToDo15=Click to add new item...,False,False\nTO DO List End\n`
 
   await RBPROJFilePath.writeFile(output, 'ascii')
   await C3FilePath.writeFile(c3out, 'ascii')

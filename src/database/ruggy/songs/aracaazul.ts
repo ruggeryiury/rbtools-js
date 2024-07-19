@@ -38,6 +38,5 @@ export const aracaazul: DTAFileRecipe = {
   },
   key: 'Eb',
   author: 'Ruggy',
-  loading_phrase:
-    'The album "Araçá Azul" broke the record for returns when it was released due to its highly experimental and controversial material.',
+  loading_phrase: 'The album "Araçá Azul" broke the record for returns when it was released due to its highly experimental and controversial material.',
 }
