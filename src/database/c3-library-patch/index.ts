@@ -1527,7 +1527,7 @@ export const C3LibraryPatch: SongUpdateObject = {
       genre: 'Pop/Dance/Electronic',
       sub_genre: 'Downtempo',
     },
-    author: 'MiltoniusPrime / Nightmare Lyre'
+    author: 'MiltoniusPrime / Nightmare Lyre',
   },
   touchv1: {
     // Touch (ft. Paul Williams)
@@ -1539,7 +1539,7 @@ export const C3LibraryPatch: SongUpdateObject = {
   // Daughter ____________________________________________________________________
   newways: {
     key: 'D',
-    author: 'Suburbia'
+    author: 'Suburbia',
   },
 
   // David Bowie ____________________________________________________________________
@@ -1548,30 +1548,30 @@ export const C3LibraryPatch: SongUpdateObject = {
     key: 'C',
     genre: {
       genre: 'Rock',
-      sub_genre: 'Rock and Roll'
+      sub_genre: 'Rock and Roll',
     },
-    rating: 'Supervision Recommended'
+    rating: 'Supervision Recommended',
   },
   bemywife: {
     // Be My Wife
     key: 'Am',
     genre: {
       genre: 'Rock',
-      sub_genre: 'Rock and Roll'
+      sub_genre: 'Rock and Roll',
     },
-    rating: 'Family Friendly'
+    rating: 'Family Friendly',
   },
   bowiejeangeniev1: {
     // The Jean Genie
-    key: 'E'
+    key: 'E',
   },
   bowiesoullovev2: {
     // Soul Love
     genre: {
       genre: 'Glam',
-      sub_genre: 'Glam'
+      sub_genre: 'Glam',
     },
-    rating: 'Supervision Recommended'
+    rating: 'Supervision Recommended',
   },
   breakingglass: {
     // Breaking Glass
@@ -1579,51 +1579,51 @@ export const C3LibraryPatch: SongUpdateObject = {
     key: 'A',
     genre: {
       genre: 'Rock',
-      sub_genre: 'Rock and Roll'
+      sub_genre: 'Rock and Roll',
     },
   },
   ch_girl_190216a: {
     // China Girl
     genre: {
       genre: 'Glam',
-      sub_genre: 'Glam'
+      sub_genre: 'Glam',
     },
     album: {
-      name: 'Let\'s Dance'
+      name: "Let's Dance",
     },
     key: 'G',
-    rating: 'Supervision Recommended'
+    rating: 'Supervision Recommended',
   },
   changes_v1: {
     // Changes
-    key: 'C'
+    key: 'C',
   },
   cut_blackstar: {
     // Blackstar
     key: 'B',
     genre: {
       genre: 'Rock',
-      sub_genre: 'Other'
-    }
+      sub_genre: 'Other',
+    },
   },
   dancinginthestreet_v1: {
     // Dancing in the Street
     key: 'B',
     album: {
-      name: 'Dancing in the Street'
-    }
+      name: 'Dancing in the Street',
+    },
   },
   davidbowieashestoashesv7: {
     // Ashes to Ashes
-    key: 'Db'
+    key: 'Db',
   },
   davidbowieprettythingsv3: {
     // Oh! You Pretty Things
-    key: 'F#'
+    key: 'F#',
   },
   davidbowiestarman: {
     // Starman
-    key: 'F'
+    key: 'F',
   },
   dbowieallthemadmen: {
     // All The Madmen
@@ -1632,31 +1632,31 @@ export const C3LibraryPatch: SongUpdateObject = {
   fiveyears: {
     // Five Years
     key: 'G',
-    rating: 'Family Friendly'
+    rating: 'Family Friendly',
   },
   goldenyears: {
     // Golden Years
-    key: 'F#'
+    key: 'F#',
   },
   heroesoriginal_07sep2018: {
     // Heroes (Original Version)
-    key: 'D'
+    key: 'D',
   },
   ImAfraidOfAmericans_V11x: {
     // I'm Afraid of Americans (V1 Mix) (ft. Nine Inch Nails)
-    name: 'I\'m Afraid of Americans (V1 Mix) (ft. Nine Inch Nails)',
+    name: "I'm Afraid of Americans (V1 Mix) (ft. Nine Inch Nails)",
     album: {
-      track_number: 8
+      track_number: 8,
     },
-    key: 'Bb'
+    key: 'Bb',
   },
   ImAfraidOfAmericans_V12x: {
     // I'm Afraid of Americans (V1 Mix) (ft. Nine Inch Nails) (2x Bass Pedal)
-    name: 'I\'m Afraid of Americans (V1 Mix) (ft. Nine Inch Nails) (2x Bass Pedal)',
+    name: "I'm Afraid of Americans (V1 Mix) (ft. Nine Inch Nails) (2x Bass Pedal)",
     album: {
-      track_number: 8
+      track_number: 8,
     },
-    key: 'Bb'
+    key: 'Bb',
   },
   lazarus: {
     // Lazarus
@@ -1664,17 +1664,17 @@ export const C3LibraryPatch: SongUpdateObject = {
     rating: 'Supervision Recommended',
     genre: {
       genre: 'Rock',
-      sub_genre: 'Other'
-    }
+      sub_genre: 'Other',
+    },
   },
   newcareerinnewtown: {
     // A New Career In a New Town
     key: 'C',
     genre: {
       genre: 'Glam',
-      sub_genre: 'Glam'
+      sub_genre: 'Glam',
     },
-    rating: 'Family Friendly'
+    rating: 'Family Friendly',
   },
   noplan: {
     // No Plan
@@ -1682,7 +1682,7 @@ export const C3LibraryPatch: SongUpdateObject = {
     rating: 'Family Friendly',
     album: {
       name: 'No Plan EP',
-      track_number: 2
+      track_number: 2,
     },
     year_released: 2017,
   },
@@ -1818,7 +1818,9 @@ export const C3LibraryPatch: SongUpdateObject = {
 }
 
 export const stringifyC3LibraryPatch = (): LibraryStringifyReturnObject => {
-  const content = stringifySongUpdates(C3LibraryPatch, { inline: true })
+  const content = Buffer.from(
+    stringifySongUpdates(C3LibraryPatch, { inline: true })
+  )
   const enc = detectBufferEncoding(content)
 
   return {

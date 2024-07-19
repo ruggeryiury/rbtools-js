@@ -1,2 +1,5 @@
 export * from './utils/execPromise.js'
+export * from './utils/getImageExtFromBuffer.js'
+export * from './utils/isStringALink.js'
 export * from './utils/normalizeExtensionOnPath.js'
+export * from './utils/tempFolder.js'

@@ -10,7 +10,6 @@
 
 - [About](#about)
 - [Features](#features)
-- [Coming Soon](#coming-soon)
 - [Requirements](#requirements)
 - [Optional (but useful, and maybe required on later versions)](#optional-but-useful-and-maybe-required-on-later-versions)
 - [Special thanks](#special-thanks)
@@ -18,19 +17,21 @@
 
 # About
 
-**_RBToolsJS_** is an easy-to-use, highly-typed NodeJS module with methods to manipulate several Rock Band 3 game files. **_RBToolsJS_** also uses _Python_ to manipulate specific files, like images.
+**_RBToolsJS_** is a highly-typed NodeJS module with methods to manipulate several Rock Band 3 game files, joining several functions that I found useful in some way and helps me on my custom creation process in some way.
+
+**_RBToolsJS_** also uses _Python_ to manipulate specific files, such as game texture files.
 
 # Features
 
 With **_RBToolsJS_** you can:
 
-- Create, parse, and export `.dta` (Rock Band song metadata) files. (powered by [DTAParser](https://github.com/ruggeryiury/dta-parser)).
-- Create `.rbproj`/`.c3` (MAGMA project) files based on `.dta` files.
+- Create, parse, and export `.dta` (Rock Band song metadata) files. (powered by my [DTA Parser](https://github.com/ruggeryiury/dta-parser) module).
+- Create `.rbproj`/`.c3` (MAGMA project) files based on `.dta` file "recipes".
 
-# Coming Soon
+**_RBToolsJS_** are still in development, but certain fucntions are going to be available on next commits:
 
-- Create and convert `.png_xbox`, `.png_ps3`, and `.png_wii` (Harmonix texture) files.
-- Create unencrypted `.mogg` (Multitrack OGG Vorbis) files.
+- Create and convert `.png_xbox`, `.png_ps3`, and `.png_wii` (Game texture) files.
+
 # Requirements
 
 - [Python v3](https://www.python.org/downloads/): _RBToolsJS_ uses Python scripts on the background of several methods, such as image convertion/fetching, and create multitrack `.ogg` files.
@@ -49,8 +50,8 @@ With **_RBToolsJS_** you can:
 
 - [Onyxite](https://github.com/mtolly): General helping and for the creation of [Onyx Toolkit](https://github.com/mtolly/onyx)!
 - [TrojanNemo](https://github.com/trojannemo): General helping and for the creation of [Nautilus](https://github.com/trojannemo/Nautilus)!
-- [Emma](https://github.com/InvoxiPlayGames)!
-- [raphaelgoulart](https://github.com/raphaelgoulart)!
+- [Emma](https://github.com/InvoxiPlayGames): General helping.
+- [raphaelgoulart](https://github.com/raphaelgoulart): Close friend and always helping me in some sort.
 
 # More Rock Band related projects
 

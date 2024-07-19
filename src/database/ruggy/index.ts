@@ -380,7 +380,7 @@ export interface LibraryStringifyReturnObject {
   /**
    * The stringified content.
    */
-  content: string
+  content: Buffer
   /**
    * The encoding of the content.
    */
@@ -392,17 +392,19 @@ export interface LibraryStringifyReturnObject {
  * @returns {[string, string]}
  */
 export const stringifyRuggyCustoms = (): LibraryStringifyReturnObject => {
-  const content = stringifyDTA(getRuggyCustoms(), {
-    detailedTracksStructure: true,
-    gameOriginAsRB3DLC: false,
-    guitarCores: true,
-    ignoreFakeSongs: true,
-    omitUnusedRanks: true,
-    placeCustomAttributes: true,
-    placeRB3DXAttributes: true,
-    sortBy: 'Song ID',
-    type: 'rbn',
-  })
+  const content = Buffer.from(
+    stringifyDTA(getRuggyCustoms(), {
+      detailedTracksStructure: true,
+      gameOriginAsRB3DLC: false,
+      guitarCores: true,
+      ignoreFakeSongs: true,
+      omitUnusedRanks: true,
+      placeCustomAttributes: true,
+      placeRB3DXAttributes: true,
+      sortBy: 'Song ID',
+      type: 'rbn',
+    })
+  )
   const enc = detectBufferEncoding(content)
   return {
     content,
