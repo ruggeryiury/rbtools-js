@@ -1,7 +1,6 @@
 import { type SongUpdateObject, stringifySongUpdates } from 'dta-parser/core'
 import { detectBufferEncoding, useDefaultOptions } from 'dta-parser/utils'
 import Path from 'path-js'
-import { normalizeExtensionOnPath } from '../../utils.js'
 
 export interface ExportDTAUpdatesOptions {
   /**
@@ -26,7 +25,7 @@ export const exportDTAUpdates = async (content: SongUpdateObject, destinationPat
     options
   )
 
-  const destPath = new Path(Path.resolve(normalizeExtensionOnPath(destinationPath, 'dta')))
+  const destPath = new Path(new Path(Path.resolve(destinationPath)).changeFileExt('dta'))
 
   if (destPath.exists()) await destPath.deleteFile()
 

@@ -2,7 +2,7 @@ import argparse
 from PIL import Image
 
 def image_converter(source: str, dest: str, width: int, height: int, interpolation: str) -> None:
-  # print(source, dest, width, height, interpolation)
+  print(source, dest, width, height, interpolation)
   try:
     with Image.open(source) as img:
       if img.mode != 'RGB':
@@ -16,7 +16,7 @@ def image_converter(source: str, dest: str, width: int, height: int, interpolati
         new_im = Image.new('RGB', (size, size), (0,0,0))
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         new_im.thumbnail((width,height), resample=Image.Resampling[interpolation])
-        img.save(dest, quality=100)
+        new_im.save(dest, quality=100)
   except Exception as e:
       print("ImageConverterError:", e)
 
@@ -27,6 +27,8 @@ if __name__ == '__main__':
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=512, required=False)
   parser.add_argument('-y', '--height', help='The height of the image', type=int, default=512, required=False)
   parser.add_argument('-i', '--interpolation', help='The interpolation method for the image resizing', default='BILINEAR', type=str, required=False)
+  parser.add_argument('-q', '--quality', help='The quality value of the output image. Only used on lossy format, such as JPEG and WEBP', default=100, type=int, required=False)
+
   arg = parser.parse_args()
   
   image_converter(source=arg.source, dest=arg.dest, width=arg.width, height=arg.height, interpolation=arg.interpolation.upper())

@@ -113,7 +113,6 @@ export const searchArtworkOnSpotify = async (song: Song | DTAFile | DTAFileRecip
     artist = song.artist
     albumName = song.album?.name ?? ''
   }
-  console.log(albumName)
   if (!albumName) return
   const query = `${artist.replaceAll('&', 'and')} ${albumName.replaceAll('&', 'and')}`
   const apiEndpoint = 'https://api.spotify.com/v1'

@@ -1,4 +1,6 @@
-export type GetImageExtResults = 'jpg' | 'png' | 'webp' | 'bmp' | null
+import type { ArtworkImageFormatTypes } from '../artwork.js'
+
+export type GetImageExtResults = ArtworkImageFormatTypes | null
 
 /**
  * Figures out the extension of the image by its Buffer.
