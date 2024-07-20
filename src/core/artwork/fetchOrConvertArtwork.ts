@@ -1,9 +1,9 @@
 import { randomBytes } from 'node:crypto'
 import { useDefaultOptions } from 'dta-parser/utils'
 import Path from 'path-js'
-import { isStringALink, tempFolderInit, imgConv, imgToTex, imgToTexWii } from '../../utils.js'
+import { isStringALink, tempFolderInit, imgConv, imgToTex, imgToTexWii, texToImg, texToImgWii } from '../../utils.js'
 
-export type ArtworkSizeTypes = 256 | 512 | 1024 | 2048
+export type ArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
 export type ArtworkImageFormatTypes = 'png' | 'bmp' | 'jpg' | 'webp'
 export type ArtworkTextureFormatTypes = 'png_xbox' | 'png_ps3' | 'png_wii'
 export type ArtworkInterpolationTypes = 'nearest' | 'box' | 'bilinear' | 'hamming' | 'bicubic' | 'lanczos'
@@ -17,7 +17,8 @@ export interface FetchOrConvertOptions {
    * The size of the generated image file. Default is `512`.
    *
    * The property has no influence when converting to `.png_wii`, because
-   * the Wii system only uses `256`.
+   * the Wii system only uses `256`. It also has no influence when converting
+   * from texture files.
    */
   textureSize?: ArtworkSizeTypes
   /**
@@ -68,7 +69,7 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
 
   if (isStringALink(pathOrURL)) {
     const imgRes = await fetch(pathOrURL, { method: 'GET' })
-    if (!imgRes.ok) throw new Error(`fetchArtworkToPng: URL returned with error with status ${imgRes.status.toString()}.`)
+    if (!imgRes.ok) throw new Error(`fetchOrConvertArtworkError: URL returned with error with status ${imgRes.status.toString()}.`)
     const imgBuffer = Buffer.from(await imgRes.arrayBuffer())
 
     const tempFetchPath = new Path(Path.resolve(tempFolder.path, `${randomBytes(16).toString('hex')}.tmp`))
@@ -77,7 +78,6 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
 
     const pngTempPath = new Path(tempFetchPath.changeFileExt('png'))
     if (pngTempPath.exists()) await pngTempPath.deleteFile()
-    console.log(textureSize)
     await imgConv.exec(tempFetchPath.path, pngTempPath.path, textureSize, interpolation, quality)
     tempFiles.push(tempFetchPath, pngTempPath)
     path = pngTempPath
@@ -95,6 +95,8 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
 
   const srcExt = path.ext.slice(1) as ArtworkImageFormatTypes | ArtworkTextureFormatTypes
 
+  if (srcExt === format) throw new Error('fetchOrConvertArtworkError: Desired format is the same of the source file.')
+
   if (srcExt === 'bmp' || srcExt === 'jpg' || srcExt === 'png' || srcExt === 'webp') {
     if (format === 'bmp' || format === 'jpg' || format === 'png' || format === 'webp') await imgConv.exec(path.path, destPath.path, textureSize, interpolation, quality)
     else if (format === 'png_wii')
@@ -103,6 +105,23 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
         textureSize: 256,
       })
     else await imgToTex(path.path, destPath.path, opts)
+  } else {
+    const tempPngPath = new Path(Path.resolve(tempFolder.path, `${randomBytes(16).toString('hex')}.png`))
+    if (srcExt === 'png_wii') {
+      const { width: srcWidth, height: srcHeight } = await texToImgWii(path.path, tempPngPath.path)
+      if (format === 'png') await tempPngPath.renameFile(destPath.changeFileName(destPath.name.endsWith('_keep') ? destPath.name.slice(0, -5) : destPath.name))
+      else {
+        await imgConv.exec(tempPngPath.path, destPath.changeFileName(destPath.name.endsWith('_keep') ? destPath.name.slice(0, -5) : destPath.name), [srcWidth, srcHeight], 'bilinear', quality)
+        tempFiles.push(tempPngPath)
+      }
+    } else {
+      const { width: srcWidth, height: srcHeight } = await texToImg(path.path, tempPngPath.path)
+      if (format === 'png') await tempPngPath.renameFile(destPath.changeFileName(destPath.name.endsWith('_keep') ? destPath.name.slice(0, -5) : destPath.name))
+      else {
+        await imgConv.exec(tempPngPath.path, destPath.changeFileName(destPath.name.endsWith('_keep') ? destPath.name.slice(0, -5) : destPath.name), [srcWidth, srcHeight], 'bilinear', quality)
+        tempFiles.push(tempPngPath)
+      }
+    }
   }
 
   for (const tempFile of tempFiles) {

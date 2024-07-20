@@ -25,7 +25,6 @@ export const imgToTexWii = async (src: string, dest: string, options: Required<F
   if (destPath.exists()) await destPath.deleteFile()
 
   await imgConv.exec(srcPath.path, tempPng.path, textureSize, interpolation)
-  console.log(tempPng.path, tpl.path)
   await imgConv.wimgtEncode(tempPng.path, tpl.path)
 
   if (tempPng.exists()) await tempPng.deleteFile()
