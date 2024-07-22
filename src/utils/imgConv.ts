@@ -1,5 +1,6 @@
 import Path from 'path-js'
 import type { ArtworkInterpolationTypes, ArtworkSizeTypes } from '../artwork.js'
+import { getRBToolsJSPath } from '../index.js'
 import { execPromise } from '../utils.js'
 
 export interface ImageConverterMethodsObject {
@@ -7,6 +8,10 @@ export interface ImageConverterMethodsObject {
    * The path to the Image Converter Python script.
    */
   imgConvPath: Path
+  /**
+   * The path to the Image Converter to Base64-encoded DataURL Python script .
+   */
+  imgConvDataURLBase64Path: Path
   /**
    * The path to the NVIDIA Texture Tools compress executable.
    */
@@ -22,14 +27,24 @@ export interface ImageConverterMethodsObject {
   /**
    * Executes a python script to convert image files.
    * - - - -
-   * @param {string} path The path of the source image file to be converted.
+   * @param {string} src The path of the source image file to be converted.
    * @param {string} dest The destination path of the converted image file.
    * @param {ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes]} textureSize The size of the image file.
    * @param {ArtworkInterpolationTypes} interpolation The interpolation method to be used if rescaling.
    * @param {number | undefined} quality `OPTIONAL` The quality of the converted image file. Only used when converting to lossy formats, like JPEG and WEBP. Default is `100` (Highest quality).
    * @returns {Promise<string>} The destination path of the converted image file.
    */
-  exec: (path: string, dest: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
+  exec: (src: string, dest: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
+  /**
+   * Executes a python script to convert image files to a Base64-encoded DataURL string in WEBP format.
+   * - - - -
+   * @param {string} src The path of the source image file to be converted.
+   * @param {ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes]} textureSize The size of the image file.
+   * @param {ArtworkInterpolationTypes} interpolation The interpolation method to be used if rescaling.
+   * @param {number | undefined} quality `OPTIONAL` The quality of the converted image file. Only used when converting to lossy formats, like JPEG and WEBP. Default is `90`.
+   * @returns {Promise<string>} A Base64-encoded DataURL string of the image in WEBP format.
+   */
+  execDataURLBase64: (src: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
   /**
    * Executes the NVIDIA Texture Tools to encode a TGA image file to DDS texture file.
    * - - - -
@@ -64,18 +79,21 @@ export interface ImageConverterMethodsObject {
   wimgtDecode: (tplPath: string, destPath: string) => Promise<string>
 }
 /**
- *
+ * An object with methods that redirects 
  */
 export const imgConv: ImageConverterMethodsObject = {
-  imgConvPath: new Path(Path.resolve(process.cwd(), `src/python/image_converter.py`)),
+  imgConvPath: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter.py')),
 
-  nvCompressPath: new Path(Path.resolve(process.cwd(), 'src/bin/nvcompress.exe')),
+  imgConvDataURLBase64Path: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter_dataurl_base64.py')),
 
-  nvDecompressPath: new Path(Path.resolve(process.cwd(), 'src/bin/nvdecompress.exe')),
+  nvCompressPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/nvcompress.exe')),
 
-  wimgtPath: new Path(Path.resolve(process.cwd(), 'src/bin/wimgt.exe')),
+  nvDecompressPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/nvdecompress.exe')),
 
-  exec: async (path, dest, textureSize, interpolation, quality = 100): Promise<string> => {
+  wimgtPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/wimgt.exe')),
+
+  exec: async (src, dest, textureSize, interpolation, quality = 100): Promise<string> => {
+    if (quality <= 0 || quality > 100) throw new Error(`ImageConverterError: The quality of the file must be a number between 1 and 100 (Given quality "${quality.toString()}")`)
     let width: ArtworkSizeTypes, height: ArtworkSizeTypes
     if (Array.isArray(textureSize)) {
       width = textureSize[0]
@@ -84,7 +102,27 @@ export const imgConv: ImageConverterMethodsObject = {
       width = textureSize
       height = textureSize
     }
-    const command = `python ${imgConv.imgConvPath.fullname} "${path}" "${dest}" -x ${width.toString()} -y ${height.toString()} -i ${interpolation.toUpperCase()} -q ${quality.toString()}`
+    const command = `python "${imgConv.imgConvPath.fullname}" "${src}" "${dest}" -x ${width.toString()} -y ${height.toString()} -i ${interpolation.toUpperCase()} -q ${quality.toString()}`
+    const exec = await execPromise(command, {
+      cwd: imgConv.imgConvPath.root,
+      windowsHide: true,
+    })
+    if (exec.stderr) throw new Error(exec.stderr)
+    if (exec.stdout.startsWith('ImageConverterError')) throw new Error(exec.stdout)
+    return dest
+  },
+
+  execDataURLBase64: async (src, textureSize, interpolation, quality = 90) => {
+    if (quality <= 0 || quality > 100) throw new Error(`ImageConverterError: The quality of the file must be a number between 1 and 100 (Given quality "${quality.toString()}")`)
+    let width: ArtworkSizeTypes, height: ArtworkSizeTypes
+    if (Array.isArray(textureSize)) {
+      width = textureSize[0]
+      height = textureSize[1]
+    } else {
+      width = textureSize
+      height = textureSize
+    }
+    const command = `python "${imgConv.imgConvDataURLBase64Path.fullname}" "${src}" -x ${width.toString()} -y ${height.toString()} -i ${interpolation.toUpperCase()} -q ${quality.toString()}`
     const exec = await execPromise(command, {
       cwd: imgConv.imgConvPath.root,
       windowsHide: true,
@@ -95,25 +133,25 @@ export const imgConv: ImageConverterMethodsObject = {
   },
 
   nvCompress: async (tgaPath, ddsPath, DTX5 = true) => {
-    const command = `${imgConv.nvCompressPath.fullname} -nomips -nocuda ${DTX5 ? ' -bc3' : ' -bc1'} "${tgaPath}" "${ddsPath}"`
+    const command = `"${imgConv.nvCompressPath.fullname}" -nomips -nocuda ${DTX5 ? ' -bc3' : ' -bc1'} "${tgaPath}" "${ddsPath}"`
     const exec = await execPromise(command, { cwd: imgConv.nvCompressPath.root, windowsHide: true })
     return exec.stdout
   },
 
   nvDecompress: async (ddsPath) => {
-    const command = `${imgConv.nvDecompressPath.fullname} "${ddsPath}"`
+    const command = `"${imgConv.nvDecompressPath.fullname}" "${ddsPath}"`
     const exec = await execPromise(command, { cwd: imgConv.nvDecompressPath.root, windowsHide: true })
     return exec.stdout
   },
 
   wimgtEncode: async (tempPngPath, tplPath) => {
-    const command = `${imgConv.wimgtPath.fullname} -d "${tplPath}" ENC -x TPL.CMPR "${tempPngPath}"`
+    const command = `"${imgConv.wimgtPath.fullname}" -d "${tplPath}" ENC -x TPL.CMPR "${tempPngPath}"`
     const exec = await execPromise(command, { cwd: imgConv.wimgtPath.root, windowsHide: true })
     return exec.stdout
   },
 
   wimgtDecode: async (tplPath, destPath) => {
-    const command = `${imgConv.wimgtPath.fullname} -d "${destPath}" DEC -x TPL.CMPR "${tplPath}"`
+    const command = `"${imgConv.wimgtPath.fullname}" -d "${destPath}" DEC -x TPL.CMPR "${tplPath}"`
     const exec = await execPromise(command, { cwd: imgConv.wimgtPath.root, windowsHide: true })
     return exec.stdout
   },

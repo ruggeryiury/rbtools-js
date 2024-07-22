@@ -79,7 +79,17 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
     const pngTempPath = new Path(tempFetchPath.changeFileExt('png'))
     if (pngTempPath.exists()) await pngTempPath.deleteFile()
     await imgConv.exec(tempFetchPath.path, pngTempPath.path, textureSize, interpolation, quality)
-    tempFiles.push(tempFetchPath, pngTempPath)
+    tempFiles.push(tempFetchPath)
+    if (format === 'png') {
+      const newDestPath = new Path(Path.resolve(dest)).changeFileExt(format)
+      await pngTempPath.renameFile(newDestPath)
+
+      for (const tempFile of tempFiles) {
+        if (tempFile.exists()) await tempFile.deleteFile()
+      }
+
+      return newDestPath
+    }
     path = pngTempPath
   } else {
     path = new Path(Path.resolve(pathOrURL))
