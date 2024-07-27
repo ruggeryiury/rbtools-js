@@ -79,7 +79,7 @@ export interface ImageConverterMethodsObject {
   wimgtDecode: (tplPath: string, destPath: string) => Promise<string>
 }
 /**
- * An object with methods that redirects 
+ * An object with methods that redirects to every external script or CLI used on the module.
  */
 export const imgConv: ImageConverterMethodsObject = {
   imgConvPath: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter.py')),

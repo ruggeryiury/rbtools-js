@@ -1,6 +1,6 @@
 {
   "name": "rbtools-js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "A highly typed module package to manipulate several Rock Band game files.",
   "type": "module",
@@ -15,6 +15,13 @@
     "javascript",
     "typescript"
   ],
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dta-parser": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/dta-parser",
+    "jschardet": "^3.1.2",
+    "path-js": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/path-js",
+    "winston": "^3.13.0"
+  },
   "devDependencies": {
     "@types/node": "^20.12.12",
     "copyfiles": "^2.4.1",
@@ -55,11 +62,5 @@
     "./utils": {
       "import": "./dist/utils.js"
     }
-  },
-  "dependencies": {
-    "dta-parser": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/dta-parser",
-    "jschardet": "^3.1.2",
-    "path-js": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/path-js",
-    "winston": "^3.13.0"
   }
 }

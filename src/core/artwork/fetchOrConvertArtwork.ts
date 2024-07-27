@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import axios, { AxiosError, type AxiosResponse } from 'axios'
 import { useDefaultOptions } from 'dta-parser/utils'
 import Path from 'path-js'
 import { isStringALink, tempFolderInit, imgConv, imgToTex, imgToTexWii, texToImg, texToImgWii } from '../../utils.js'
@@ -37,6 +38,10 @@ export interface FetchOrConvertOptions {
    * Delete the original source file. Default is `false`.
    */
   deleteOriginal?: boolean
+  /**
+   * Sets a custom timeout (in milliseconds) for artwork fetching. Default is `5000` (5 seconds).
+   */
+  fetchTimeout?: number
 }
 
 /**
@@ -56,11 +61,12 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
       interpolation: 'bilinear',
       quality: 100,
       textureSize: 512,
+      fetchTimeout: 5000
     },
     options
   )
 
-  const { deleteOriginal, format, interpolation, quality, textureSize } = opts
+  const { deleteOriginal, format, interpolation, quality, textureSize, fetchTimeout } = opts
 
   const tempFolder = await tempFolderInit()
   const tempFiles: Path[] = []
@@ -68,9 +74,18 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
   let path: Path, destPath: Path
 
   if (isStringALink(pathOrURL)) {
-    const imgRes = await fetch(pathOrURL, { method: 'GET' })
-    if (!imgRes.ok) throw new Error(`fetchOrConvertArtworkError: URL returned with error with status ${imgRes.status.toString()}.`)
-    const imgBuffer = Buffer.from(await imgRes.arrayBuffer())
+    let imgRes: AxiosResponse<ArrayBuffer>
+    try {
+      imgRes = await axios.get<ArrayBuffer>(pathOrURL, {
+        responseType: 'arraybuffer',
+        timeout: fetchTimeout,
+      })
+    } catch (err) {
+      if (err instanceof AxiosError) throw new Error(`fetchOrConvertArtworkError ${err.code ? `(${err.code})` : ''} : ${err.message}.`)
+      throw err
+    }
+    if (imgRes.status !== 200) throw new Error(`fetchOrConvertArtworkError: URL returned with error with status ${imgRes.status.toString()}.`)
+    const imgBuffer = Buffer.from(imgRes.data)
 
     const tempFetchPath = new Path(Path.resolve(tempFolder.path, `${randomBytes(16).toString('hex')}.tmp`))
     if (tempFetchPath.exists()) await tempFetchPath.deleteFile()
