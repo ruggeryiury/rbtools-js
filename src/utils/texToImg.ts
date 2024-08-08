@@ -4,8 +4,8 @@ import { getDDSHeader, imgConv } from '../utils.js'
 
 export interface TextureToImageReturnObject {
   path: string
-  width: ArtworkSizeTypes
-  height: ArtworkSizeTypes
+  width: ArtworkSizeTypes | 8 | 16 | 32 | 64
+  height: ArtworkSizeTypes | 8 | 16 | 32 | 64
 }
 
 export const texToImg = async (src: string, dest: string): Promise<TextureToImageReturnObject> => {
@@ -48,26 +48,26 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
 
   const ddsBuffer = await dds.readFile()
   const ddsHeader = Uint8Array.from(ddsBuffer.subarray(0, 32))
-  let ddsWidth: ArtworkSizeTypes = 256
-  let ddsHeight: ArtworkSizeTypes = 256
+  let ddsWidth: ArtworkSizeTypes | 8 | 16 | 32 | 64 = 256
+  let ddsHeight: ArtworkSizeTypes | 8 | 16 | 32 | 64 = 256
 
   switch (
     ddsHeader[17] // Width byte
   ) {
     case 0x00:
       switch (ddsHeader[16]) {
-        //   case 0x08:
-        //     ddsWidth = 8
-        //     break
-        //   case 0x10:
-        //     ddsWidth = 16
-        //     break
-        //   case 0x20:
-        //     ddsWidth = 32
-        //     break
-        //   case 0x40:
-        //     ddsWidth = 64
-        //     break
+          case 0x08:
+            ddsWidth = 8
+            break
+          case 0x10:
+            ddsWidth = 16
+            break
+          case 0x20:
+            ddsWidth = 32
+            break
+          case 0x40:
+            ddsWidth = 64
+            break
         case 0x80:
           ddsWidth = 128
           break
@@ -88,18 +88,18 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   ) {
     case 0x00:
       switch (ddsHeader[12]) {
-        //   case 0x08:
-        //     ddsHeight = 8
-        //     break
-        //   case 0x10:
-        //     ddsHeight = 16
-        //     break
-        //   case 0x20:
-        //     ddsHeight = 32
-        //     break
-        //   case 0x40:
-        //     ddsHeight = 64
-        //     break
+          case 0x08:
+            ddsHeight = 8
+            break
+          case 0x10:
+            ddsHeight = 16
+            break
+          case 0x20:
+            ddsHeight = 32
+            break
+          case 0x40:
+            ddsHeight = 64
+            break
         case 0x80:
           ddsHeight = 128
           break

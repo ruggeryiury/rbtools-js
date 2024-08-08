@@ -26,6 +26,7 @@ export const motherearth: DTAFileRecipe = {
     name: 'MOTHER (Original Soundtrack)',
     track_number: 1,
   },
+  key: 'G',
   multitrack: true,
   author: 'Ruggy',
   pack_name: 'MOTHER Pack 01',

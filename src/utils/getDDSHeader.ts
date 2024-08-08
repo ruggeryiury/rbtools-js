@@ -2,7 +2,7 @@ import Path from 'path-js'
 import { getRBToolsJSPath } from '../index.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
-export type DDSHeaderTypes = 'UNKNOWN' | 'DXT1' | 'DXT5' | 'NORMAL_MAP'
+export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
 
 /**
  * Builds the Harmonix texture file header based on its dimensions and image format.
@@ -147,8 +147,8 @@ export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Arr
     const headerBytes = Uint8Array.from(await headerFilePath.readFile())
     if (headerBytes.toString() === fullHeader.toString() || headerBytes.toString() === shortHeader.toString()) {
       ddsFormat = 'DXT5'
-      if (headerName.includes('dxt1')) ddsFormat = 'DXT1'
-      else if (headerName.includes('normal')) ddsFormat = 'NORMAL_MAP'
+      if (headerName.includes('DXT1')) ddsFormat = 'DXT1'
+      else if (headerName.includes('NORMAL')) ddsFormat = 'NORMAL'
 
       let index1 = headerName.indexOf('_') + 1
       let index2 = headerName.indexOf('x')
@@ -156,7 +156,8 @@ export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Arr
       index1 = headerName.indexOf('_', index2)
       index2++
       const height = parseInt(headerName.substring(index2, index1))
-      header = buildDDSHeader(ddsFormat.toLowerCase().replace('_map', '').toUpperCase() as DDSFormatTypes, width, height)
+      console.log(ddsFormat)
+      header = buildDDSHeader(ddsFormat as DDSFormatTypes, width, height)
     }
   }
 

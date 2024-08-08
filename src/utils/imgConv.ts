@@ -29,17 +29,17 @@ export interface ImageConverterMethodsObject {
    * - - - -
    * @param {string} src The path of the source image file to be converted.
    * @param {string} dest The destination path of the converted image file.
-   * @param {ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes]} textureSize The size of the image file.
+   * @param {ArtworkSizeTypes | 8 | 16 | 32 | 64 | [ArtworkSizeTypes | 8 | 16 | 32 | 64, ArtworkSizeTypes | 8 | 16 | 32 | 64]} textureSize The size of the image file.
    * @param {ArtworkInterpolationTypes} interpolation The interpolation method to be used if rescaling.
    * @param {number | undefined} quality `OPTIONAL` The quality of the converted image file. Only used when converting to lossy formats, like JPEG and WEBP. Default is `100` (Highest quality).
    * @returns {Promise<string>} The destination path of the converted image file.
    */
-  exec: (src: string, dest: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
+  exec: (src: string, dest: string, textureSize: ArtworkSizeTypes | 8 | 16 | 32 | 64 | [ArtworkSizeTypes | 8 | 16 | 32 | 64, ArtworkSizeTypes | 8 | 16 | 32 | 64], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
   /**
    * Executes a python script to convert image files to a Base64-encoded DataURL string in WEBP format.
    * - - - -
    * @param {string} src The path of the source image file to be converted.
-   * @param {ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes]} textureSize The size of the image file.
+   * @param {ArtworkSizeTypes | 8 | 16 | 32 | 64 | [ArtworkSizeTypes | 8 | 16 | 32 | 64, ArtworkSizeTypes | 8 | 16 | 32 | 64]} textureSize The size of the image file.
    * @param {ArtworkInterpolationTypes} interpolation The interpolation method to be used if rescaling.
    * @param {number | undefined} quality `OPTIONAL` The quality of the converted image file. Only used when converting to lossy formats, like JPEG and WEBP. Default is `90`.
    * @returns {Promise<string>} A Base64-encoded DataURL string of the image in WEBP format.
@@ -94,7 +94,7 @@ export const imgConv: ImageConverterMethodsObject = {
 
   exec: async (src, dest, textureSize, interpolation, quality = 100): Promise<string> => {
     if (quality <= 0 || quality > 100) throw new Error(`ImageConverterError: The quality of the file must be a number between 1 and 100 (Given quality "${quality.toString()}")`)
-    let width: ArtworkSizeTypes, height: ArtworkSizeTypes
+    let width: ArtworkSizeTypes | 8 | 16 | 32 | 64, height: ArtworkSizeTypes | 8 | 16 | 32 | 64
     if (Array.isArray(textureSize)) {
       width = textureSize[0]
       height = textureSize[1]
