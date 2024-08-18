@@ -92,12 +92,12 @@ export interface CreateMAGMAFilesPaths {
  * @param {string} songsFolderPath d
  * @param {string} MAGMAC3Path d
  * @param {string} destPath f
- * @param {CreateMAGMAFilesOptions} options An object that changes the behavior of the MAGMA files creation process.
+ * @param {CreateMAGMAFilesOptions | undefined} options `OPTIONAL` An object that changes the behavior of the MAGMA files creation process.
  *
  * All paths needed to create MAGMA files are placed on this object.
  * @returns {Promise<CreateMAGMAFilesPaths>} An object with the paths of all generated files.
  */
-export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: string, MAGMAC3Path: string, destPath: string, options: CreateMAGMAFilesOptions): Promise<CreateMAGMAFilesPaths> => {
+export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: string, MAGMAC3Path: string, destPath: string, options?: CreateMAGMAFilesOptions): Promise<CreateMAGMAFilesPaths> => {
   const opts = useDefaultOptions<CreateMAGMAFilesOptions, true>(
     {
       useLatestVersion: true,

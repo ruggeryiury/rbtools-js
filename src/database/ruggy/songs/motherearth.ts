@@ -12,7 +12,7 @@ export const motherearth: DTAFileRecipe = {
     bass: { rank: 1, real_rank: 1, channels: 1 },
     guitar: { rank: 2, real_rank: 2, channels: 1, pans: [-0.2] },
     keys: { rank: 0, real_rank: 0, channels: 1, pans: [0.2] },
-    backing: 1,
+    backing: 2,
   },
   anim_tempo: 16,
   preview: 18668,

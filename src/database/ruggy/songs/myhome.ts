@@ -12,7 +12,7 @@ export const myhome: DTAFileRecipe = {
     bass: { rank: 0, real_rank: 0, channels: 1 },
     guitar: { rank: 0, real_rank: 0, channels: 1 },
     keys: { rank: 0, real_rank: 0, channels: 1 },
-    backing: 1,
+    backing: 2,
   },
   anim_tempo: 16,
   preview: 3600,
