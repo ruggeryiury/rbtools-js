@@ -56,18 +56,18 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   ) {
     case 0x00:
       switch (ddsHeader[16]) {
-          case 0x08:
-            ddsWidth = 8
-            break
-          case 0x10:
-            ddsWidth = 16
-            break
-          case 0x20:
-            ddsWidth = 32
-            break
-          case 0x40:
-            ddsWidth = 64
-            break
+        case 0x08:
+          ddsWidth = 8
+          break
+        case 0x10:
+          ddsWidth = 16
+          break
+        case 0x20:
+          ddsWidth = 32
+          break
+        case 0x40:
+          ddsWidth = 64
+          break
         case 0x80:
           ddsWidth = 128
           break
@@ -88,18 +88,18 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   ) {
     case 0x00:
       switch (ddsHeader[12]) {
-          case 0x08:
-            ddsHeight = 8
-            break
-          case 0x10:
-            ddsHeight = 16
-            break
-          case 0x20:
-            ddsHeight = 32
-            break
-          case 0x40:
-            ddsHeight = 64
-            break
+        case 0x08:
+          ddsHeight = 8
+          break
+        case 0x10:
+          ddsHeight = 16
+          break
+        case 0x20:
+          ddsHeight = 32
+          break
+        case 0x40:
+          ddsHeight = 64
+          break
         case 0x80:
           ddsHeight = 128
           break

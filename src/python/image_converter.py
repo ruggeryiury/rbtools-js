@@ -20,7 +20,7 @@ def image_converter(source: str, dest: str, width: int, height: int, interpolati
       print("ImageConverterError:", e)
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='Image Converter (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.\r\nGitHub source: https://github.com/ruggeryiury/ruggy-py')
+  parser = argparse.ArgumentParser( description='Image Converter (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('source', help='The source file path to be converted', type=str)
   parser.add_argument('dest', help='The destination file path of the converted file', type=str)
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=512, required=False)

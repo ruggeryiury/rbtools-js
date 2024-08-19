@@ -13,6 +13,10 @@ export interface ImageConverterMethodsObject {
    */
   imgConvDataURLBase64Path: Path
   /**
+   * The path to the Get Image Size Python script.
+   */
+  imgConvGetImageSizePath: Path
+  /**
    * The path to the NVIDIA Texture Tools compress executable.
    */
   nvCompressPath: Path
@@ -45,6 +49,13 @@ export interface ImageConverterMethodsObject {
    * @returns {Promise<string>} A Base64-encoded DataURL string of the image in WEBP format.
    */
   execDataURLBase64: (src: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
+  /**
+   * Executes a python script to check any image file width and height.
+   * - - - -
+   * @param {string} src The path of the source image file to be checked.
+   * @returns {Promise<[number,number]>} An array with the width and height of the image
+   */
+  execGetImageSize: (src: string) => Promise<[number, number]>
   /**
    * Executes the NVIDIA Texture Tools to encode a TGA image file to DDS texture file.
    * - - - -
@@ -85,6 +96,8 @@ export const imgConv: ImageConverterMethodsObject = {
   imgConvPath: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter.py')),
 
   imgConvDataURLBase64Path: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter_dataurl_base64.py')),
+
+  imgConvGetImageSizePath: new Path(Path.resolve(getRBToolsJSPath(), 'python/get_image_size.py')),
 
   nvCompressPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/nvcompress.exe')),
 
@@ -130,6 +143,15 @@ export const imgConv: ImageConverterMethodsObject = {
     if (exec.stderr) throw new Error(exec.stderr)
     if (exec.stdout.startsWith('ImageConverterError')) throw new Error(exec.stdout)
     return exec.stdout
+  },
+
+  execGetImageSize: async (src) => {
+    const command = `python "${imgConv.imgConvGetImageSizePath.path}" "${src}"`
+    const exec = await execPromise(command, {
+      cwd: imgConv.imgConvPath.root,
+      windowsHide: true,
+    })
+    return JSON.parse(exec.stdout) as [number, number]
   },
 
   nvCompress: async (tgaPath, ddsPath, DTX5 = true) => {

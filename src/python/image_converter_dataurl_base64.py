@@ -33,7 +33,7 @@ def image_converter_dataurl_base64(source: str, width: int, height: int, interpo
       print("ImageConverterError:", e)
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='Image Converter (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.\r\nGitHub source: https://github.com/ruggeryiury/ruggy-py')
+  parser = argparse.ArgumentParser( description='Image Converter (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('source', help='The source file path to be converted', type=str)
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=512, required=False)
   parser.add_argument('-y', '--height', help='The height of the image', type=int, default=512, required=False)

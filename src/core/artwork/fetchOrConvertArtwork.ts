@@ -61,7 +61,7 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
       interpolation: 'bilinear',
       quality: 100,
       textureSize: 512,
-      fetchTimeout: 5000
+      fetchTimeout: 5000,
     },
     options
   )
