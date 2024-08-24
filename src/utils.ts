@@ -1,3 +1,4 @@
+export * from './utils/decodeFileURL.js'
 export * from './utils/execPromise.js'
 export * from './utils/getDDSHeader.js'
 export * from './utils/getImageExtFromBuffer.js'

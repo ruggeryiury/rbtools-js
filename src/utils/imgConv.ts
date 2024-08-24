@@ -1,7 +1,10 @@
 import Path from 'path-js'
 import type { ArtworkInterpolationTypes, ArtworkSizeTypes } from '../artwork.js'
-import { getRBToolsJSPath } from '../index.js'
-import { execPromise } from '../utils.js'
+// import { getRBToolsJSPath } from '../index.js'
+import { decodeFileURL, execPromise } from '../utils.js'
+
+const __filename = decodeFileURL(import.meta.url)
+const __dirname = new Path(__filename).root
 
 export interface ImageConverterMethodsObject {
   /**
@@ -93,17 +96,18 @@ export interface ImageConverterMethodsObject {
  * An object with methods that redirects to every external script or CLI used on the module.
  */
 export const imgConv: ImageConverterMethodsObject = {
-  imgConvPath: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter.py')),
+  // imgConvPath: new Path(Path.resolve(import.meta.url, '../python/image_converter.py')),
+  imgConvPath: new Path(Path.resolve(__dirname, '../python/image_converter.py')),
 
-  imgConvDataURLBase64Path: new Path(Path.resolve(getRBToolsJSPath(), 'python/image_converter_dataurl_base64.py')),
+  imgConvDataURLBase64Path: new Path(Path.resolve(__dirname, '../python/image_converter_dataurl_base64.py')),
 
-  imgConvGetImageSizePath: new Path(Path.resolve(getRBToolsJSPath(), 'python/get_image_size.py')),
+  imgConvGetImageSizePath: new Path(Path.resolve(__dirname, '../python/get_image_size.py')),
 
-  nvCompressPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/nvcompress.exe')),
+  nvCompressPath: new Path(Path.resolve(__dirname, '../bin/nvcompress.exe')),
 
-  nvDecompressPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/nvdecompress.exe')),
+  nvDecompressPath: new Path(Path.resolve(__dirname, '../bin/nvdecompress.exe')),
 
-  wimgtPath: new Path(Path.resolve(getRBToolsJSPath(), 'bin/wimgt.exe')),
+  wimgtPath: new Path(Path.resolve(__dirname, '../bin/wimgt.exe')),
 
   exec: async (src, dest, textureSize, interpolation, quality = 100): Promise<string> => {
     if (quality <= 0 || quality > 100) throw new Error(`ImageConverterError: The quality of the file must be a number between 1 and 100 (Given quality "${quality.toString()}")`)

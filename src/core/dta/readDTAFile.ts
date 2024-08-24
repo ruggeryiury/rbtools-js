@@ -27,14 +27,14 @@ export const readDTAFile = async <RT extends DTAParserExportTypes = undefined>(d
     const dtaFileEncoding = detectBufferEncoding(dtaFileBuffer)
     return DTAParser<RT>(dtaFileBuffer.toString(dtaFileEncoding), opts)
   } else if (src.strictType() === 'directory') {
-    const allSongs = ''
+    let allSongs = ''
     const dirContents = await src.readDir(true)
     for (const dir of dirContents) {
       const currPath = new Path(Path.resolve(dir))
       if (currPath.exists() && currPath.ext === '.dta') {
         const currFileBuffer = await currPath.readFile()
         const currFileEncoding = detectBufferEncoding(currFileBuffer)
-        allSongs.concat(currFileBuffer.toString(currFileEncoding))
+        allSongs += currFileBuffer.toString(currFileEncoding)
       }
     }
     return DTAParser<RT>(allSongs, opts)

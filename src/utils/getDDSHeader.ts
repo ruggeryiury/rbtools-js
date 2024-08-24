@@ -1,8 +1,11 @@
 import Path from 'path-js'
-import { getRBToolsJSPath } from '../index.js'
+import { decodeFileURL } from '../utils.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
 export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
+
+const __filename = decodeFileURL(import.meta.url)
+const __dirname = new Path(__filename).root
 
 /**
  * Builds the Harmonix texture file header based on its dimensions and image format.
@@ -137,7 +140,7 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
  */
 export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Array): Promise<Uint8Array> => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = new Path(Path.resolve(getRBToolsJSPath(), 'bin/headers'))
+  const headerFolderPath = new Path(Path.resolve(__dirname, '../bin/headers'))
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
 
