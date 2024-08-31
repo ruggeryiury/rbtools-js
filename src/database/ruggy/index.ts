@@ -358,6 +358,16 @@ export const RuggyCustoms = {
     },
     { fake: true }
   ),
+
+  burnished: createMAGMAProjectObject(
+    ruggy.burnished,
+    {
+      releaseVer: 1,
+      releasedAt: new Date().toDateString(),
+      updatedAt: new Date().toDateString(),
+    },
+    { fake: true }
+  ),
 }
 
 /**
@@ -396,7 +406,7 @@ export const stringifyRuggyCustoms = (): LibraryStringifyReturnObject => {
       detailedTracksStructure: true,
       gameOriginAsRB3DLC: false,
       guitarCores: true,
-      ignoreFakeSongs: true,
+      ignoreFakeSongs: false,
       omitUnusedRanks: true,
       placeCustomAttributes: true,
       placeRB3DXAttributes: true,
@@ -409,4 +419,19 @@ export const stringifyRuggyCustoms = (): LibraryStringifyReturnObject => {
     content,
     enc,
   }
+}
+
+/**
+ * Generates a ID list for all Ruggy customs and return the list as a string.
+ * - - - -
+ * @returns {string}
+ */
+export const stringifyRuggyCustomsID = (): string => {
+  let content = ''
+  const allSongs = getRuggyCustoms()
+
+  for (const songs of allSongs) {
+    content += `${songs.song_id.toString().slice(-4)} ${songs.id}\n`
+  }
+  return content
 }

@@ -9,9 +9,9 @@ export const sanguelatino: DTAFileRecipe = {
   songname: '7748sanguelatino',
   tracks: {
     drum: { rank: 0, channels: 2 },
-    bass: { rank: 1, channels: 1 },
-    guitar: { rank: 2, channels: 1 },
-    vocals: { rank: 2, channels: 1, vocal_parts: 1 },
+    bass: { rank: 1, channels: 2 },
+    guitar: { rank: 2, channels: 2 },
+    vocals: { rank: 2, channels: 2, vocal_parts: 1 },
     backing: 2,
   },
   preview: 55604,
@@ -24,4 +24,5 @@ export const sanguelatino: DTAFileRecipe = {
   key: 'D',
   CATemh: true,
   author: 'Ruggy',
+  multitrack: true,
 }

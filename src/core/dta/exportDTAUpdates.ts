@@ -1,5 +1,5 @@
 import { type SongUpdateObject, stringifySongUpdates } from 'dta-parser/core'
-import { detectBufferEncoding, useDefaultOptions } from 'dta-parser/utils'
+import { useDefaultOptions } from 'dta-parser/utils'
 import Path from 'path-js'
 
 export interface ExportDTAUpdatesOptions {
@@ -30,8 +30,7 @@ export const exportDTAUpdates = async (content: SongUpdateObject, destinationPat
   if (destPath.exists()) await destPath.deleteFile()
 
   const updateContents = stringifySongUpdates(content, { inline })
-  const updateEncoding = detectBufferEncoding(updateContents)
-  await destPath.writeFile(updateContents, updateEncoding)
+  await destPath.writeFile(updateContents, 'latin1')
 
   return destPath.path
 }

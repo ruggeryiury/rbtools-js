@@ -42,6 +42,10 @@ export interface FetchOrConvertOptions {
    * Sets a custom timeout (in milliseconds) for artwork fetching. Default is `5000` (5 seconds).
    */
   fetchTimeout?: number
+  /**
+   * Overrides the temp folder path used on the converting process. Default is `null`, addressing to `[this package]/temp`.
+   */
+  tempFolder?: string | null
 }
 
 /**
@@ -62,13 +66,14 @@ export const fetchOrConvertArtwork = async (pathOrURL: string, dest: string, opt
       quality: 100,
       textureSize: 512,
       fetchTimeout: 5000,
+      tempFolder: null,
     },
     options
   )
 
   const { deleteOriginal, format, interpolation, quality, textureSize, fetchTimeout } = opts
 
-  const tempFolder = await tempFolderInit()
+  const tempFolder = await tempFolderInit(opts.tempFolder)
   const tempFiles: Path[] = []
 
   let path: Path, destPath: Path
