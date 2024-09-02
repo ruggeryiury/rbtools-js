@@ -4,7 +4,9 @@ import { useDefaultOptions } from 'dta-parser/utils'
 import Path from 'path-js'
 import { isStringALink, tempFolderInit, imgConv, imgToTex, imgToTexWii, texToImg, texToImgWii } from '../../utils.js'
 
-export type ArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
+export type MainArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
+export type SmallArtworkSizeTypes = 8 | 16 | 32 | 64
+export type ArtworkSizeTypes = SmallArtworkSizeTypes | MainArtworkSizeTypes
 export type ArtworkImageFormatTypes = 'png' | 'bmp' | 'jpg' | 'webp'
 export type ArtworkTextureFormatTypes = 'png_xbox' | 'png_ps3' | 'png_wii'
 export type ArtworkInterpolationTypes = 'nearest' | 'box' | 'bilinear' | 'hamming' | 'bicubic' | 'lanczos'

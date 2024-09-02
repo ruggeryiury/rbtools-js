@@ -1,4 +1,5 @@
 import Path from 'path-js'
+import type { ArtworkSizeTypes } from '../artwork.js'
 import { decodeFileURL } from '../utils.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
@@ -6,6 +7,13 @@ export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
 
 const __filename = decodeFileURL(import.meta.url)
 const __dirname = new Path(__filename).root
+
+export interface DDSHeaderParserObject {
+  format: DDSFormatTypes
+  width: ArtworkSizeTypes
+  height: ArtworkSizeTypes
+  data: Uint8Array
+}
 
 /**
  * Builds the Harmonix texture file header based on its dimensions and image format.
@@ -138,11 +146,13 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
  * _Some games have a bunch of headers for the same files. Bytes 5-16 has only the dimensions and image format._
  * @returns {Promise<Uint8Array>} A built Harmonix texture file header.
  */
-export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Array): Promise<Uint8Array> => {
+export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Array): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
   const headerFolderPath = new Path(Path.resolve(__dirname, '../bin/headers'))
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
+  let ddsWidth: ArtworkSizeTypes = 512
+  let ddsHeight: ArtworkSizeTypes = 512
 
   for (const headerPath of headerPaths) {
     const headerFilePath = new Path(headerPath)
@@ -156,13 +166,19 @@ export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Arr
       let index1 = headerName.indexOf('_') + 1
       let index2 = headerName.indexOf('x')
       const width = parseInt(headerName.substring(index1, index2))
+      ddsWidth = width as ArtworkSizeTypes
       index1 = headerName.indexOf('_', index2)
       index2++
       const height = parseInt(headerName.substring(index2, index1))
-      console.log(ddsFormat)
+      ddsHeight = height as ArtworkSizeTypes
       header = buildDDSHeader(ddsFormat as DDSFormatTypes, width, height)
     }
   }
 
-  return Uint8Array.from(header)
+  return {
+    format: ddsFormat as DDSFormatTypes,
+    width: ddsWidth,
+    height: ddsHeight,
+    data: Uint8Array.from(header),
+  }
 }

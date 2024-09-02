@@ -1,11 +1,11 @@
 import argparse
 import base64
-import io
+from io import BytesIO
 from PIL import Image
 
 def image_converter_dataurl_base64(source: str, width: int = 128, height: int = 128, interpolation: str = 'BILINEAR', quality: int = 100) -> None:
   """
-  Reads any compatible image file and prints a Base64-encoded Data URL string of it in WEBP format.
+  Reads any compatible image file and prints a Base64-encoded DataURL string of it in WEBP format.
   
   Parameters
   ----------
@@ -26,8 +26,8 @@ def image_converter_dataurl_base64(source: str, width: int = 128, height: int = 
         img = img.convert('RGB')
 
       if (img.width == width and img.height == height):
-        with io.BytesIO() as output:
-          new_im.save(output, format="WEBP", quality=quality)
+        with BytesIO() as output:
+          img.save(output, format="WEBP", quality=quality)
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')
           data_url = f"data:image/webp;base64,{base64_data}"
@@ -39,7 +39,7 @@ def image_converter_dataurl_base64(source: str, width: int = 128, height: int = 
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         new_im.thumbnail((width,height), resample=Image.Resampling[interpolation])
 
-        with io.BytesIO() as output:
+        with BytesIO() as output:
           new_im.save(output, format="WEBP", quality=quality)
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')

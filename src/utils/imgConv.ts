@@ -1,6 +1,7 @@
+import { spawn } from 'node:child_process'
 import Path from 'path-js'
 import type { ArtworkInterpolationTypes, ArtworkSizeTypes } from '../artwork.js'
-// import { getRBToolsJSPath } from '../index.js'
+
 import { decodeFileURL, execPromise } from '../utils.js'
 
 const __filename = decodeFileURL(import.meta.url)
@@ -15,6 +16,10 @@ export interface ImageConverterMethodsObject {
    * The path to the Image Converter to Base64-encoded DataURL Python script .
    */
   imgConvDataURLBase64Path: Path
+  /**
+   * The path to the Base64-encoded Buffer String to DataURL Python script.
+   */
+  bufferStrToDataURLPath: Path
   /**
    * The path to the Get Image Size Python script.
    */
@@ -32,7 +37,7 @@ export interface ImageConverterMethodsObject {
    */
   wimgtPath: Path
   /**
-   * Executes a python script to convert image files.
+   * Executes a Python script to convert image files.
    * - - - -
    * @param {string} src The path of the source image file to be converted.
    * @param {string} dest The destination path of the converted image file.
@@ -43,7 +48,7 @@ export interface ImageConverterMethodsObject {
    */
   exec: (src: string, dest: string, textureSize: ArtworkSizeTypes | 8 | 16 | 32 | 64 | [ArtworkSizeTypes | 8 | 16 | 32 | 64, ArtworkSizeTypes | 8 | 16 | 32 | 64], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
   /**
-   * Executes a python script to convert image files to a Base64-encoded DataURL string in WEBP format.
+   * Executes a Python script to convert image files to a Base64-encoded DataURL string in WEBP format.
    * - - - -
    * @param {string} src The path of the source image file to be converted.
    * @param {ArtworkSizeTypes | 8 | 16 | 32 | 64 | [ArtworkSizeTypes | 8 | 16 | 32 | 64, ArtworkSizeTypes | 8 | 16 | 32 | 64]} textureSize The size of the image file.
@@ -53,7 +58,14 @@ export interface ImageConverterMethodsObject {
    */
   execDataURLBase64: (src: string, textureSize: ArtworkSizeTypes | [ArtworkSizeTypes, ArtworkSizeTypes], interpolation: ArtworkInterpolationTypes, quality?: number) => Promise<string>
   /**
-   * Executes a python script to check any image file width and height.
+   * Executes a Python script that converts a Base64-encoded `Buffer` string to DataURL string in lossless WEBP format.
+   * - - - -
+   * @param {string} base64String A Base64-encoded string of an image file.
+   * @returns {string} A Base64-encoded DataURL string of the image in lossless WEBP format.
+   */
+  execBufferStrToDataURL: (base64String: string) => Promise<string>
+  /**
+   * Executes a Python script to check any image file width and height.
    * - - - -
    * @param {string} src The path of the source image file to be checked.
    * @returns {Promise<[number, number]>} An array with the width and height of the image
@@ -101,6 +113,8 @@ export const imgConv: ImageConverterMethodsObject = {
 
   imgConvDataURLBase64Path: new Path(Path.resolve(__dirname, '../python/image_converter_dataurl_base64.py')),
 
+  bufferStrToDataURLPath: new Path(Path.resolve(__dirname, '../python/buffer_str_to_dataurl_base64.py')),
+
   imgConvGetImageSizePath: new Path(Path.resolve(__dirname, '../python/get_image_size.py')),
 
   nvCompressPath: new Path(Path.resolve(__dirname, '../bin/nvcompress.exe')),
@@ -147,6 +161,44 @@ export const imgConv: ImageConverterMethodsObject = {
     if (exec.stderr) throw new Error(exec.stderr)
     if (exec.stdout.startsWith('ImageConverterError')) throw new Error(exec.stdout)
     return exec.stdout
+  },
+
+  execBufferStrToDataURL: (base64String) => {
+    return new Promise((resolve, reject) => {
+      const process = spawn('python', [imgConv.bufferStrToDataURLPath.fullname], { cwd: imgConv.imgConvPath.root, windowsHide: true })
+
+      let stdoutData = ''
+      let stderrData = ''
+
+      process.stdout.on('data', (data: Buffer) => {
+        stdoutData += data.toString()
+      })
+
+      process.stderr.on('data', (data: Buffer) => {
+        stderrData += data.toString()
+      })
+
+      process.on('close', (code) => {
+        if (code === 0) {
+          resolve(stdoutData)
+        } else if (code === null) {
+          reject(new Error(`Python script exited with unknown code: ${stderrData}`))
+        } else {
+          reject(new Error(`Python script exited with code ${code.toString()}: ${stderrData}`))
+        }
+      })
+
+      // Write the base64 image to the Python process via stdin
+      process.stdin.write(base64String)
+      process.stdin.end() // Close stdin to signal that the input is complete
+    })
+    // const exec = await execPromise(command, {
+    //   cwd: imgConv.imgConvPath.root,
+    //   windowsHide: true,
+    // })
+
+    // if (exec.stderr) throw new Error(exec.stderr)
+    // return exec.stdout
   },
 
   execGetImageSize: async (src) => {

@@ -4,8 +4,8 @@ import { getDDSHeader, imgConv } from '../utils.js'
 
 export interface TextureToImageReturnObject {
   path: string
-  width: ArtworkSizeTypes | 8 | 16 | 32 | 64
-  height: ArtworkSizeTypes | 8 | 16 | 32 | 64
+  width: ArtworkSizeTypes
+  height: ArtworkSizeTypes
 }
 
 export const texToImg = async (src: string, dest: string): Promise<TextureToImageReturnObject> => {
@@ -13,11 +13,9 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   const destPath = new Path(Path.resolve(dest))
 
   const dds = new Path(srcPath.changeFileExt('dds'))
-  const tga = new Path(srcPath.changeFileExt('tga'))
 
   if (destPath.exists()) await destPath.deleteFile()
   if (dds.exists()) await dds.deleteFile()
-  if (tga.exists()) await tga.deleteFile()
 
   const srcBuffer = await srcPath.readFile()
   const ddsStream = await dds.createFileWriteStream()
@@ -33,8 +31,7 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   srcBuffer.copy(shortSrcHeader, 0, 5, 11)
 
   const srcHeader = await getDDSHeader(Uint8Array.from(fullSrcHeader), Uint8Array.from(shortSrcHeader))
-
-  ddsStream.stream.write(srcHeader)
+  ddsStream.stream.write(srcHeader.data)
 
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)
@@ -46,85 +43,13 @@ export const texToImg = async (src: string, dest: string): Promise<TextureToImag
   ddsStream.stream.end()
   await ddsStream.once
 
-  const ddsBuffer = await dds.readFile()
-  const ddsHeader = Uint8Array.from(ddsBuffer.subarray(0, 32))
-  let ddsWidth: ArtworkSizeTypes | 8 | 16 | 32 | 64 = 256
-  let ddsHeight: ArtworkSizeTypes | 8 | 16 | 32 | 64 = 256
-
-  switch (
-    ddsHeader[17] // Width byte
-  ) {
-    case 0x00:
-      switch (ddsHeader[16]) {
-        case 0x08:
-          ddsWidth = 8
-          break
-        case 0x10:
-          ddsWidth = 16
-          break
-        case 0x20:
-          ddsWidth = 32
-          break
-        case 0x40:
-          ddsWidth = 64
-          break
-        case 0x80:
-          ddsWidth = 128
-          break
-      }
-      break
-    case 0x02:
-      ddsWidth = 512
-      break
-    case 0x04:
-      ddsWidth = 1024
-      break
-    case 0x08:
-      ddsWidth = 2048
-      break
-  }
-  switch (
-    ddsHeader[13] // Height byte
-  ) {
-    case 0x00:
-      switch (ddsHeader[12]) {
-        case 0x08:
-          ddsHeight = 8
-          break
-        case 0x10:
-          ddsHeight = 16
-          break
-        case 0x20:
-          ddsHeight = 32
-          break
-        case 0x40:
-          ddsHeight = 64
-          break
-        case 0x80:
-          ddsHeight = 128
-          break
-      }
-      break
-    case 0x02:
-      ddsHeight = 512
-      break
-    case 0x04:
-      ddsHeight = 1024
-      break
-    case 0x08:
-      ddsHeight = 2048
-      break
-  }
-
-  await imgConv.nvDecompress(dds.path)
-  await imgConv.exec(tga.path, destPath.path, [ddsWidth, ddsHeight], 'bilinear')
+  await imgConv.exec(dds.path, destPath.path, [srcHeader.width, srcHeader.height], 'bilinear')
 
   if (dds.exists()) await dds.deleteFile()
-  if (tga.exists()) await tga.deleteFile()
 
   return {
     path: destPath.path,
-    width: ddsWidth,
-    height: ddsHeight,
+    width: srcHeader.width,
+    height: srcHeader.height,
   }
 }
