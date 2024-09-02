@@ -56,7 +56,7 @@ export interface ImageConverterMethodsObject {
    * Executes a python script to check any image file width and height.
    * - - - -
    * @param {string} src The path of the source image file to be checked.
-   * @returns {Promise<[number,number]>} An array with the width and height of the image
+   * @returns {Promise<[number, number]>} An array with the width and height of the image
    */
   execGetImageSize: (src: string) => Promise<[number, number]>
   /**
@@ -109,7 +109,7 @@ export const imgConv: ImageConverterMethodsObject = {
 
   wimgtPath: new Path(Path.resolve(__dirname, '../bin/wimgt.exe')),
 
-  exec: async (src, dest, textureSize, interpolation, quality = 100): Promise<string> => {
+  exec: async (src, dest, textureSize, interpolation, quality = 100) => {
     if (quality <= 0 || quality > 100) throw new Error(`ImageConverterError: The quality of the file must be a number between 1 and 100 (Given quality "${quality.toString()}")`)
     let width: ArtworkSizeTypes | 8 | 16 | 32 | 64, height: ArtworkSizeTypes | 8 | 16 | 32 | 64
     if (Array.isArray(textureSize)) {

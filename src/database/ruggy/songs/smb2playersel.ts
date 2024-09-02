@@ -12,7 +12,7 @@ export const smb2playersel: DTAFileRecipe = {
     bass: { rank: 1, real_rank: 1, channels: 1 },
     guitar: { rank: 3, real_rank: 3, channels: 1, pans: [-0.7] },
     keys: { rank: 5, real_rank: 5, channels: 1, pans: [0.7] },
-    backing: 1,
+    backing: 2,
   },
   preview: 6400,
   song_length: 147797,

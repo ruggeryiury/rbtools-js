@@ -1,7 +1,25 @@
 import argparse
 from PIL import Image
 
-def image_converter(source: str, dest: str, width: int, height: int, interpolation: str, quality: int) -> None:
+def image_converter(source: str, dest: str, width: int = 512, height: int = 512, interpolation: str = 'BILINEAR', quality: int = 100) -> None:
+  """
+  Reads any compatible image file and converts it to any compatible format. This script also does resizing.
+  
+  Parameters
+  ----------
+  source : str
+    The path of the image file.
+  dest : str
+    The destination path of the converted image file.
+  width: int, optional
+    The width that will be used on the generated string (Default is `512`).
+  height: int, optional
+    The height that will be used on the generated string (Default is `512`).
+  interpolation : str, optional
+    The interpolation method used when resizing the image (Default if `'BILINEAR'`).
+  quality: int, optional
+    The quality value of the output image. Only used on lossy format, such as JPEG and WEBP (Default is `100`).
+  """
   try:
     with Image.open(source) as img:
       if img.mode != 'RGB':
@@ -25,7 +43,7 @@ if __name__ == '__main__':
   parser.add_argument('dest', help='The destination file path of the converted file', type=str)
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=512, required=False)
   parser.add_argument('-y', '--height', help='The height of the image', type=int, default=512, required=False)
-  parser.add_argument('-i', '--interpolation', help='The interpolation method for the image resizing', default='BILINEAR', type=str, required=False)
+  parser.add_argument('-i', '--interpolation', help='The interpolation method used when resizing the image', default='BILINEAR', type=str, required=False)
   parser.add_argument('-q', '--quality', help='The quality value of the output image. Only used on lossy format, such as JPEG and WEBP', default=100, type=int, required=False)
 
   arg = parser.parse_args()
