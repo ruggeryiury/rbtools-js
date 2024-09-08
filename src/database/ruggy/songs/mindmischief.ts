@@ -30,5 +30,5 @@ export const mindmischief: DTAFileRecipe = {
   album: { hasArt: true, name: 'Lonerism', track_number: 4 },
   key: 'F#',
   author: 'Ruggy',
-  CATemh: true,
+  cat_ehm: true,
 }

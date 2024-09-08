@@ -1,6 +1,4 @@
-import { stringifySongUpdates, type SongUpdateObject } from 'dta-parser/core'
-import { detectBufferEncoding } from 'dta-parser/utils'
-import type { LibraryStringifyReturnObject } from '../../database.js'
+import { type SongUpdateObject } from 'dta-parser/core'
 
 export const C3LibraryPatch: SongUpdateObject = {
   // ABBA ____________________________________________________________________
@@ -1815,14 +1813,4 @@ export const C3LibraryPatch: SongUpdateObject = {
     // Scream & Shout (ft. Britney Spears)
     key: 'Dm',
   },
-}
-
-export const stringifyC3LibraryPatch = (): LibraryStringifyReturnObject => {
-  const content = Buffer.from(stringifySongUpdates(C3LibraryPatch, { inline: true }))
-  const enc = detectBufferEncoding(content)
-
-  return {
-    content,
-    enc,
-  }
 }

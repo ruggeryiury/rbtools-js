@@ -24,7 +24,7 @@ export const spacecadet2x: DTAFileRecipe = {
   key: 'G#m',
   author: 'Ruggy',
   multitrack: true,
-  CATemh: true,
-  doubleKick: true,
+  cat_ehm: true,
+  double_kick: true,
   pack_name: 'Windows .MID Pack 02',
 }

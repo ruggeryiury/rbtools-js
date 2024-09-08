@@ -28,6 +28,6 @@ export const congratulations: DTAFileRecipe = {
   year_released: 2010,
   album: { hasArt: true, name: 'Congratulations', track_number: 9 },
   key: 'G',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

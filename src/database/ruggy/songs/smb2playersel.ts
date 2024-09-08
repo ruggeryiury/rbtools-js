@@ -27,6 +27,6 @@ export const smb2playersel: DTAFileRecipe = {
   },
   key: 'C',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

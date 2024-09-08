@@ -4,6 +4,7 @@ tests/
 dist/
 srcold/
 src_*/
+src-old/
 tests/
 temp/
 pnpm-lock.yaml

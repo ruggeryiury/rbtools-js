@@ -1,16 +1,25 @@
-import { createDTA, type DTAFileExpanded, type DTAFileRecipe, extendDTAFile, type ExtendNewValuesOnlyObject, type UpdateDataOptions } from 'dta-parser/core'
-import { useDefaultOptions, genAudioFileStructure, genTabs as t, rankCalculator as r } from 'dta-parser/utils'
+import { createDTA, type DTAFileExpanded, type DTAFileRecipe, extendDTAFile, type ExtendNewValuesOnlyObject, type DTAUpdateOptions } from 'dta-parser/core'
+import { useDefaultOptions, genAudioFileStructure, rankCalculator as r } from 'dta-parser/lib'
 import Path from 'path-js'
 
+type TabOrSpaceGeneratorNewLineTypes = 'start' | 'end' | 'both' | 'none'
+/**
+ * Generates a string containing tab characters ('\t') repeated a specified number of times.
+ * - - - -
+ * @param {number} tabCount The number of tab characters to repeat. Default is `1`.
+ * @param {TabOrSpaceGeneratorNewLineTypes} newLine `OPTIONAL` Places a new line charater wherever you want. Default is `'start'`.
+ * @returns {string} A string with '\n' charaters and '\t' characters repeated `tabCount` times.
+ */
+export const t = (tabCount = 1, newLine: TabOrSpaceGeneratorNewLineTypes = 'start'): string => `${newLine === 'start' || newLine === 'both' ? '\n' : ''}${'\t'.repeat(tabCount)}${newLine === 'end' || newLine === 'both' ? '\n' : ''}`
 /**
  * Creates a `MAGMAProject` object, extending a parsed song object (`DTAFile`).
  * - - - -
  * @param {DTAFileRecipe} songValues The parsed song you want to inserts specific MAGMA information.
  * @param {ExtendNewValuesOnlyObject<MAGMAProject>} magmaValues The new MAGMA information.
- * @param {UpdateDataOptions | undefined} update An object with values to update any default `DTAFile` value.
+ * @param {DTAUpdateOptions | undefined} update An object with values to update any default `DTAFile` value.
  * @returns {MAGMAProject}
  */
-export const createMAGMAProjectObject = (songValues: DTAFileRecipe, magmaValues: ExtendNewValuesOnlyObject<MAGMAProject>, update?: UpdateDataOptions): MAGMAProject => extendDTAFile<MAGMAProject>(createDTA(songValues, true), magmaValues, update)
+export const createMAGMAProjectObject = (songValues: DTAFileRecipe, magmaValues: ExtendNewValuesOnlyObject<MAGMAProject>, update?: DTAUpdateOptions): MAGMAProject => extendDTAFile<MAGMAProject>(createDTA(songValues), magmaValues, update)
 
 export type AutogenValues = 'Default' | 'AggressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
 
@@ -45,7 +54,7 @@ export interface MAGMAFileValues {
    *
    * This is useful if you managed to have a mix excluding the double kicks.
    */
-  doubleKickWav: boolean
+  double_kickWav: boolean
   /**
    * This can be used on solo vocals or 2-part harmonies songs to force MAGMA
    * to compile lipsync for unused harmonies fields.
@@ -111,7 +120,7 @@ export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: stri
   const magmaC3Path = new Path(Path.resolve(MAGMAC3Path))
   const dest = new Path(Path.resolve(destPath))
 
-  const songnameFolder = Path.resolve(songsPath.path, song.doubleKick ? song.songname.slice(0, -2) : song.songname)
+  const songnameFolder = Path.resolve(songsPath.path, song.double_kick ? song.songname.slice(0, -2) : song.songname)
   const { songname } = song
 
   const RBPROJFilePath = new Path(Path.resolve(dest.path, `${songname}.rbproj`))
@@ -133,11 +142,11 @@ export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: stri
 
   const AlbumArtPath = song.album_art ? Path.resolve(songnameFolder, `magma/${songname}_keep_x256.bmp`) : ''
 
-  const KickWavPath = song.multitrack ? (song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, `wav/${song.doubleKick && song.doubleKickWav ? 'kick2x' : 'kick'}.wav`) : '') : song.tracks_count[0] > 2 ? MonoBlank.path : song.tracks_count[0] > 5 ? StereoBlank.path : ''
+  const KickWavPath = song.multitrack ? (song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, `wav/${song.double_kick && song.double_kickWav ? 'kick2x' : 'kick'}.wav`) : '') : song.tracks_count[0] > 2 ? MonoBlank.path : song.tracks_count[0] > 5 ? StereoBlank.path : ''
 
   const SnareWavPath = song.multitrack ? (song.tracks_count[0] > 3 ? Path.resolve(songnameFolder, `wav/snare.wav`) : '') : song.tracks_count[0] > 3 ? MonoBlank.path : song.tracks_count[0] > 4 ? StereoBlank.path : ''
 
-  const DrumKitWavPath = song.multitrack ? (song.tracks_count[0] === 2 ? Path.resolve(songnameFolder, `wav/${song.doubleKick && song.doubleKickWav ? 'drums2x' : 'drums'}.wav`) : song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, 'wav/kit.wav') : '') : song.tracks_count[0] > 0 ? StereoBlank.path : ''
+  const DrumKitWavPath = song.multitrack ? (song.tracks_count[0] === 2 ? Path.resolve(songnameFolder, `wav/${song.double_kick && song.double_kickWav ? 'drums2x' : 'drums'}.wav`) : song.tracks_count[0] > 2 ? Path.resolve(songnameFolder, 'wav/kit.wav') : '') : song.tracks_count[0] > 0 ? StereoBlank.path : ''
 
   const BassWavPath = song.multitrack ? (song.tracks_count[1] !== 0 ? Path.resolve(songnameFolder, 'wav/bass.wav') : '') : song.tracks_count[1] === 1 ? MonoBlank.path : song.tracks_count[1] === 2 ? StereoBlank.path : ''
 
@@ -392,7 +401,7 @@ export const createMAGMAFiles = async (song: MAGMAProject, songsFolderPath: stri
   output += `${t(1, 'start')})`
   output += `${t(0, 'start')})`
 
-  let c3out = `\\\\Created by Magma: C3 Roks Edition v3.3.5\n\\\\DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${!useLatestVersion ? '1' : song.releaseVer ? song.releaseVer.toString() : '1'}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=7\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${StereoBlank.path}\nCrowdVol=${panvol.crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.doubleKick ? 'True' : 'False'}\nRhythmKeys=${song.rhythmOnKeys ? 'True' : 'False'}\nRhythmBass=${song.rhythmOnBass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expertOnly ? 'True' : 'False'}\n`
+  let c3out = `\\\\Created by Magma: C3 Roks Edition v3.3.5\n\\\\DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${!useLatestVersion ? '1' : song.releaseVer ? song.releaseVer.toString() : '1'}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=7\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${StereoBlank.path}\nCrowdVol=${panvol.crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.double_kick ? 'True' : 'False'}\nRhythmKeys=${song.rhythm_on_keys ? 'True' : 'False'}\nRhythmBass=${song.rhythm_on_bass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expert_only ? 'True' : 'False'}\n`
 
   if (song.rank_real_bass && song.real_bass_tuning) {
     c3out += `ProBassDiff=${song.rank_real_bass.toString()}\nProBassTuning4=(real_bass_tuning (${song.real_bass_tuning.join(' ')}))\n`

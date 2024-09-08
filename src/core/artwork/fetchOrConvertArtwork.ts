@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { useDefaultOptions } from 'dta-parser/utils'
+import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { isStringALink, tempFolderInit, imgConv, imgToTex, imgToTexWii, texToImg, texToImgWii } from '../../utils.js'
 

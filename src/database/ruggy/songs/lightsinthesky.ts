@@ -23,6 +23,6 @@ export const lightsinthesky: DTAFileRecipe = {
   album: { hasArt: true, name: 'The Slip', track_number: 7 },
   key: 'Fm',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

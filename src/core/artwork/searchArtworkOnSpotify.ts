@@ -1,6 +1,6 @@
 import type { DTAFile } from 'dta-parser'
-import type { DTAFileRecipe, Song } from 'dta-parser/core'
-import { isDTAFile, isSongClass } from 'dta-parser/utils'
+import type { DTAFileRecipe } from 'dta-parser/core'
+import { isDTAFile } from 'dta-parser/lib'
 
 export interface SpotifyAuthToken {
   /**
@@ -99,14 +99,11 @@ const getSpotifyAuthToken = async (): Promise<string | undefined> => {
  * @returns {Promise<string | undefined>} The album artwork URL as string. Returns `undefined` if the connection to the API has been refused
  * at any point, if the provided song has no album name, or if no album has been found on the Spotify database.
  */
-export const searchArtworkOnSpotify = async (song: Song | DTAFile | DTAFileRecipe, imageSize: SearchAlbumArtworkImageSize = 'large'): Promise<string | undefined> => {
+export const searchArtworkOnSpotify = async (song: DTAFile | DTAFileRecipe, imageSize: SearchAlbumArtworkImageSize = 'large'): Promise<string | undefined> => {
   let artist = '',
     albumName = ''
 
-  if (isSongClass(song)) {
-    artist = song.value.artist
-    albumName = song.value.album_name ?? ''
-  } else if (isDTAFile(song)) {
+  if (isDTAFile(song)) {
     artist = song.artist
     albumName = song.album_name ?? ''
   } else {

@@ -23,6 +23,6 @@ export const mothernature: DTAFileRecipe = {
   album: { hasArt: true, name: 'Our Shared Universes', track_number: 1 },
   key: 'E',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

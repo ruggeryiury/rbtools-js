@@ -22,6 +22,6 @@ export const thefightisover: DTAFileRecipe = {
   year_released: 2017,
   album: { hasArt: true, name: 'Over The Garden Wall', track_number: 25 },
   key: 'C',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

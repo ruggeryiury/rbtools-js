@@ -29,7 +29,7 @@ export const mean: DTAFileRecipe = {
   },
   key: 'F',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
   pack_name: 'Age of Empires: The Rise of Rome Pack 01',
 }

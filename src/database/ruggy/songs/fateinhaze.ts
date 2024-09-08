@@ -29,6 +29,6 @@ export const fateinhaze: DTAFileRecipe = {
   },
   key: 'Db',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

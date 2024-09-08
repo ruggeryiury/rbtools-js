@@ -26,6 +26,6 @@ export const thespaceinbetween: DTAFileRecipe = {
   key: 'Gm',
   author: 'Ruggy',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   pack_name: 'Chart-a-thon 2018',
 }

@@ -27,6 +27,6 @@ export const demon: DTAFileRecipe = {
   year_released: 2014,
   album: { hasArt: true, name: 'Time Is Over One Day Old', track_number: 7 },
   key: 'Fm',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

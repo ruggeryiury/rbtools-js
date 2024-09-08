@@ -27,6 +27,6 @@ export const breakingintocars: DTAFileRecipe = {
   year_released: 2009,
   album: { hasArt: true, name: 'In and Out of Control', track_number: 9 },
   key: 'C#m',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

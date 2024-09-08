@@ -18,7 +18,6 @@ export const cravoecanela: DTAFileRecipe = {
   preview: 32426,
   song_length: 145042,
   rank_band: 3,
-  encoding: 'utf8',
   rating: 1,
   genre: { genre: 'Latin', sub_genre: 'Latin' },
   year_released: 1972,

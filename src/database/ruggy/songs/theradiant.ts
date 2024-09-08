@@ -25,7 +25,7 @@ export const theradiant: DTAFileRecipe = {
   album: { hasArt: true, name: 'Moonstone', track_number: 3 },
   key: 'C',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
   pack_name: 'Chart-a-thon 2018',
 }

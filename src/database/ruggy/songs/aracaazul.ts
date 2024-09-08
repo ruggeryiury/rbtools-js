@@ -24,7 +24,6 @@ export const aracaazul: DTAFileRecipe = {
   preview: 25000,
   song_length: 89593,
   rank_band: 0,
-  encoding: 'utf8',
   rating: 1,
   genre: {
     genre: 'Latin',

@@ -28,6 +28,6 @@ export const myhome: DTAFileRecipe = {
   },
   key: 'Ab',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

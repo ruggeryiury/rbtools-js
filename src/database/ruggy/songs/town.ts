@@ -29,6 +29,6 @@ export const town: DTAFileRecipe = {
   key: 'B',
   author: 'Ruggy',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   pack_name: 'Windows .MID Pack 01',
 }

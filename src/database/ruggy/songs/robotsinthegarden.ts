@@ -22,6 +22,6 @@ export const robotsinthegarden: DTAFileRecipe = {
   year_released: 2004,
   album: { hasArt: true, name: 'Future Perfect', track_number: 7 },
   key: 'D#m',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

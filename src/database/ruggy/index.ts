@@ -1,5 +1,3 @@
-import { stringifyDTA } from 'dta-parser/core'
-import { detectBufferEncoding } from 'dta-parser/utils'
 import type { BufferEncodingOrNull } from 'path-js'
 import { createMAGMAProjectObject, type MAGMAProject } from '../../magma.js'
 import * as ruggy from './songs.js'
@@ -113,7 +111,7 @@ export const RuggyCustoms = {
 
   spacecadet2x: createMAGMAProjectObject(ruggy.spacecadet2x, {
     autogenTheme: 'PsychJamRock',
-    doubleKickWav: true,
+    double_kickWav: true,
     releaseVer: 3,
     releasedAt: new Date('Dec 21, 2017').toDateString(),
     updatedAt: new Date('Nov 7, 2023').toDateString(),
@@ -394,31 +392,6 @@ export interface LibraryStringifyReturnObject {
    * The encoding of the content.
    */
   enc: BufferEncodingOrNull
-}
-/**
- * Stringifies all Ruggy customs, returning an array with the stringified content and its encoding.
- * - - - -
- * @returns {[string, string]}
- */
-export const stringifyRuggyCustoms = (): LibraryStringifyReturnObject => {
-  const content = Buffer.from(
-    stringifyDTA(getRuggyCustoms(), {
-      detailedTracksStructure: true,
-      gameOriginAsRB3DLC: false,
-      guitarCores: true,
-      ignoreFakeSongs: false,
-      omitUnusedRanks: true,
-      placeCustomAttributes: true,
-      placeRB3DXAttributes: true,
-      sortBy: 'Song ID',
-      type: 'rbn',
-    })
-  )
-  const enc = detectBufferEncoding(content)
-  return {
-    content,
-    enc,
-  }
 }
 
 /**

@@ -27,5 +27,5 @@ export const ponytail: DTAFileRecipe = {
   },
   key: 'A',
   author: 'Ruggy',
-  CATemh: true,
+  cat_ehm: true,
 }

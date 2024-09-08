@@ -22,7 +22,7 @@ export const sanguelatino: DTAFileRecipe = {
   year_released: 1973,
   album: { hasArt: true, name: 'Secos & Molhados', track_number: 1 },
   key: 'D',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
   multitrack: true,
 }

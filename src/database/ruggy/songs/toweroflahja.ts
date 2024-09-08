@@ -31,5 +31,5 @@ export const toweroflahja: DTAFileRecipe = {
   key: 'Am',
   author: 'Ruggy',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
 }

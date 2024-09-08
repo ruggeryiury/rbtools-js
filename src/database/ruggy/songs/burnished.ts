@@ -27,6 +27,6 @@ export const burnished: DTAFileRecipe = {
   },
   key: 'D',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
 }

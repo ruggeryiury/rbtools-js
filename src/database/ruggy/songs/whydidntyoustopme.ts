@@ -24,7 +24,7 @@ export const whydidntyoustopme: DTAFileRecipe = {
   year_released: 2018,
   album: { hasArt: true, name: 'Be the Cowboy', track_number: 2 },
   key: 'E',
-  CATemh: true,
+  cat_ehm: true,
   author: 'Ruggy',
   pack_name: 'Chart-a-thon 2018',
 }

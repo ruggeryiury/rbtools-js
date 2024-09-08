@@ -28,7 +28,7 @@ export const onestop: DTAFileRecipe = {
   },
   author: 'Ruggy',
   multitrack: true,
-  CATemh: true,
+  cat_ehm: true,
   pack_name: 'Windows .MID Pack 01',
   loading_phrase: '"Onestop" is a series of short songs that change into different genres every few bars, making it perfect for testing out soundcards and soundfonts in the old days.',
 }
