@@ -2,7 +2,7 @@ import argparse
 from PIL import Image
 import json
 
-def img_file_stat(file_path: str) -> None:
+def img_file_stat(file_path: str, print_return = True) -> dict:
   try:
     with Image.open(file_path) as img:
       status = {
@@ -12,13 +12,14 @@ def img_file_stat(file_path: str) -> None:
         "size": img.size,
         "formatDesc": img.format_description,
         "imageMode": img.mode,
-        "isAnimated": img.is_animated,
       }
-      print(json.dumps(status))
   except Exception as e:
       raise e
     
-  return
+  if print_return:
+    print(json.dumps(status))
+  return status
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser( description='RBToolsJS: Image File Status CLI')
   parser.add_argument('file_path', help='The path of the image file', type=str)

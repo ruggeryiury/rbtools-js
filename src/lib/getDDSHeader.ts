@@ -10,7 +10,7 @@ const __dirname = new Path(__filename).root
 export type MainArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
 export type SmallArtworkSizeTypes = 8 | 16 | 32 | 64
 export type ArtworkSizeTypes = SmallArtworkSizeTypes | MainArtworkSizeTypes
-export type ArtworkImageFormatTypes = 'png' | 'bmp' | 'jpg' | 'webp'
+export type ArtworkImageFormatTypes = 'png' | 'bmp' | 'jpg' | 'webp' | 'tga'
 export type ArtworkTextureFormatTypes = 'png_xbox' | 'png_ps3' | 'png_wii'
 export type ArtworkInterpolationTypes = 'nearest' | 'box' | 'bilinear' | 'hamming' | 'bicubic' | 'lanczos'
 

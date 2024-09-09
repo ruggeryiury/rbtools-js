@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { midiFileStat } from '../python.js'
+import { MIDIFileStat } from '../python.js'
 
 export interface MidiFileStatObject {
   format: string
@@ -26,11 +26,19 @@ export class MidiFile {
   }
 
   private checkExistence() {
-    if (!this.path.exists()) throw new Error(`ImgFileNotFoundError: Texture file "${this.path.path}" does not exists`)
+    if (!this.path.exists()) throw new Error(`MidiFileNotFoundError: MIDI file "${this.path.path}" does not exists`)
+    return true
   }
 
   async stat(): Promise<MidiFileStatObject> {
     this.checkExistence()
-    return midiFileStat(this.path.path)
+    return await MIDIFileStat(this.path.path)
+  }
+
+  async toJSON() {
+    return {
+      ...this.path.toJSON(),
+      ...(await this.stat()),
+    }
   }
 }

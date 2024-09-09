@@ -1,3 +1,3 @@
-export const RBToolsJS = {
-  
+export class RBToolsJS {
+  static a = 1
 }
