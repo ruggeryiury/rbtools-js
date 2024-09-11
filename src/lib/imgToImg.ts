@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
 import { stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
-import { ImageConverter, ImgFileStat } from '../python.js'
+import * as Py from '../python.js'
 
 export const imgToImg = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions) => {
   const { height, interpolation, quality, width } = useDefaultOptions<NonNullable<typeof options>, true>(
@@ -16,7 +16,7 @@ export const imgToImg = async (srcFile: string | Path, destPath: string | Path, 
   )
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
-  const { width: srcWidth, height: srcHeight } = await ImgFileStat(src.path)
+  const { width: srcWidth, height: srcHeight } = await Py.imgFileStat(src.path)
 
   let usedWidth: number
   let usedHeight: number
@@ -25,6 +25,6 @@ export const imgToImg = async (srcFile: string | Path, destPath: string | Path, 
   if (height !== null) usedHeight = height
   else usedHeight = srcHeight
 
-  await ImageConverter(src.path, dest.path, { height: usedHeight, width: usedWidth, interpolation, quality, toFormat })
+  await Py.imageConverter(src.path, dest.path, { height: usedHeight, width: usedWidth, interpolation, quality, toFormat })
   return new ImgFile(dest)
 }

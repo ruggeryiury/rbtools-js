@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { MIDIFileStat } from '../python.js'
+import * as Py from '../python.js'
 
 export interface MidiFileStatObject {
   format: string
@@ -32,7 +32,7 @@ export class MidiFile {
 
   async stat(): Promise<MidiFileStatObject> {
     this.checkExistence()
-    return await MIDIFileStat(this.path.path)
+    return await Py.midiFileStat(this.path.path)
   }
 
   async toJSON() {

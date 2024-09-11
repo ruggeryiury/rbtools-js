@@ -13,14 +13,80 @@
 </div>
 
 - [About](#about)
+- [API](#api)
+  - [`ImgFile()` class](#imgfile-class)
+    - [`.stat()`](#stat)
+    - [`.toJSON()`](#tojson)
+    - [`.convertToTexture()`](#converttotexture)
+    - [`.convertToImage()`](#converttoimage)
+    - [`.dataURL()`](#dataurl)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
 # About
 
-**_RBToolsJS_** is a highly-typed NodeJS module with methods to manipulate several Rock Band 3 game files, joining several functions that I found useful in some way and helps me on my custom creation process in some way.
+**_RBToolsJS_** is a highly-typed NodeJS module with methods to manipulate several Rock Band game files, joining several functions that might help you processing these files. **_RBToolsJS_** also uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
 
-**_RBToolsJS_** also uses _Python_ to manipulate specific files, such as game texture files.
+# API
+
+## `ImgFile()` class
+
+ImgFile is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+
+- Parameters:
+  - **_imageFilePath_** `string | Path`: The path to the image file
+
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+```
+
+### `.stat()`
+
+Returns a JSON object with statistics of the image file.
+
+- Returns: `ImgFileStatReturnObject`
+
+### `.toJSON()`
+
+Returns a JSON representation of the image file class.
+
+- Returns: `ImgFileJSONObject`
+
+### `.convertToTexture()`
+
+Asynchronously converts this image file to a texture file.
+
+- Parameters:
+
+  - **_destPath_** `string | Path`: The path of the new converted texture file.
+  - **_toFormat_** `ArtworkTextureFormatTypes` The desired texture format of the new texture file.
+  - **_options ?_** `ConvertToTextureOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<TextureFile>` A new instantiated `TextureFile` class pointing to the new converted texture file.
+
+### `.convertToImage()`
+
+Asynchronously converts this image file to any other image file format.
+
+- Parameters:
+
+  - **_destPath_** `string | Path`: The path of the new converted image file.
+  - **_toFormat_** `ArtworkimageFormatTypes` The desired image format of the new image file.
+  - **_options ?_** `ConvertToImageOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new converted image file.
+
+### `.dataURL()`
+
+Asynchronously returns a Base64-encoded DataURL `string` of the image file.
+
+- Parameters:
+
+  - **_options ?_** `ConvertToWEBPDataURLOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<string>` A Base64-encoded DataURL `string` of the image file.
 
 # Special thanks
 

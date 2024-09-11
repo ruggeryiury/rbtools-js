@@ -3,7 +3,7 @@ import Path from 'path-js'
 import { NVCompress } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { type ArtworkTextureFormatTypes } from '../lib.js'
-import { ImageConverter } from '../python.js'
+import * as Py from '../python.js'
 import { stringToPath } from './stringToPath.js'
 
 export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string | Path, format: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions) => {
@@ -25,7 +25,7 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
   await tga.checkThenDeleteFile()
   await dds.checkThenDeleteFile()
 
-  await ImageConverter(src.path, tga.path, {
+  await Py.imageConverter(src.path, tga.path, {
     width: textureSize,
     height: textureSize,
     interpolation,

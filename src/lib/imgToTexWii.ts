@@ -3,7 +3,7 @@ import Path from 'path-js'
 import { WimgtEnc } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { stringToPath } from '../lib.js'
-import { ImageConverter } from '../python.js'
+import * as Py from '../python.js'
 
 export const imgToTexWii = async (srcPath: string | Path, destPath: string | Path, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>) => {
   const { interpolation } = useDefaultOptions<NonNullable<typeof options>, true>(
@@ -22,7 +22,7 @@ export const imgToTexWii = async (srcPath: string | Path, destPath: string | Pat
   await png.checkThenDeleteFile()
   await tpl.checkThenDeleteFile()
 
-  await ImageConverter(src.path, png.path, { width: 256, height: 256, interpolation, quality: 100, toFormat: 'png' })
+  await Py.imageConverter(src.path, png.path, { width: 256, height: 256, interpolation, quality: 100, toFormat: 'png' })
   try {
     await WimgtEnc(png.path, tpl.path)
   } catch (err) {

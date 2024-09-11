@@ -1,6 +1,6 @@
 import Path from 'path-js'
 import { getDDSHeader, getTPLHeaderFromPNGWii, pngWiiStat, stringToPath } from '../lib.js'
-import { BufferToWEBPDataURL, WEBPDataURLPNGWii } from '../python.js'
+import * as Py from '../python.js'
 
 export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
   const src = stringToPath(srcPath)
@@ -10,7 +10,7 @@ export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
     if (!usedHeader) throw new Error('BufferToWEBPDataURLError: Provided PNG_WII file does not have a recognizable header')
 
     const base64Header = Buffer.from(usedHeader).toString('base64')
-    return await WEBPDataURLPNGWii(src.path, base64Header)
+    return await Py.webpDataURLPNGWii(src.path, base64Header)
   }
 
   const srcBuffer = await src.readFile()
@@ -35,5 +35,5 @@ export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
     swappedBytes.copy(dds, x * 4 + srcHeader.data.length)
   }
 
-  return await BufferToWEBPDataURL(dds.toString('base64'))
+  return await Py.bufferToWEBPDataURL(dds.toString('base64'))
 }
