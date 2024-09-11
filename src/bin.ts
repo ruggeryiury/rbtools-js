@@ -1,12 +1,10 @@
 import Path from 'path-js'
-import { decodeFileURL, execPromise, stringToPath } from './lib.js'
-
-const __filename = decodeFileURL(import.meta.url)
-const __dirname = new Path(__filename).root
+import { execPromise, stringToPath } from './lib.js'
+import { __root } from './index.js'
 
 export const NVCompress = async (srcPath: string | Path, destPath: string | Path, DTX5 = true) => {
   const moduleName = 'nvcompress.exe'
-  const binPath = new Path(Path.resolve(__dirname, `./bin/${moduleName}`))
+  const binPath = new Path(Path.resolve(__root.path, `./bin/${moduleName}`))
   const src = stringToPath(srcPath)
   const dest = stringToPath(destPath)
 
@@ -18,7 +16,7 @@ export const NVCompress = async (srcPath: string | Path, destPath: string | Path
 
 export const WimgtEnc = async (srcPath: string | Path, destPath: string | Path) => {
   const moduleName = 'wimgt.exe'
-  const binPath = new Path(Path.resolve(__dirname, `./bin/${moduleName}`))
+  const binPath = new Path(Path.resolve(__root.path, `./bin/${moduleName}`))
   const src = stringToPath(srcPath)
   const dest = stringToPath(destPath)
 

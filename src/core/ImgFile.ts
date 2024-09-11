@@ -1,7 +1,7 @@
 import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
-import { imgToTexWii, imgToTexXboxPs3, stringToPath, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
-import { ImgFileStat } from '../python.js'
+import { imgToImg, imgToTexWii, imgToTexXboxPs3, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
+import { ImgFileStat, WEBPDataURL } from '../python.js'
 
 export interface ImgFileStatReturnObject {
   format: string
@@ -33,6 +33,23 @@ export interface ConvertToTextureOptions {
   interpolation?: ArtworkInterpolationTypes
 }
 
+export interface ConvertToImageOptions {
+  width?: number | null
+  height?: number | null
+  /**
+   * The interpolation of the output file in case of scaling. Default if `'bilinear'` (Bilinear).
+   */
+  interpolation?: ArtworkInterpolationTypes
+  quality?: number
+}
+
+export interface ConvertToWEBPDataURLOptions {
+  width?: number | null
+  height?: number | null
+  interpolation?: ArtworkInterpolationTypes
+  quality?: number
+}
+
 export class ImgFile {
   path: Path
 
@@ -46,8 +63,9 @@ export class ImgFile {
     this.checkExistence()
     if (!this.path.exists()) throw new Error(`ImgFileError: Image file "${this.path.path}" does not exists`)
 
-    if (this.path.ext.includes('.png_')) throw new Error(`ImgFileError: Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, use TexFile() instead`)
-    if (this.path.ext !== '.png' && this.path.ext !== '.bmp' && this.path.ext !== 'jpg' && this.path.ext !== 'webp') throw new Error(`ImgFileError: Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, for image format is not compatible for this module. Compatible image formats are: "jpg", "webp", "png", "bmp"`)
+    // if (this.path.ext.includes('.png_')) throw new Error(`ImgFileError: Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, use TextureFile() class instead`)
+    if (this.path.ext === '.png_xbox' || this.path.ext === '.png_ps3' || this.path.ext === '.png_wii') throw new Error(`ImgFileError: Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, use TextureFile() class instead`)
+    if (this.path.ext !== '.png' && this.path.ext !== '.bmp' && this.path.ext !== '.jpg' && this.path.ext !== '.webp' && this.path.ext !== '.tga') throw new Error(`ImgFileError: Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, for image format is not compatible for this module. Compatible image formats are: "jpg", "webp", "png", "bmp", "tga"`)
   }
 
   async stat(): Promise<ImgFileStatReturnObject> {
@@ -58,13 +76,12 @@ export class ImgFile {
   async toJSON() {
     return {
       ...this.path.toJSON(),
-      stat: await this.stat(),
+      file: await this.stat(),
     }
   }
 
   async convertToTexture(destPath: string | Path, toFormat: ArtworkTextureFormatTypes = 'png_xbox', options?: ConvertToTextureOptions) {
-    const dest = stringToPath(destPath)
-    const { DTX5, interpolation, textureSize } = useDefaultOptions<NonNullable<typeof options>, true>(
+    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
       {
         DTX5: true,
         interpolation: 'bilinear',
@@ -72,11 +89,40 @@ export class ImgFile {
       },
       options
     )
+    const unformattedDestPath = stringToPath(destPath)
+    const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
 
     if (toFormat === 'png_wii') {
-      return imgToTexWii(this.path, dest, { interpolation })
+      return imgToTexWii(this.path, dest, { interpolation: opts.interpolation })
     }
+    return imgToTexXboxPs3(this.path, dest, toFormat, opts)
+  }
 
-    return imgToTexXboxPs3(this.path, dest, toFormat, { DTX5, interpolation, textureSize })
+  async convertToImage(destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions) {
+    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+      {
+        height: null,
+        width: null,
+        interpolation: 'bilinear',
+        quality: 100,
+      },
+      options
+    )
+    const unformattedDestPath = stringToPath(destPath)
+    const dest = new Path(unformattedDestPath.changeFileName(null, toFormat))
+    return imgToImg(this.path, dest, toFormat, opts)
+  }
+
+  async dataURL(options?: ConvertToWEBPDataURLOptions) {
+    const opts = useDefaultOptions<ConvertToWEBPDataURLOptions, true>(
+      {
+        width: null,
+        height: null,
+        interpolation: 'bilinear',
+        quality: 100,
+      },
+      options
+    )
+    return await WEBPDataURL(this.path.path, opts)
   }
 }

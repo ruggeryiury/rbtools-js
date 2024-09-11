@@ -19,7 +19,7 @@ export const pngWiiStat = async (filePath: Path | string): Promise<TextureFileSt
   const allHeaders = (Object.keys(ImageHeaders) as (keyof typeof ImageHeaders)[]).filter((header) => header.startsWith('WII'))
 
   for (const header of allHeaders) {
-    if (Uint8Array.from(srcHeader).toString() === Uint8Array.from(ImageHeaders[header]).toString()) {
+    if (srcHeader.toString() === Buffer.from(ImageHeaders[header]).toString()) {
       const [w, h] = header
         .slice(3)
         .split('_')[0]

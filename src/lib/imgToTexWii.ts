@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { WimgtEnc } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
-import { ifExistsThenDelete, stringToPath } from '../lib.js'
+import { stringToPath } from '../lib.js'
 import { ImageConverter } from '../python.js'
 
 export const imgToTexWii = async (srcPath: string | Path, destPath: string | Path, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>) => {
@@ -13,14 +13,14 @@ export const imgToTexWii = async (srcPath: string | Path, destPath: string | Pat
     options
   )
   const src = stringToPath(srcPath)
-  const dest = new Path(stringToPath(destPath).changeFileName(stringToPath(destPath).name.endsWith('_keep') ? stringToPath(destPath).name : `${stringToPath(destPath).name}_keep`, 'png_wii'))
+  const dest = stringToPath(destPath)
 
   const png = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
   const tpl = new Path(src.changeFileExt('tpl'))
 
-  await ifExistsThenDelete(dest)
-  await ifExistsThenDelete(png)
-  await ifExistsThenDelete(tpl)
+  await dest.checkThenDeleteFile()
+  await png.checkThenDeleteFile()
+  await tpl.checkThenDeleteFile()
 
   await ImageConverter(src.path, png.path, { width: 256, height: 256, interpolation, quality: 100, toFormat: 'png' })
   try {
@@ -29,7 +29,7 @@ export const imgToTexWii = async (srcPath: string | Path, destPath: string | Pat
     // Do nothing, WIMGT has this find_fast_cwd error that keeps on sending but the file is coverted successfully...
   }
 
-  await ifExistsThenDelete(png)
+  await png.checkThenDeleteFile()
 
   const tplBytes = await tpl.readFile()
   const destStream = await dest.createFileWriteStream()
@@ -48,6 +48,6 @@ export const imgToTexWii = async (srcPath: string | Path, destPath: string | Pat
   destStream.stream.end()
   await destStream.once
 
-  await ifExistsThenDelete(tpl)
+  await tpl.checkThenDeleteFile()
   return new TextureFile(dest)
 }

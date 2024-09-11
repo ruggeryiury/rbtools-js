@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { pngWiiStat, pngXboxPs3TexStat, stringToPath } from '../lib.js'
+import { pngWiiStat, pngXboxPs3TexStat, stringToPath, bufferToWEBPDataUrl } from '../lib.js'
 
 export interface TextureFileStatObject {
   format: string
@@ -32,7 +32,11 @@ export class TextureFile {
   async toJSON() {
     return {
       ...this.path.toJSON(),
-      stat: await this.stat(),
+      file: await this.stat(),
     }
+  }
+
+  async toDataURL() {
+    return await bufferToWEBPDataUrl(this.path.path)
   }
 }

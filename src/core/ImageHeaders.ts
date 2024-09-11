@@ -1,5 +1,7 @@
+/**
+ * Headers of several texture files.
+ */
 export const ImageHeaders = {
-  
   // Headers for PNG_XBOX/PNG_PS3 files.
   '256pDTX1': [1, 4, 8, 0, 0, 0, 4, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   '256pDTX5': [1, 8, 24, 0, 0, 0, 4, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

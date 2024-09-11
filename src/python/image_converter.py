@@ -3,7 +3,7 @@ import json
 from PIL import Image
 from img_file_stat import img_file_stat
 
-def image_converter(src_path: str, dest_path: str, width: int = 512, height: int = 512, interpolation: str = 'BILINEAR', quality: int = 100, print_return = True) -> dict:
+def image_converter(src_path: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100, print_return = True) -> dict:
   """
   Reads any compatible image file and converts it to any compatible format. This script also does resizing.
   
@@ -14,9 +14,9 @@ def image_converter(src_path: str, dest_path: str, width: int = 512, height: int
   dest_path : str
     The destination path of the converted image file.
   width: int, optional
-    The width that will be used on the generated string (Default is `512`).
+    The width that will be used on the generated string (Default is `256`).
   height: int, optional
-    The height that will be used on the generated string (Default is `512`).
+    The height that will be used on the generated string (Default is `256`).
   interpolation : str, optional
     The interpolation method used when resizing the image (Default if `'BILINEAR'`).
   quality: int, optional
@@ -41,13 +41,15 @@ def image_converter(src_path: str, dest_path: str, width: int = 512, height: int
       
       status = img_file_stat(dest_path, False)
   except Exception as e:
-      raise e
+    raise e
+  
   if print_return:
     print(json.dumps(status))
+    
   return status
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='Image Converter (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')
+  parser = argparse.ArgumentParser( description='RBToolsJS: Image Converter CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)
   parser.add_argument('dest_path', help='The destination file path of the converted file', type=str)
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=256, required=False)
@@ -57,4 +59,4 @@ if __name__ == '__main__':
 
   arg = parser.parse_args()
   
-  image_converter(arg.src_path, arg.dest_path, arg.width, arg.height, arg.interpolation.upper(), arg.quality)
+  image_converter(arg.src_path, arg.dest_path, arg.width, arg.height, arg.interpolation, arg.quality)

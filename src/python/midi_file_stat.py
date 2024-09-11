@@ -25,6 +25,7 @@ def midi_file_stat(file_path: str, print_return = True) -> dict:
   
   if print_return:
     print(json.dumps(status))
+    
   return status
 
 if __name__ == '__main__':

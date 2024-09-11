@@ -14,10 +14,11 @@ def img_file_stat(file_path: str, print_return = True) -> dict:
         "imageMode": img.mode,
       }
   except Exception as e:
-      raise e
+    raise e
     
   if print_return:
     print(json.dumps(status))
+    
   return status
 
 if __name__ == '__main__':

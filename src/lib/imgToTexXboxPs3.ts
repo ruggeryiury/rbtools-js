@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { NVCompress } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
-import { ifExistsThenDelete, type ArtworkTextureFormatTypes } from '../lib.js'
+import { type ArtworkTextureFormatTypes } from '../lib.js'
 import { ImageConverter } from '../python.js'
 import { stringToPath } from './stringToPath.js'
 
@@ -16,14 +16,14 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
     options
   )
   const src = stringToPath(srcPath)
-  const dest = new Path(stringToPath(destPath).changeFileName(stringToPath(destPath).name.endsWith('_keep') ? stringToPath(destPath).name : `${stringToPath(destPath).name}_keep`, format))
+  const dest = stringToPath(destPath)
 
   const tga = new Path(src.changeFileExt('tga'))
   const dds = new Path(src.changeFileExt('dds'))
 
-  await ifExistsThenDelete(dest)
-  await ifExistsThenDelete(tga)
-  await ifExistsThenDelete(dds)
+  await dest.checkThenDeleteFile()
+  await tga.checkThenDeleteFile()
+  await dds.checkThenDeleteFile()
 
   await ImageConverter(src.path, tga.path, {
     width: textureSize,
@@ -34,7 +34,7 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
   })
 
   await NVCompress(tga.path, dds.path, DTX5)
-  await ifExistsThenDelete(tga)
+  await tga.checkThenDeleteFile()
 
   const headerName = `${textureSize.toString()}p${DTX5 ? 'DTX5' : 'DTX1'}` as keyof typeof ImageHeaders
   const header = ImageHeaders[headerName] as readonly number[] | undefined
@@ -60,6 +60,6 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
   destStream.stream.end()
   await destStream.once
 
-  await ifExistsThenDelete(dds)
+  await dds.checkThenDeleteFile()
   return new TextureFile(dest)
 }

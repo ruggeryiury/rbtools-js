@@ -1,11 +1,8 @@
 import Path from 'path-js'
-import { decodeFileURL } from './decodeFileURL.js'
+import { __root } from '../index.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
 export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
-
-const __filename = decodeFileURL(import.meta.url)
-const __dirname = new Path(__filename).root
 
 export type MainArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
 export type SmallArtworkSizeTypes = 8 | 16 | 32 | 64
@@ -154,7 +151,7 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
  */
 export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Array): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = new Path(Path.resolve(__dirname, '../bin/headers'))
+  const headerFolderPath = new Path(Path.resolve(__root.path, 'bin/headers'))
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512
