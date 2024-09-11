@@ -12,7 +12,7 @@ export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
     const base64Header = Buffer.from(usedHeader).toString('base64')
     return await WEBPDataURLPNGWii(src.path, base64Header)
   }
-  
+
   const srcBuffer = await src.readFile()
 
   const fullSrcHeader = Buffer.alloc(16)
