@@ -17,7 +17,7 @@ import { stringToPath } from './stringToPath.js'
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions) => {
-  const { DTX5, interpolation, textureSize } = useDefaultOptions<ConvertToTextureOptions, true>(
+  const { DTX5, interpolation, textureSize } = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       DTX5: true,
       interpolation: 'bilinear',

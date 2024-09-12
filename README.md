@@ -13,19 +13,33 @@
 </div>
 
 - [About](#about)
+- [Requirements](#requirements)
+- [Package resources](#package-resources)
 - [API](#api)
   - [`ImgFile()` class](#imgfile-class)
     - [`.stat()`](#stat)
     - [`.toJSON()`](#tojson)
     - [`.convertToTexture()`](#converttotexture)
     - [`.convertToImage()`](#converttoimage)
-    - [`.dataURL()`](#dataurl)
+    - [`.toDataURL()`](#todataurl)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
 # About
 
 **_RBToolsJS_** is a highly-typed NodeJS module with methods to manipulate several Rock Band game files, joining several functions that might help you processing these files. **_RBToolsJS_** also uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
+
+# Requirements
+
+- [Python v3](https://www.python.org/downloads/): **_RBToolsJS_** uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
+
+# Package resources
+
+**_RBToolsJS_** comes with a few binary executables, such as:
+
+- [NVIDIA Texture Tool](https://docs.nvidia.com/texture-tools/index.html)
+- [WIMGT: Wiimms Image Tool](https://szs.wiimm.de/wimgt/)
+- [MakeMogg](https://github.com/maxton/makemogg)
 
 # API
 
@@ -50,11 +64,38 @@ Returns a JSON object with statistics of the image file.
 
 - Returns: `ImgFileStatReturnObject`
 
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+
+// Get the width and height of the image file
+const { width, height } = image.stat()
+console.log(`Image width: ${width.toString()}`)
+console.log(`Image height: ${height.toString()}`)
+```
+
 ### `.toJSON()`
 
 Returns a JSON representation of the image file class.
 
 - Returns: `ImgFileJSONObject`
+
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+
+// Get the path, width, and height of the image file
+const {
+  path,
+  file: { width, height },
+} = image.toJSON()
+
+console.log(`Image path: ${path}`)
+console.log(`Image width: ${width.toString()}`)
+console.log(`Image height: ${height.toString()}`)
+```
 
 ### `.convertToTexture()`
 
@@ -68,6 +109,13 @@ Asynchronously converts this image file to a texture file.
 
 - Returns: `Promise<TextureFile>` A new instantiated `TextureFile` class pointing to the new converted texture file.
 
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+const newImage = await image.convertToTexture('path/to/new/texture.png_xbox', 'png_xbox', { textureSize: 256 })
+```
+
 ### `.convertToImage()`
 
 Asynchronously converts this image file to any other image file format.
@@ -80,7 +128,20 @@ Asynchronously converts this image file to any other image file format.
 
 - Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new converted image file.
 
-### `.dataURL()`
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+const newImage = await image.convertToImage(
+  'path/to/new/image.bmp',
+  'bmp',
+  // You can choose the new converted image width and height
+  // though this options object.
+  { width: 512, height: 512 }
+)
+```
+
+### `.toDataURL()`
 
 Asynchronously returns a Base64-encoded DataURL `string` of the image file.
 
@@ -89,6 +150,13 @@ Asynchronously returns a Base64-encoded DataURL `string` of the image file.
   - **_options ?_** `ConvertToWEBPDataURLOptions` An object with values that changes the behavior of the converting process.
 
 - Returns: `Promise<string>` A Base64-encoded DataURL `string` of the image file.
+
+```ts
+import { ImgFile } from 'rbtools-js'
+
+const image = new ImgFile('path/to/image.png')
+const imageDataURL = await image.toDataURL()
+```
 
 # Special thanks
 

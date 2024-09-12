@@ -96,7 +96,7 @@ export interface ImageConverterOptions {
  * @returns {Promise<ImgFile>}
  */
 export const imageConverter = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
-  const opts = useDefaultOptions<ImageConverterOptions, true>(
+  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       height: 256,
       width: 256,
@@ -124,7 +124,7 @@ export const imageConverter = async (srcFile: string | Path, destPath: string | 
  * @returns {Promise<string>}
  */
 export const webpDataURL = async (srcFile: string | Path, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
-  const opts = useDefaultOptions<ConvertToWEBPDataURLOptions, true>(
+  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       width: null,
       height: null,

@@ -166,8 +166,8 @@ export class ImgFile {
    * @param {ConvertToWEBPDataURLOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<string>} A Base64-encoded DataURL `string` of the image file.
    */
-  async dataURL(options?: ConvertToWEBPDataURLOptions): Promise<string> {
-    const opts = useDefaultOptions<ConvertToWEBPDataURLOptions, true>(
+  async toDataURL(options?: ConvertToWEBPDataURLOptions): Promise<string> {
+    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
       {
         width: null,
         height: null,
