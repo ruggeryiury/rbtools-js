@@ -180,7 +180,8 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
 
     process.on('close', (code) => {
       if (code === 0) {
-        resolve(stdoutData)
+        const [dataurl] = stdoutData.split('\r\n')
+        resolve(dataurl)
       } else if (code === null) {
         reject(new PythonExecutionError(`Python script exited with unknown code: ${stderrData}`))
       } else {
@@ -204,12 +205,12 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
 export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string> => {
   const src = stringToPath(srcFile)
   const usedHeader = await getTPLHeader(src)
-  const base64Header = Buffer.from(usedHeader).toString('base64')
+  const base64Header = usedHeader.data.toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
-
-  return stdout
+  const [, dataurl] = stdout.split('\r\n')
+  return dataurl
 }

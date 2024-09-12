@@ -20,12 +20,12 @@ export const texBufferToWEBPDataUrl = async (srcPath: string | Path): Promise<st
   srcBuffer.copy(fullSrcHeader, 0, 0, 16)
   srcBuffer.copy(shortSrcHeader, 0, 5, 11)
 
-  const srcHeader = await getDDSHeader(Uint8Array.from(fullSrcHeader), Uint8Array.from(shortSrcHeader))
+  const srcHeader = await getDDSHeader(fullSrcHeader, shortSrcHeader)
 
   const loop = (srcBuffer.length - 32) / 4
   const srcContents = srcBuffer.subarray(32)
   const dds = Buffer.alloc(srcHeader.data.length + srcContents.length)
-  Buffer.from(srcHeader.data).copy(dds, 0)
+  srcHeader.data.copy(dds, 0)
 
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)

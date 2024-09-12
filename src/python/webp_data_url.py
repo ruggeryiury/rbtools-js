@@ -15,6 +15,8 @@ def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolat
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')
           data_url = f"data:image/webp;base64,{base64_data}"
+          img.close()
+          output.close()
           print(data_url)
       else:
         x, y = img.size
@@ -28,6 +30,8 @@ def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolat
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')
           data_url = f"data:image/webp;base64,{base64_data}"
+          img.close()
+          output.close()
           print(data_url)
   except Exception as e:
     raise e

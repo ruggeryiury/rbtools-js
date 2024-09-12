@@ -10,7 +10,8 @@ export class FileNotFoundError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'FileNotFoundError'
-    Error.captureStackTrace(this, this.constructor)
+    Error.captureStackTrace(this, FileNotFoundError)
+    Object.setPrototypeOf(this, FileNotFoundError.prototype)
   }
 }
 
@@ -25,7 +26,24 @@ export class ImgFileError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'ImgFileError'
-    Error.captureStackTrace(this, this.constructor)
+    Error.captureStackTrace(this, ImgFileError)
+    Object.setPrototypeOf(this, ImgFileError.prototype)
+  }
+}
+
+/**
+ * An error that generically occurs using the `TextureFile` class.
+ * - - - -
+ */
+export class TextureFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'TextureFileError'
+    Error.captureStackTrace(this, TextureFileError)
+    Object.setPrototypeOf(this, TextureFileError.prototype)
   }
 }
 
@@ -41,7 +59,25 @@ export class UnknownFileFormatError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'UnknownFileFormatError'
-    Error.captureStackTrace(this, this.constructor)
+    Error.captureStackTrace(this, UnknownFileFormatError)
+    Object.setPrototypeOf(this, UnknownFileFormatError.prototype)
+  }
+}
+
+/**
+ * An error that generally occurs when a function logic tries to process a file
+ * which provided arguments are mistakenly provided.
+ * - - - -
+ */
+export class FileConvertionError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'FileConvertionError'
+    Error.captureStackTrace(this, FileConvertionError)
+    Object.setPrototypeOf(this, FileConvertionError.prototype)
   }
 }
 
@@ -57,7 +93,8 @@ export class BinaryExecutionError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'BinaryExecutionError'
-    Error.captureStackTrace(this, this.constructor)
+    Error.captureStackTrace(this, BinaryExecutionError)
+    Object.setPrototypeOf(this, BinaryExecutionError.prototype)
   }
 }
 
@@ -73,6 +110,23 @@ export class PythonExecutionError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'PythonExecutionError'
-    Error.captureStackTrace(this, this.constructor)
+    Error.captureStackTrace(this, PythonExecutionError)
+    Object.setPrototypeOf(this, PythonExecutionError.prototype)
+  }
+}
+
+/**
+ * An error that occurs when any user provided argument does not pass validation.
+ * - - - -
+ */
+export class ValueError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'ValueError'
+    Error.captureStackTrace(this, ValueError)
+    Object.setPrototypeOf(this, ValueError.prototype)
   }
 }

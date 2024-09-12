@@ -2,6 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { WimgtEnc } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
+import { FileConvertionError } from '../errors.js'
 import { stringToPath } from '../lib.js'
 import * as Py from '../python.js'
 
@@ -22,11 +23,14 @@ export const imgToTexWii = async (srcFile: string | Path, destPath: string | Pat
   )
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
+  const destWithCorrectExt = new Path(dest.changeFileExt('png_wii'))
+
+  if (src.ext === destWithCorrectExt.ext) throw new FileConvertionError('Source and destination file has the same file extension')
 
   const png = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
   const tpl = new Path(src.changeFileExt('tpl'))
 
-  await dest.checkThenDeleteFile()
+  await destWithCorrectExt.checkThenDeleteFile()
   await png.checkThenDeleteFile()
   await tpl.checkThenDeleteFile()
 
@@ -41,7 +45,7 @@ export const imgToTexWii = async (srcFile: string | Path, destPath: string | Pat
   await png.checkThenDeleteFile()
 
   const tplBytes = await tpl.readFile()
-  const destStream = await dest.createFileWriteStream()
+  const destStream = await destWithCorrectExt.createFileWriteStream()
 
   // 64 is the size of the TPL file header we need to skip
   const loop = (tplBytes.length - 64) / 4
@@ -58,5 +62,5 @@ export const imgToTexWii = async (srcFile: string | Path, destPath: string | Pat
   await destStream.once
 
   await tpl.checkThenDeleteFile()
-  return new TextureFile(dest)
+  return new TextureFile(destWithCorrectExt)
 }

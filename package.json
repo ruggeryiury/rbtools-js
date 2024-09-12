@@ -20,7 +20,8 @@
     "dta-parser": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/dta-parser",
     "jschardet": "^3.1.2",
     "path-js": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/path-js",
-    "winston": "^3.13.0"
+    "winston": "^3.13.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",

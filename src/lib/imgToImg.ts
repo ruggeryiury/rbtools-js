@@ -1,6 +1,8 @@
 import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
+import zod from 'zod'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
+import { FileConvertionError, ValueError } from '../errors.js'
 import { stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 
@@ -23,8 +25,22 @@ export const imgToImg = async (srcFile: string | Path, destPath: string | Path, 
     },
     options
   )
+
+  const qualitySchema = zod.number().min(1).max(100)
+  try {
+    qualitySchema.parse(quality)
+  } catch (err) {
+    throw new ValueError(`Quality value must be a number value from 1 to 100, given ${quality.toString()}.`)
+  }
+
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
+  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
+
+  if (src.ext === destWithCorrectExt.ext && src.name === destWithCorrectExt.name) throw new FileConvertionError('Source and destination file has the same file name and extension')
+
+  await destWithCorrectExt.checkThenDeleteFile()
+
   const { width: srcWidth, height: srcHeight } = await Py.imgFileStat(src.path)
 
   let usedWidth: number
@@ -34,6 +50,6 @@ export const imgToImg = async (srcFile: string | Path, destPath: string | Path, 
   if (height !== null) usedHeight = height
   else usedHeight = srcHeight
 
-  await Py.imageConverter(src.path, dest.path, toFormat, { height: usedHeight, width: usedWidth, interpolation, quality })
-  return new ImgFile(dest)
+  await Py.imageConverter(src.path, destWithCorrectExt.path, toFormat, { height: usedHeight, width: usedWidth, interpolation, quality })
+  return new ImgFile(destWithCorrectExt)
 }

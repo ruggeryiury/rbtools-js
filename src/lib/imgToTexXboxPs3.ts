@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { NVCompress } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
-import { UnknownFileFormatError } from '../errors.js'
+import { FileConvertionError, UnknownFileFormatError } from '../errors.js'
 import { type ArtworkTextureFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 import { stringToPath } from './stringToPath.js'
@@ -16,7 +16,7 @@ import { stringToPath } from './stringToPath.js'
  * @param {ConvertToTextureOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
-export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions) => {
+export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
   const { DTX5, interpolation, textureSize } = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       DTX5: true,
@@ -27,11 +27,14 @@ export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string |
   )
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
+  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
+
+  if (src.ext === destWithCorrectExt.ext) throw new FileConvertionError('Source and destination file has the same file extension')
 
   const tga = new Path(src.changeFileExt('tga'))
   const dds = new Path(src.changeFileExt('dds'))
 
-  await dest.checkThenDeleteFile()
+  await destWithCorrectExt.checkThenDeleteFile()
   await tga.checkThenDeleteFile()
   await dds.checkThenDeleteFile()
 
@@ -51,7 +54,7 @@ export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string |
   const headerBuffer = Buffer.from(header)
 
   const ddsBuffer = await dds.readFile()
-  const destStream = await dest.createFileWriteStream()
+  const destStream = await destWithCorrectExt.createFileWriteStream()
 
   // 128 is the size of the DDS file header we need to skip
   // 4 for byte swapping
@@ -70,5 +73,5 @@ export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string |
   await destStream.once
 
   await dds.checkThenDeleteFile()
-  return new TextureFile(dest)
+  return new TextureFile(destWithCorrectExt)
 }

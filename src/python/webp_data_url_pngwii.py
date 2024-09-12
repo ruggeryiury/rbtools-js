@@ -1,6 +1,5 @@
 import argparse
 import base64
-from PIL import Image
 from io import BytesIO
 from lib.tpl import PNG_WII
 
@@ -11,6 +10,8 @@ def webp_data_url_pngwii(src_path: str, header: bytes, quality: int = 100):
     webp_data = output.getvalue()
     base64_data = base64.b64encode(webp_data).decode('utf-8')
     data_url = f"data:image/webp;base64,{base64_data}"
+    image.close()
+    output.close()
     print(data_url)
   
 if __name__ == '__main__':

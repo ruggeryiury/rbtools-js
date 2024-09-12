@@ -3,7 +3,6 @@ import { __root } from '../index.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
 export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
-
 export type MainArtworkSizeTypes = 128 | 256 | 512 | 1024 | 2048
 export type SmallArtworkSizeTypes = 8 | 16 | 32 | 64
 export type ArtworkSizeTypes = SmallArtworkSizeTypes | MainArtworkSizeTypes
@@ -12,14 +11,14 @@ export type ArtworkTextureFormatTypes = 'png_xbox' | 'png_ps3' | 'png_wii'
 export type ArtworkInterpolationTypes = 'nearest' | 'box' | 'bilinear' | 'hamming' | 'bicubic' | 'lanczos'
 
 export interface DDSHeaderParserObject {
-  /** The encoding format of the DDS file. */
-  format: DDSFormatTypes
+  /** The encoding type of the DDS file. */
+  type: DDSFormatTypes
   /** The width of the DDS file. */
   width: ArtworkSizeTypes
   /** The height of the DDS file. */
   height: ArtworkSizeTypes
-  /** The header data as `Uint8Array`. */
-  data: Uint8Array
+  /** The header data as buffer. */
+  data: Buffer
 }
 
 /**
@@ -28,9 +27,9 @@ export interface DDSHeaderParserObject {
  * @param {DDSFormatTypes} format The format of the image.
  * @param {number} width The width of the image.
  * @param {number} height The height of the image.
- * @returns {number[]} A built DDS texture file header.
+ * @returns {Buffer} A built DDS texture file header.
  */
-export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: number): number[] => {
+export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: number): Buffer => {
   const dds = [0x44, 0x44, 0x53, 0x20, 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10, 0x0a, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x45, 0x4d, 0x4f, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, 0x35, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
   switch (format.toLowerCase()) {
@@ -141,19 +140,19 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
         break
     }
   }
-  return dds
+  return Buffer.from(dds)
 }
 
 /**
  * Asynchronously builds the right NVIDIA Texture file (`.dds`) header to put on the texture file.
  * - - - -
- * @param {Uint8Array} fullDDSHeader First 16 bytes of the DDS file.
- * @param {Uint8Array} shortDDSHeader Bytes 5-16 of the DDS file.
+ * @param {Buffer} fullDDSHeader First 16 bytes of the DDS file.
+ * @param {Buffer} shortDDSHeader Bytes 5-16 of the DDS file.
  *
  * _Some games have a bunch of headers for the same files. Bytes 5-16 has only the dimensions and image format._
- * @returns {Promise<Uint8Array>} A built DDS file header.
+ * @returns {Promise<DDSHeaderParserObject>} An object with the header data and values.
  */
-export const getDDSHeader = async (fullDDSHeader: Uint8Array, shortDDSHeader: Uint8Array): Promise<DDSHeaderParserObject> => {
+export const getDDSHeader = async (fullDDSHeader: Buffer, shortDDSHeader: Buffer): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
   const headerFolderPath = new Path(__root.path, 'bin/headers')
   const headerPaths = await headerFolderPath.readDir(true)
@@ -164,7 +163,7 @@ export const getDDSHeader = async (fullDDSHeader: Uint8Array, shortDDSHeader: Ui
   for (const headerPath of headerPaths) {
     const headerFilePath = new Path(headerPath)
     const headerName = headerFilePath.name
-    const headerBytes = Uint8Array.from(await headerFilePath.readFile())
+    const headerBytes = await headerFilePath.readFile()
     if (headerBytes.toString() === fullDDSHeader.toString() || headerBytes.toString() === shortDDSHeader.toString()) {
       ddsFormat = 'DXT5'
       if (headerName.includes('DXT1')) ddsFormat = 'DXT1'
@@ -183,9 +182,55 @@ export const getDDSHeader = async (fullDDSHeader: Uint8Array, shortDDSHeader: Ui
   }
 
   return {
-    format: ddsFormat as DDSFormatTypes,
+    type: ddsFormat as DDSFormatTypes,
     width: ddsWidth,
     height: ddsHeight,
-    data: Uint8Array.from(header),
+    data: header,
+  }
+}
+
+/**
+ * Synchronously builds the right NVIDIA Texture file (`.dds`) header to put on the texture file.
+ * - - - -
+ * @param {Buffer} fullDDSHeader First 16 bytes of the DDS file.
+ * @param {Buffer} shortDDSHeader Bytes 5-16 of the DDS file.
+ *
+ * _Some games have a bunch of headers for the same files. Bytes 5-16 has only the dimensions and image format._
+ * @returns {Buffer} An object with the header data and values.
+ */
+export const getDDSHeaderSync = (fullDDSHeader: Buffer, shortDDSHeader: Buffer): DDSHeaderParserObject => {
+  let header = buildDDSHeader('DXT1', 256, 256)
+  const headerFolderPath = new Path(__root.path, 'bin/headers')
+  const headerPaths = headerFolderPath.readDirSync(true)
+  let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
+  let ddsWidth: ArtworkSizeTypes = 512
+  let ddsHeight: ArtworkSizeTypes = 512
+
+  for (const headerPath of headerPaths) {
+    const headerFilePath = new Path(headerPath)
+    const headerName = headerFilePath.name
+    const headerBytes = headerFilePath.readFileSync()
+    if (headerBytes.toString() === fullDDSHeader.toString() || headerBytes.toString() === shortDDSHeader.toString()) {
+      ddsFormat = 'DXT5'
+      if (headerName.includes('DXT1')) ddsFormat = 'DXT1'
+      else if (headerName.includes('NORMAL')) ddsFormat = 'NORMAL'
+
+      let index1 = headerName.indexOf('_') + 1
+      let index2 = headerName.indexOf('x')
+      const width = parseInt(headerName.substring(index1, index2))
+      ddsWidth = width as ArtworkSizeTypes
+      index1 = headerName.indexOf('_', index2)
+      index2++
+      const height = parseInt(headerName.substring(index2, index1))
+      ddsHeight = height as ArtworkSizeTypes
+      header = buildDDSHeader(ddsFormat as DDSFormatTypes, width, height)
+    }
+  }
+
+  return {
+    type: ddsFormat as DDSFormatTypes,
+    width: ddsWidth,
+    height: ddsHeight,
+    data: header,
   }
 }

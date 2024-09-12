@@ -66,6 +66,7 @@ export interface ConvertToWEBPDataURLOptions {
  * - - - -
  */
 export class ImgFile {
+  /** The path of the image file */
   path: Path
 
   /**
@@ -85,7 +86,7 @@ export class ImgFile {
     this.path = stringToPath(imageFilePath)
     this.checkExistence()
 
-    if (this.path.ext === '.png_xbox' || this.path.ext === '.png_ps3' || this.path.ext === '.png_wii') throw new ImgFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "ImgFile()" class, use the "TextureFile()" class instead`)
+    if (this.path.ext === '.png_xbox' || this.path.ext === '.png_ps3' || this.path.ext === '.png_wii') throw new ImgFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "ImgFile()" class, try to use the "TextureFile()" class instead`)
     if (this.path.ext !== '.png' && this.path.ext !== '.bmp' && this.path.ext !== '.jpg' && this.path.ext !== '.webp' && this.path.ext !== '.tga') throw new ImgFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file, for image format is not compatible for this module. Compatible image formats are: "jpg", "webp", "png", "bmp", "tga"`)
   }
 
@@ -119,7 +120,7 @@ export class ImgFile {
    * @param {ConvertToTextureOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
    */
-  async convertToTexture(destPath: string | Path, toFormat: ArtworkTextureFormatTypes = 'png_xbox', options?: ConvertToTextureOptions): Promise<TextureFile> {
+  async convertToTexture(destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
     const opts = useDefaultOptions<NonNullable<typeof options>, true>(
       {
         DTX5: true,
@@ -132,9 +133,9 @@ export class ImgFile {
     const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
 
     if (toFormat === 'png_wii') {
-      return imgToTexWii(this.path, dest, { interpolation: opts.interpolation })
+      return await imgToTexWii(this.path, dest, { interpolation: opts.interpolation })
     }
-    return imgToTexXboxPs3(this.path, dest, toFormat, opts)
+    return await imgToTexXboxPs3(this.path, dest, toFormat, opts)
   }
 
   /**
@@ -156,8 +157,8 @@ export class ImgFile {
       options
     )
     const unformattedDestPath = stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileName(null, toFormat))
-    return imgToImg(this.path, dest, toFormat, opts)
+    const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
+    return await imgToImg(this.path, dest, toFormat, opts)
   }
 
   /**

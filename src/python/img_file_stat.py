@@ -13,6 +13,7 @@ def img_file_stat(file_path: str, print_return = True) -> dict:
         "formatDesc": img.format_description,
         "imageMode": img.mode,
       }
+      img.close()
   except Exception as e:
     raise e
     
