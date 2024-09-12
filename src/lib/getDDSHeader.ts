@@ -12,19 +12,23 @@ export type ArtworkTextureFormatTypes = 'png_xbox' | 'png_ps3' | 'png_wii'
 export type ArtworkInterpolationTypes = 'nearest' | 'box' | 'bilinear' | 'hamming' | 'bicubic' | 'lanczos'
 
 export interface DDSHeaderParserObject {
+  /** The encoding format of the DDS file. */
   format: DDSFormatTypes
+  /** The width of the DDS file. */
   width: ArtworkSizeTypes
+  /** The height of the DDS file. */
   height: ArtworkSizeTypes
+  /** The header data as `Uint8Array`. */
   data: Uint8Array
 }
 
 /**
- * Builds the Harmonix texture file header based on its dimensions and image format.
+ * Builds the DDS texture file header based on its dimensions and image format.
  * - - - -
  * @param {DDSFormatTypes} format The format of the image.
  * @param {number} width The width of the image.
  * @param {number} height The height of the image.
- * @returns {number[]} A built Harmonix texture file header.
+ * @returns {number[]} A built DDS texture file header.
  */
 export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: number): number[] => {
   const dds = [0x44, 0x44, 0x53, 0x20, 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10, 0x0a, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x45, 0x4d, 0x4f, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, 0x35, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
@@ -141,17 +145,17 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
 }
 
 /**
- * Figures out and builds the right NVIDIA Texture file (`.dds`) to put on the Harmonix texture file.
+ * Asynchronously builds the right NVIDIA Texture file (`.dds`) header to put on the texture file.
  * - - - -
- * @param {Uint8Array} fullHeader First 16 bytes of the Harmonix texture file.
- * @param {Uint8Array} shortHeader Bytes 5-16 of the Harmonix texture file.
+ * @param {Uint8Array} fullDDSHeader First 16 bytes of the DDS file.
+ * @param {Uint8Array} shortDDSHeader Bytes 5-16 of the DDS file.
  *
  * _Some games have a bunch of headers for the same files. Bytes 5-16 has only the dimensions and image format._
- * @returns {Promise<Uint8Array>} A built Harmonix texture file header.
+ * @returns {Promise<Uint8Array>} A built DDS file header.
  */
-export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Array): Promise<DDSHeaderParserObject> => {
+export const getDDSHeader = async (fullDDSHeader: Uint8Array, shortDDSHeader: Uint8Array): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = new Path(Path.resolve(__root.path, 'bin/headers'))
+  const headerFolderPath = new Path(__root.path, 'bin/headers')
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512
@@ -161,7 +165,7 @@ export const getDDSHeader = async (fullHeader: Uint8Array, shortHeader: Uint8Arr
     const headerFilePath = new Path(headerPath)
     const headerName = headerFilePath.name
     const headerBytes = Uint8Array.from(await headerFilePath.readFile())
-    if (headerBytes.toString() === fullHeader.toString() || headerBytes.toString() === shortHeader.toString()) {
+    if (headerBytes.toString() === fullDDSHeader.toString() || headerBytes.toString() === shortDDSHeader.toString()) {
       ddsFormat = 'DXT5'
       if (headerName.includes('DXT1')) ddsFormat = 'DXT1'
       else if (headerName.includes('NORMAL')) ddsFormat = 'NORMAL'

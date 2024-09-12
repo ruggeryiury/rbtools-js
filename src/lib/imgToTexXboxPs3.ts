@@ -2,11 +2,21 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { NVCompress } from '../bin.js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
+import { UnknownFileFormatError } from '../errors.js'
 import { type ArtworkTextureFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 import { stringToPath } from './stringToPath.js'
 
-export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string | Path, format: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions) => {
+/**
+ * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
+ * - - - -
+ * @param {string | Path} srcFile The path of the image to want to convert.
+ * @param {string | Path} destPath The path of the new converted texture file.
+ * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the new texture file.
+ * @param {ConvertToTextureOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
+ */
+export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions) => {
   const { DTX5, interpolation, textureSize } = useDefaultOptions<ConvertToTextureOptions, true>(
     {
       DTX5: true,
@@ -15,7 +25,7 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
     },
     options
   )
-  const src = stringToPath(srcPath)
+  const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
 
   const tga = new Path(src.changeFileExt('tga'))
@@ -25,12 +35,11 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
   await tga.checkThenDeleteFile()
   await dds.checkThenDeleteFile()
 
-  await Py.imageConverter(src.path, tga.path, {
+  await Py.imageConverter(src.path, tga.path, 'tga', {
     width: textureSize,
     height: textureSize,
     interpolation,
     quality: 100,
-    toFormat: 'tga',
   })
 
   await NVCompress(tga.path, dds.path, DTX5)
@@ -38,7 +47,7 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
 
   const headerName = `${textureSize.toString()}p${DTX5 ? 'DTX5' : 'DTX1'}` as keyof typeof ImageHeaders
   const header = ImageHeaders[headerName] as readonly number[] | undefined
-  if (header === undefined) throw new Error(`ImgToTexXboxPs3Error: No header found for texture file of name "${headerName}"`)
+  if (header === undefined) throw new UnknownFileFormatError('Provided file path is not recognizable as a DDS file.')
   const headerBuffer = Buffer.from(header)
 
   const ddsBuffer = await dds.readFile()
@@ -53,7 +62,7 @@ export const imgToTexXboxPs3 = async (srcPath: string | Path, destPath: string |
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)
     ddsBufferWOHeader.copy(newBuffer, 0, x * 4, x * 4 + 4)
-    const swappedBytes = format === 'png_ps3' ? newBuffer : Buffer.from([newBuffer[1], newBuffer[0], newBuffer[3], newBuffer[2]])
+    const swappedBytes = toFormat === 'png_ps3' ? newBuffer : Buffer.from([newBuffer[1], newBuffer[0], newBuffer[3], newBuffer[2]])
     destStream.stream.write(swappedBytes)
   }
 

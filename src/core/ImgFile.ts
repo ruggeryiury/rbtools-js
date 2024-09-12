@@ -33,13 +33,9 @@ export interface ConvertToTextureOptions {
    * the Wii system only uses `256`.
    */
   textureSize?: ArtworkSizeTypes
-  /**
-   * Uses DTX5 encoding on the NVIDIA encoding process. Default is `true`.
-   */
+  /** Uses DTX5 encoding on the NVIDIA encoding process. Default is `true`. */
   DTX5?: boolean
-  /**
-   * The interpolation of the output file in case of scaling. Default if `'bilinear'` (Bilinear).
-   */
+  /** The interpolation of the output file in case of scaling. Default if `'bilinear'` (Bilinear). */
   interpolation?: ArtworkInterpolationTypes
 }
 

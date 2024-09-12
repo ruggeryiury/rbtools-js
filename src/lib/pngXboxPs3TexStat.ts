@@ -2,6 +2,12 @@ import Path from 'path-js'
 import type { TextureFileStatObject } from '../core.js'
 import { getDDSHeader } from '../lib.js'
 
+/**
+ * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.
+ * - - - -
+ * @param {Path | string} filePath The path of the PNG_XBOX/PNG_PS3 file.
+ * @returns {Promise<TextureFileStatObject>} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
+ */
 export const pngXboxPs3TexStat = async (filePath: Path | string): Promise<TextureFileStatObject> => {
   let srcPath: Path
 

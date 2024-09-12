@@ -29,6 +29,8 @@
 
 # API
 
+The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`.
+
 ## `ImgFile()` class
 
 ImgFile is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.

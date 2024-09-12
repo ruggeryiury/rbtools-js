@@ -1,17 +1,16 @@
 import Path from 'path-js'
-import { getDDSHeader, getTPLHeaderFromPNGWii, pngWiiStat, stringToPath } from '../lib.js'
+import { getDDSHeader, stringToPath } from '../lib.js'
 import * as Py from '../python.js'
 
-export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
+/**
+ * Returns a Base64-encoded Data URL `string` of a texture file.
+ * - - - -
+ * @param {string | Path} srcPath The texture file path.
+ * @returns {Promise<string>} A Base64-encoded DataURL `string` of the texture file.
+ */
+export const texBufferToWEBPDataUrl = async (srcPath: string | Path): Promise<string> => {
   const src = stringToPath(srcPath)
-  if (src.ext === '.png_wii') {
-    const pngWiiFileStat = await pngWiiStat(src)
-    const usedHeader = getTPLHeaderFromPNGWii(pngWiiFileStat)
-    if (!usedHeader) throw new Error('BufferToWEBPDataURLError: Provided PNG_WII file does not have a recognizable header')
-
-    const base64Header = Buffer.from(usedHeader).toString('base64')
-    return await Py.webpDataURLPNGWii(src.path, base64Header)
-  }
+  if (src.ext === '.png_wii') return await Py.webpDataURLPNGWii(src.path)
 
   const srcBuffer = await src.readFile()
 
@@ -35,5 +34,5 @@ export const bufferToWEBPDataUrl = async (srcPath: string | Path) => {
     swappedBytes.copy(dds, x * 4 + srcHeader.data.length)
   }
 
-  return await Py.bufferToWEBPDataURL(dds.toString('base64'))
+  return await Py.imgBufferToWEBPDataURL(dds)
 }

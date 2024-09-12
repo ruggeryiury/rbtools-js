@@ -5,14 +5,22 @@ import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core
 import { stringToPath } from '../lib.js'
 import * as Py from '../python.js'
 
-export const imgToTexWii = async (srcPath: string | Path, destPath: string | Path, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>) => {
+/**
+ * Asynchronously converts an image file to PNG_WII texture file format.
+ * - - - -
+ * @param {string | Path} srcFile The path of the image to want to convert.
+ * @param {string | Path} destPath The path of the new converted texture file.
+ * @param {Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'> | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
+ */
+export const imgToTexWii = async (srcFile: string | Path, destPath: string | Path, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>): Promise<TextureFile> => {
   const { interpolation } = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       interpolation: 'bilinear',
     },
     options
   )
-  const src = stringToPath(srcPath)
+  const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
 
   const png = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
@@ -22,11 +30,12 @@ export const imgToTexWii = async (srcPath: string | Path, destPath: string | Pat
   await png.checkThenDeleteFile()
   await tpl.checkThenDeleteFile()
 
-  await Py.imageConverter(src.path, png.path, { width: 256, height: 256, interpolation, quality: 100, toFormat: 'png' })
+  await Py.imageConverter(src.path, png.path, 'png', { width: 256, height: 256, interpolation, quality: 100 })
   try {
     await WimgtEnc(png.path, tpl.path)
   } catch (err) {
-    // Do nothing, WIMGT has this find_fast_cwd error that keeps on sending but the file is coverted successfully...
+    // Do nothing, WIMGT might has this find_fast_cwd error that keeps on appearing
+    // but the file is coverted successfully...
   }
 
   await png.checkThenDeleteFile()

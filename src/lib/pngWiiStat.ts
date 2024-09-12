@@ -1,13 +1,18 @@
 import Path from 'path-js'
 import { ImageHeaders, type TextureFileStatObject } from '../core.js'
+import { UnknownFileFormatError } from '../errors.js'
 
+/**
+ * Asynchronously returns an object with statistics of a PNG_WII texture file.
+ * - - - -
+ * @param {Path | string} filePath The path of the PNG_WII file.
+ * @returns {Promise<TextureFileStatObject>} An object with statistics of a PNG_WII texture file
+ */
 export const pngWiiStat = async (filePath: Path | string): Promise<TextureFileStatObject> => {
   let srcPath: Path
 
   if (filePath instanceof Path) srcPath = filePath
   else srcPath = new Path(filePath)
-
-  const ext = 'PNG_WII'
 
   const srcBuffer = await srcPath.readFile()
   const srcHeader = srcBuffer.subarray(0, 32)
@@ -31,14 +36,14 @@ export const pngWiiStat = async (filePath: Path | string): Promise<TextureFileSt
     }
   }
 
-  if (width === 0 && height === 0 && !type) throw new Error(`PngWiiStatError: File "${srcPath.path}" does not have a recognizable header.`)
+  if (width === 0 && height === 0 && !type) throw new UnknownFileFormatError('Provided file path is not recognizable as a PNG_WII file.')
 
   return {
-    format: ext,
+    format: 'PNG_WII',
     type,
     width,
     height,
     size: [width, height],
-    formatDesc: `${ext}: TPL (Texture Pallete Library) file with Harmonix header`,
+    formatDesc: `PNG_WII: TPL (Texture Pallete Library) file with Harmonix header`,
   }
 }

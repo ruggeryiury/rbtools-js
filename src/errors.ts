@@ -28,3 +28,51 @@ export class ImgFileError extends Error {
     Error.captureStackTrace(this, this.constructor)
   }
 }
+
+/**
+ * An error that occurs when a function logic tries to process a file
+ * which format is not recognizable/compatible.
+ * - - - -
+ */
+export class UnknownFileFormatError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'UnknownFileFormatError'
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+/**
+ * An error that occurs when you executes a binary executable and
+ * it returns an error through `stderr`.
+ * - - - -
+ */
+export class BinaryExecutionError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'BinaryExecutionError'
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+/**
+ * An error that occurs when you executes a python script and
+ * it returns an error.
+ * - - - -
+ */
+export class PythonExecutionError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'PythonExecutionError'
+    Error.captureStackTrace(this, this.constructor)
+  }
+}

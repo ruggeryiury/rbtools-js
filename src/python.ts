@@ -2,22 +2,23 @@ import { execSync, spawn } from 'node:child_process'
 import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject } from './core.js'
-import { execPromise, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
+import { PythonExecutionError } from './errors.js'
+import { execPromise, getTPLHeader, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the image file.
  * - - - -
- * @param {string} imageFilePath The path of the image file.
+ * @param {string | Path} imageFilePath The path of the image file.
  * @returns {Promise<ImgFileStatReturnObject>}
  */
-export const imgFileStat = async (imageFilePath: string): Promise<ImgFileStatReturnObject> => {
+export const imgFileStat = async (imageFilePath: string | Path): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
-  const xFile = new Path(imageFilePath)
-  const command = `python ${moduleName} "${xFile.path}"`
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const src = stringToPath(imageFilePath)
+  const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
-  if (stderr) throw new Error(stderr)
+  if (stderr) throw new PythonExecutionError(stderr)
 
   return JSON.parse(stdout) as ImgFileStatReturnObject
 }
@@ -25,40 +26,78 @@ export const imgFileStat = async (imageFilePath: string): Promise<ImgFileStatRet
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the image file.
  * - - - -
- * @param {string} imageFilePath The path of the image file.
+ * @param {string | Path} imageFilePath The path of the image file.
  * @returns {ImgFileStatReturnObject}
  */
-export const imgFileStatSync = (imageFilePath: string): ImgFileStatReturnObject => {
+export const imgFileStatSync = (imageFilePath: string | Path): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
-  const xFile = new Path(imageFilePath)
-  const command = `python ${moduleName} "${xFile.path}"`
-  return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as ImgFileStatReturnObject
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const src = stringToPath(imageFilePath)
+  const command = `python ${moduleName} "${src.path}"`
+  try {
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as ImgFileStatReturnObject
+  } catch (err) {
+    if (err instanceof Error) throw new PythonExecutionError(err.message)
+    else throw err
+  }
 }
 
-export const midiFileStat = async (filePath: string): Promise<MidiFileStatObject> => {
+/**
+ * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
+ * - - - -
+ * @param {string | Path} midiFilePath The path of the MIDI file.
+ * @returns {Promise<ImgFileStatReturnObject>}
+ */
+export const midiFileStat = async (midiFilePath: string | Path): Promise<MidiFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
-  const xFile = new Path(filePath)
-  const command = `python ${moduleName} "${xFile.path}"`
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const src = stringToPath(midiFilePath)
+  const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
-  if (stderr) throw new Error(stderr)
+  if (stderr) throw new PythonExecutionError(stderr)
 
   return JSON.parse(stdout) as MidiFileStatObject
 }
 
+/**
+ * Python script: Synchronously prints a JSON object with the statistics of the MIDI file.
+ * - - - -
+ * @param {string | Path} midiFilePath The path of the MIDI file.
+ * @returns {MidiFileStatObject}
+ */
+export const midiFileStatSync = (midiFilePath: string | Path): MidiFileStatObject => {
+  const moduleName = 'midi_file_stat.py'
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const src = stringToPath(midiFilePath)
+  const command = `python ${moduleName} "${src.path}"`
+
+  try {
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as MidiFileStatObject
+  } catch (err) {
+    if (err instanceof Error) throw new PythonExecutionError(err.message)
+    else throw err
+  }
+}
+
 export interface ImageConverterOptions {
-  toFormat?: ArtworkImageFormatTypes
   width?: number
   height?: number
   interpolation?: ArtworkInterpolationTypes
   quality?: number
 }
 
-export const imageConverter = async (srcPath: string, destPath: string, options?: ImageConverterOptions) => {
+/**
+ * Python script: Asynchronously converts an image file to any other image file format.
+ * - - - -
+ * @param {string | Path} srcFile The path of the image to want to convert.
+ * @param {string | Path} destPath The path of the new converted image file.
+ * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
+ * @param {ImageConverterOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @returns {Promise<ImgFile>}
+ */
+export const imageConverter = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
   const opts = useDefaultOptions<ImageConverterOptions, true>(
     {
-      toFormat: 'png',
       height: 256,
       width: 256,
       interpolation: 'bilinear',
@@ -66,18 +105,25 @@ export const imageConverter = async (srcPath: string, destPath: string, options?
     },
     options
   )
-  const src = stringToPath(srcPath)
+  const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
   const moduleName = 'image_converter.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
-  const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(opts.toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
-  if (stderr) throw new Error(stderr)
+  if (stderr) throw new PythonExecutionError(stderr)
 
   return new ImgFile(dest)
 }
 
-export const webpDataURL = async (srcPath: string, options?: ConvertToWEBPDataURLOptions) => {
+/**
+ * Python script: Asynchronously returns a Base64-encoded DataURL `string` of the image file.
+ * - - - -
+ * @param {string | Path} srcFile The path to the image file.
+ * @param {ConvertToWEBPDataURLOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @returns {Promise<string>}
+ */
+export const webpDataURL = async (srcFile: string | Path, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
   const opts = useDefaultOptions<ConvertToWEBPDataURLOptions, true>(
     {
       width: null,
@@ -88,7 +134,7 @@ export const webpDataURL = async (srcPath: string, options?: ConvertToWEBPDataUR
     options
   )
 
-  const { width: srcWidth, height: srcHeight } = await imgFileStat(srcPath)
+  const { width: srcWidth, height: srcHeight } = await imgFileStat(srcFile)
 
   let usedWidth: number
   let usedHeight: number
@@ -97,21 +143,29 @@ export const webpDataURL = async (srcPath: string, options?: ConvertToWEBPDataUR
   if (opts.height !== null) usedHeight = opts.height
   else usedHeight = srcHeight
 
-  const src = stringToPath(srcPath)
+  const src = stringToPath(srcFile)
   const moduleName = 'webp_data_url.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
-  if (stderr) throw new Error(stderr)
+  if (stderr) throw new PythonExecutionError(stderr)
 
   return stdout
 }
 
-export const bufferToWEBPDataURL = async (base64Str: string) => {
-  return new Promise((resolve, reject) => {
-    const moduleName = 'buffer_to_webp_data_url.py'
-    const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
+/**
+ * Python script: Asynchronously converts an image file `Buffer` to a Base64-encoded
+ * Data URL `string` of the image.
+ * - - - -
+ * @param {Buffer} buf The buffer of the image file.
+ * @returns {Promise<string>}
+ */
+export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    const moduleName = 'img_buffer_to_webp_data_url.py'
+    const pyPath = new Path(__root.path, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
+    const base64Str = buf.toString('base64')
 
     let stdoutData = ''
     let stderrData = ''
@@ -128,9 +182,9 @@ export const bufferToWEBPDataURL = async (base64Str: string) => {
       if (code === 0) {
         resolve(stdoutData)
       } else if (code === null) {
-        reject(new Error(`Python script exited with unknown code: ${stderrData}`))
+        reject(new PythonExecutionError(`Python script exited with unknown code: ${stderrData}`))
       } else {
-        reject(new Error(`Python script exited with code ${code.toString()}: ${stderrData}`))
+        reject(new PythonExecutionError(`Python script exited with code ${code.toString()}: ${stderrData}`))
       }
     })
 
@@ -140,13 +194,22 @@ export const bufferToWEBPDataURL = async (base64Str: string) => {
   })
 }
 
-export const webpDataURLPNGWii = async (srcPath: string, base64Header: string) => {
-  const src = stringToPath(srcPath)
+/**
+ * Python script: Asynchronously converts an PNG_WII texture file to a Base64-encoded
+ * Data URL `string` of the texture file.
+ * - - - -
+ * @param {string | Path} srcFile The path of the PNG_WII file.
+ * @returns {Promise<string>}
+ */
+export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string> => {
+  const src = stringToPath(srcFile)
+  const usedHeader = await getTPLHeader(src)
+  const base64Header = Buffer.from(usedHeader).toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
-  const pyPath = new Path(Path.resolve(__root.path, `./python/${moduleName}`))
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
-  if (stderr) throw new Error(stderr)
+  if (stderr) throw new PythonExecutionError(stderr)
 
   return stdout
 }
