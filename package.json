@@ -47,20 +47,20 @@
     ".": {
       "import": "./dist/index.js"
     },
-    "./artwork": {
-      "import": "./dist/artwork.js"
+    "./bin": {
+      "import": "./dist/bin.js"
     },
-    "./database": {
-      "import": "./dist/database.js"
+    "./core": {
+      "import": "./dist/core.js"
     },
-    "./dta": {
-      "import": "./dist/dta.js"
+    "./errors": {
+      "import": "./dist/errors.js"
     },
-    "./magma": {
-      "import": "./dist/magma.js"
+    "./lib": {
+      "import": "./dist/lib.js"
     },
-    "./utils": {
-      "import": "./dist/utils.js"
+    "./python": {
+      "import": "./dist/python.js"
     }
   }
 }
