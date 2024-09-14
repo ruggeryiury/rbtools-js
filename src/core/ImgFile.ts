@@ -80,9 +80,9 @@ export class ImgFile {
   }
 
   /**
-   * @param {string} imageFilePath The path to the image file.
+   * @param {string | Path} imageFilePath The path to the image file.
    */
-  constructor(imageFilePath: Path | string) {
+  constructor(imageFilePath: string | Path) {
     this.path = stringToPath(imageFilePath)
     this.checkExistence()
 
@@ -115,10 +115,10 @@ export class ImgFile {
   /**
    * Asynchronously converts this image file to a texture file.
    * - - - -
-   * @param {string | Path} destPath The path of the new converted texture file.
+   * @param {string | Path} destPath The path of the new texture file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired texture format of the new texture file.
-   * @param {ConvertToTextureOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
-   * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
+   * @param {ConvertToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+   * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
   async convertToTexture(destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
     const opts = useDefaultOptions<NonNullable<typeof options>, true>(
@@ -141,10 +141,10 @@ export class ImgFile {
   /**
    * Asynchronously converts this image file to any other image file format.
    * - - - -
-   * @param {string | Path} destPath The path of the new converted image file.
+   * @param {string | Path} destPath The path of the new image file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the new image file.
-   * @param {ConvertToImageOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
-   * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
+   * @param {ConvertToImageOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+   * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
   async convertToImage(destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> {
     const opts = useDefaultOptions<NonNullable<typeof options>, true>(
@@ -164,7 +164,7 @@ export class ImgFile {
   /**
    * Asynchronously returns a Base64-encoded DataURL `string` of the image file.
    * - - - -
-   * @param {ConvertToWEBPDataURLOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+   * @param {ConvertToWEBPDataURLOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<string>} A Base64-encoded DataURL `string` of the image file.
    */
   async toDataURL(options?: ConvertToWEBPDataURLOptions): Promise<string> {

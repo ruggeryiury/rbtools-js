@@ -55,7 +55,7 @@ export class TextureFile {
   /**
    * @param {string} textureFilePath The path to the texture file.
    */
-  constructor(textureFilePath: Path | string) {
+  constructor(textureFilePath: string | Path) {
     this.path = stringToPath(textureFilePath)
     this.checkExistence()
 
@@ -64,7 +64,7 @@ export class TextureFile {
   }
 
   /**
-   * Returns a JSON object with statistics of the image file.
+   * Returns a JSON object with statistics of the texture file.
    * - - - -
    * @returns {TextureFileStatReturnObject}
    */
@@ -75,7 +75,7 @@ export class TextureFile {
   }
 
   /**
-   * Returns a JSON representation of the image file class.
+   * Returns a JSON representation of the texture file class.
    * - - - -
    * @returns {TextureFileJSONObject}
    */
@@ -86,6 +86,14 @@ export class TextureFile {
     }
   }
 
+  /**
+   * Asynchronously converts this texture file to any other texture file format.
+   * - - - -
+   * @param {string | Path} destPath The path of the new texture file.
+   * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the image file.
+   * @param {ConvertTextureToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+   * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
+   */
   async convertToTexture(destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
     const opts = useDefaultOptions<NonNullable<typeof options>>(
       {
@@ -98,6 +106,13 @@ export class TextureFile {
     return await texToTex(this.path, dest, toFormat, opts)
   }
 
+  /**
+   * Asynchronously converts this texture file to an image file.
+   * - - - -
+   * @param {string | Path} destPath The path of the new image file.
+   * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
+   * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
+   */
   async convertToImage(destPath: string | Path, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
     const unformattedDestPath = stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
@@ -108,7 +123,7 @@ export class TextureFile {
   /**
    * Asynchronously returns a Base64-encoded DataURL `string` of the texture file.
    * - - - -
-   * @returns {Promise<string>} A Base64-encoded DataURL `string` of the image file.
+   * @returns {Promise<string>} A Base64-encoded DataURL `string` of the texture file.
    */
   async toDataURL(): Promise<string> {
     return await texBufferToWEBPDataUrl(this.path)

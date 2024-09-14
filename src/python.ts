@@ -80,19 +80,25 @@ export const midiFileStatSync = (midiFilePath: string | Path): MidiFileStatObjec
 }
 
 export interface ImageConverterOptions {
+  /** The width of the converted image file. Default is `256`. */
   width?: number
+  /** The height of the converted image file. Default is `256`. */
   height?: number
+  /** The interpolation of the output file in case of scaling. Default if `'bilinear'` (Bilinear). */
   interpolation?: ArtworkInterpolationTypes
+  /** The quality ratio of the image on lossy codecs (like JPEG). Default is `100` (Lossless on WEBP). */
   quality?: number
 }
 
 /**
  * Python script: Asynchronously converts an image file to any other image file format.
+ *
+ * If no _options_ argument is given, the image converter will return a 256x256 pixels size image file.
  * - - - -
  * @param {string | Path} srcFile The path of the image to want to convert.
  * @param {string | Path} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
- * @param {ImageConverterOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<ImgFile>}
  */
 export const imageConverter = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
@@ -120,7 +126,7 @@ export const imageConverter = async (srcFile: string | Path, destPath: string | 
  * Python script: Asynchronously returns a Base64-encoded DataURL `string` of the image file.
  * - - - -
  * @param {string | Path} srcFile The path to the image file.
- * @param {ConvertToWEBPDataURLOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @param {ConvertToWEBPDataURLOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<string>}
  */
 export const webpDataURL = async (srcFile: string | Path, options?: ConvertToWEBPDataURLOptions): Promise<string> => {

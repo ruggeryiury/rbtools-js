@@ -22,6 +22,12 @@
     - [`.convertToTexture()`](#converttotexture)
     - [`.convertToImage()`](#converttoimage)
     - [`.toDataURL()`](#todataurl)
+  - [`TextureFile()` class](#texturefile-class)
+    - [`.stat()`](#stat-1)
+    - [`.toJSON()`](#tojson-1)
+    - [`.convertToTexture()`](#converttotexture-1)
+    - [`.convertToImage()`](#converttoimage-1)
+    - [`.toDataURL()`](#todataurl-1)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -41,6 +47,10 @@
 - [WIMGT: Wiimms Image Tool](https://szs.wiimm.de/wimgt/)
 - [MakeMogg](https://github.com/maxton/makemogg)
 
+Also, **_RBToolsJS_** uses modified Python scripts from:
+
+- [TPL Module (from Wii.py)](https://github.com/DorkmasterFlek/Wii.py)
+
 # API
 
 The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`.
@@ -50,7 +60,7 @@ The main exports of this package consists on classes that represents a file type
 ImgFile is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
 
 - Parameters:
-  - **_imageFilePath_** `string | Path`: The path to the image file
+  - **_imageFilePath_** `string | Path`: The path to the image file.
 
 ```ts
 import { ImgFile } from 'rbtools-js'
@@ -103,11 +113,11 @@ Asynchronously converts this image file to a texture file.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new converted texture file.
+  - **_destPath_** `string | Path`: The path of the new texture file.
   - **_toFormat_** `ArtworkTextureFormatTypes` The desired texture format of the new texture file.
   - **_options ?_** `ConvertToTextureOptions` An object with values that changes the behavior of the converting process.
 
-- Returns: `Promise<TextureFile>` A new instantiated `TextureFile` class pointing to the new converted texture file.
+- Returns: `Promise<TextureFile>` A new instantiated `TextureFile` class pointing to the new texture file.
 
 ```ts
 import { ImgFile } from 'rbtools-js'
@@ -123,7 +133,7 @@ Asynchronously converts this image file to any other image file format.
 - Parameters:
 
   - **_destPath_** `string | Path`: The path of the new converted image file.
-  - **_toFormat_** `ArtworkimageFormatTypes` The desired image format of the new image file.
+  - **_toFormat_** `ArtworkImageFormatTypes` The desired image format of the new image file.
   - **_options ?_** `ConvertToImageOptions` An object with values that changes the behavior of the converting process.
 
 - Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new converted image file.
@@ -156,6 +166,112 @@ import { ImgFile } from 'rbtools-js'
 
 const image = new ImgFile('path/to/image.png')
 const imageDataURL = await image.toDataURL()
+```
+
+## `TextureFile()` class
+
+TextureFile is a class that represents a texture file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+
+- Parameters:
+  - **_textureFilePath_** `string | Path`: The path to the texture file.
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+```
+
+### `.stat()`
+
+Returns a JSON object with statistics of the texture file.
+
+- Returns: `TextureFileStatReturnObject`
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+
+// Get the width and height of the texture file
+const { width, height } = tex.stat()
+console.log(`Texture width: ${width.toString()}`)
+console.log(`Texture height: ${height.toString()}`)
+```
+
+### `.toJSON()`
+
+Returns a JSON representation of the texture file class.
+
+- Returns: `TextureFileJSONObject`
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+
+// Get the path, width, and height of the texture file
+const {
+  path,
+  file: { width, height },
+} = tex.toJSON()
+
+console.log(`Texture path: ${path}`)
+console.log(`Texture width: ${width.toString()}`)
+console.log(`Texture height: ${height.toString()}`)
+```
+
+### `.convertToTexture()`
+
+Asynchronously converts this texture file to any other texture file format.
+
+- Parameters:
+
+  - **_destPath_** `string | Path`: The path of the new texture file.
+  - **_toFormat_** `ArtworkTextureFormatTypes` The desired image format of the image file.
+  - **_options ?_** `ConvertToTextureOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<TextureFile>` A new instantiated `TextureFile` class pointing to the new texture file.
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+const newTex = await tex.convertToTexture('path/to/new/texture.png_wii', 'png_wii')
+```
+
+### `.convertToImage()`
+
+Asynchronously converts this texture file to an image file.
+
+- Parameters:
+
+  - **_destPath_** `string | Path`: The path of the new image file.
+  - **_toFormat_** `ArtworkImageFormatTypes` The desired image format of the new image file.
+
+- Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new image file.
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+const newTex = await tex.convertToImage('path/to/new/image.png', 'png')
+```
+
+### `.toDataURL()`
+
+Asynchronously returns a Base64-encoded DataURL `string` of the texture file.
+
+- Parameters:
+
+  - **_options ?_** `ConvertToWEBPDataURLOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<string>` A Base64-encoded DataURL `string` of the texture file.
+
+```ts
+import { TextureFile } from 'rbtools-js'
+
+const tex = new TextureFile('path/to/texture.png_xbox')
+const texDataURL = await tex.toDataURL()
 ```
 
 # Special thanks

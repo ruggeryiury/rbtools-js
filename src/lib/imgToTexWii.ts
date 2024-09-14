@@ -11,7 +11,7 @@ import * as Py from '../python.js'
  * - - - -
  * @param {string | Path} srcFile The path of the image to want to convert.
  * @param {string | Path} destPath The path of the new converted texture file.
- * @param {Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'> | undefined} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @param {Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const imgToTexWii = async (srcFile: string | Path, destPath: string | Path, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>): Promise<TextureFile> => {

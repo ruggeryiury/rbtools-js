@@ -30,15 +30,15 @@ export class MidiFile {
     return true
   }
 
-  async stat(): Promise<MidiFileStatObject> {
+  stat(): MidiFileStatObject {
     this.checkExistence()
-    return await Py.midiFileStat(this.path.path)
+    return Py.midiFileStatSync(this.path.path)
   }
 
-  async toJSON() {
+  toJSON() {
     return {
       ...this.path.toJSON(),
-      ...(await this.stat()),
+      ...this.stat(),
     }
   }
 }
