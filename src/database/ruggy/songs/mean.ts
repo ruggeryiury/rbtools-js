@@ -1,0 +1,35 @@
+import { type DTAFileRecipe } from 'dta-parser/core'
+
+export const mean: DTAFileRecipe = {
+  id: '7748mean',
+  name: "Mean (Ain't No Hip-Hop in Tha House Mix)",
+  artist: 'David Rippy & Stephen Rippy',
+  master: true,
+  song_id: 1774800051,
+  songname: '7748mean',
+  tracks: {
+    drum: { rank: 4, channels: 5 },
+    bass: { rank: 1, real_rank: 1, channels: 2 },
+    guitar: { rank: 2, real_rank: 2, channels: 2 },
+    keys: { rank: 3, real_rank: 3, channels: 2 },
+    backing: 2,
+  },
+  hopo_threshold: 90,
+  anim_tempo: 16,
+  preview: 12664,
+  song_length: 147797,
+  rank_band: 2,
+  rating: 1,
+  genre: { genre: 'Classical', sub_genre: 'Classical' },
+  year_released: 1998,
+  album: {
+    hasArt: true,
+    name: 'Age of Empires: The Rise of Rome (Original Soundtrack)',
+    track_number: 8,
+  },
+  key: 'F',
+  multitrack: true,
+  cat_ehm: true,
+  author: 'Ruggy',
+  pack_name: 'Age of Empires: The Rise of Rome Pack 01',
+}

@@ -54,6 +54,9 @@
     "./core": {
       "import": "./dist/core.js"
     },
+    "./database": {
+      "import": "./dist/database.js"
+    },
     "./errors": {
       "import": "./dist/errors.js"
     },
