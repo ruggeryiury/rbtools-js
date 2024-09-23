@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "dta-parser": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/dta-parser",
     "jschardet": "^3.1.2",
     "path-js": "link:C:/Users/Ruggery/Documents/Visual Studio Code/js/path-js",

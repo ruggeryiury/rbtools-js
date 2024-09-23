@@ -130,3 +130,19 @@ export class ValueError extends Error {
     Object.setPrototypeOf(this, ValueError.prototype)
   }
 }
+
+/**
+ * An error that occurs using the Onyx CLI class.
+ * - - - -
+ */
+export class OnyxCLIError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'OnyxCLIError'
+    Error.captureStackTrace(this, OnyxCLIError)
+    Object.setPrototypeOf(this, OnyxCLIError.prototype)
+  }
+}
