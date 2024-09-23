@@ -1,0 +1,14 @@
+assets/
+node_modules/
+src/
+src*/
+temp/
+tests/
+.env
+.gitignore
+.npmignore
+eslint.config.js
+pnpm-lock.yaml
+prettier.config.js
+prod.tsconfig.json
+tsconfig.json

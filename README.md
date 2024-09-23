@@ -13,7 +13,9 @@
 </div>
 
 - [About](#about)
-- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Installation steps](#installation-steps)
 - [Package resources](#package-resources)
 - [API](#api)
   - [`ImgFile()` class](#imgfile-class)
@@ -35,9 +37,29 @@
 
 **_RBToolsJS_** is a highly-typed NodeJS module with methods to manipulate several Rock Band game files, joining several functions that might help you processing these files. **_RBToolsJS_** also uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
 
-# Requirements
+# Installation
+
+## Requirements
 
 - [Python v3](https://www.python.org/downloads/): **_RBToolsJS_** uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
+
+## Installation steps
+
+Follow the steps below to install and set up the project on your local machine:
+
+- Clone the repository: Use the following command to clone the repository to your local machine:
+
+```bash
+git clone https://github.com/ruggeryiury/rbtools-js.git
+```
+
+- Install dependencies: Navigate to the project directory and install the necessary packages by running:
+
+```bash
+npm install
+```
+
+Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally.
 
 # Package resources
 
@@ -50,6 +72,12 @@
 Also, **_RBToolsJS_** uses modified Python scripts from:
 
 - [TPL Module (from Wii.py)](https://github.com/DorkmasterFlek/Wii.py)
+- [STFS Module (from py360)](https://github.com/valmyzk/py360)
+
+At last, **_RBToolsJS_** comes with a few special Node packages, such as:
+
+- [Path-JS](https://github.com/ruggeryiury/path-js): A path utility suite that gathers several functions related to a specific path.
+- [DTAParser](https://github.com/ruggeryiury/dta-parser): A Rock Band song metadata file parser written in Javascript.
 
 # API
 
@@ -285,5 +313,4 @@ const texDataURL = await tex.toDataURL()
 
 - [DTA Parser](https://github.com/ruggeryiury/dta-parser): A highly-typed `.dta` file parser.
 - [My Customs Projects](https://github.com/ruggeryiury/ruggy-customs-projects): All my customs projects.
-- [C3 Library Patch](https://github.com/ruggeryiury/c3-library-patch): A metadata patch for many released customs.
 - [PRO Guitar/Bass Guide](https://ruggeryiury.github.io/proguitarbass-guide/): My famous PRO Guitar/Bass guide.
