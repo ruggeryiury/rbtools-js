@@ -1,7 +1,8 @@
 import { execSync, spawn } from 'node:child_process'
+import SongsDTA from 'dta-parser'
 import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
-import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject } from './core.js'
+import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject, type ReadSTFSFileReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
@@ -219,4 +220,28 @@ export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string>
   if (stderr) throw new PythonExecutionError(stderr)
   const [, dataurl] = stdout.split('\r\n')
   return dataurl
+}
+
+export const readSTFSFile = async (conFile: string | Path): Promise<ReadSTFSFileReturnObject> => {
+  const src = stringToPath(conFile)
+  const moduleName = 'read_stfs_file.py'
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const command = `python ${moduleName} "${src.path}"`
+  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  const unparsed = JSON.parse(stdout) as ReadSTFSFileRawReturnObject
+
+  return { ...unparsed, dta: new SongsDTA(unparsed.dta) }
+}
+
+export const readDTAFileFromSTFS = async (conFile: string | Path): Promise<string> => {
+  const src = stringToPath(conFile)
+  const moduleName = 'read_stfs_file.py'
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const command = `python ${moduleName} "${src.path}"`
+  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return stdout
 }
