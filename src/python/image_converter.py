@@ -1,8 +1,3 @@
-import argparse
-import json
-from PIL import Image
-from img_file_stat import img_file_stat
-
 def image_converter(src_path: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100, print_return = True) -> dict:
   """
   Reads any compatible image file and converts it to any compatible format. This script also does resizing.
@@ -31,6 +26,7 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
         img.save(dest_path, quality=quality)
         img.close()
       else:
+        # resized = img.resize((width, height), resample=Image.Resampling[interpolation])
         x, y = img.size
         size = max(width, x, y)
         new_im = Image.new('RGB', (size, size), (0,0,0))
@@ -39,16 +35,14 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
         new_im.save(dest_path, quality=quality)
         new_im.close()
       
-      status = img_file_stat(dest_path, False)
   except Exception as e:
     raise e
-  
-  if print_return:
-    print(json.dumps(status))
-    
-  return status
 
 if __name__ == '__main__':
+  import argparse
+  from PIL import Image
+  from img_file_stat import img_file_stat
+  
   parser = argparse.ArgumentParser( description='RBToolsJS: Image Converter CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)
   parser.add_argument('dest_path', help='The destination file path of the converted file', type=str)

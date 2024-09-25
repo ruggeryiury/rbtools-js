@@ -59,6 +59,8 @@ git clone https://github.com/ruggeryiury/rbtools-js.git
 npm install
 ```
 
+- Config your environment file: Using the `dotenv` package included on the package dependencies, you must place the path of specific tools on it for all functions to work properly.
+
 Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally.
 
 # Package resources

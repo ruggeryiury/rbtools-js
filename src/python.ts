@@ -92,6 +92,54 @@ export interface ImageConverterOptions {
 }
 
 /**
+ * Python script: Asynchronously converts an image file `Buffer` to an image file.
+ * - - - -
+ * @param {Buffer} buf The buffer of the image file.
+ * @param {string | Path} destPath The path of the new converted image file.
+ * @param {ArtworkImageFormatTypes | undefined} toFormat The desired image format of the new image file. Default is `'png'`.
+ * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
+ * @returns {Promise<ImgFile>}
+ */
+export const bufferConverter = async (buf: Buffer, destPath: string | Path, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> => {
+  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+    {
+      height: 256,
+      width: 256,
+      interpolation: 'bilinear',
+      quality: 100,
+    },
+    options
+  )
+
+  const dest = stringToPath(destPath)
+  return new Promise<ImgFile>((resolve, reject) => {
+    const moduleName = `buffer_converter.py`
+    const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
+    const base64Str = buf.toString('base64')
+
+    let stderrData = ''
+
+    process.stderr.on('data', (data: Buffer) => {
+      stderrData += data.toString()
+    })
+
+    process.on('close', (code) => {
+      if (code === 0) {
+        resolve(new ImgFile(dest.path))
+      } else if (code === null) {
+        reject(new PythonExecutionError(`Python script exited with unknown code: ${stderrData}`))
+      } else {
+        reject(new PythonExecutionError(`Python script exited with code ${code.toString()}: ${stderrData}`))
+      }
+    })
+
+    process.stdin.write(JSON.stringify({ buf: base64Str, dest: dest.changeFileExt(toFormat), width: opts.width, height: opts.height, interpolation: opts.interpolation.toUpperCase(), quality: opts.quality }))
+    process.stdin.end() // Close stdin to signal that the input is complete
+  })
+}
+
+/**
  * Python script: Asynchronously converts an image file to any other image file format.
  *
  * If no _options_ argument is given, the image converter will return a 256x256 pixels size image file.

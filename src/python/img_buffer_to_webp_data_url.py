@@ -1,7 +1,3 @@
-import base64
-from PIL import Image
-from io import BytesIO
-
 def img_buffer_to_webp_data_url(base64_string: str) -> None:
   """
   Converts a Base64-encoded Buffer string to DataURL in lossless WEBP format.
@@ -27,6 +23,9 @@ def img_buffer_to_webp_data_url(base64_string: str) -> None:
   
 if __name__ == '__main__':
   import sys
+  import base64
+  from PIL import Image
+  from io import BytesIO
   
   base64_string = sys.stdin.read()
   img_buffer_to_webp_data_url(base64_string)

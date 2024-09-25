@@ -19,7 +19,7 @@ export const NVCompress = async (srcFile: string | Path, destPath: string | Path
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
 
-  const command = `${moduleName} -nomips -nocuda ${DTX5 ? ' -bc3' : ' -bc1'} "${src.path}" "${dest.path}"`
+  const command = `${moduleName} -nocuda ${DTX5 ? ' -bc3' : ' -bc1'} "${src.path}" "${dest.path}"`
   const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
   if (stderr) throw new BinaryExecutionError(stderr)
   return stdout
