@@ -1,4 +1,4 @@
-def img_buffer_to_webp_data_url(base64_string: str) -> None:
+def img_buffer_to_webp_data_url(base64_string: str) -> str:
   """
   Converts a Base64-encoded Buffer string to DataURL in lossless WEBP format.
   
@@ -17,9 +17,8 @@ def img_buffer_to_webp_data_url(base64_string: str) -> None:
     webp_data = output.getvalue()
     base64_data = base64.b64encode(webp_data).decode('utf-8')
     data_url = f"data:image/webp;base64,{base64_data}"
-    image.close()
-    output.close()
     print(data_url)
+    return data_url
   
 if __name__ == '__main__':
   import sys

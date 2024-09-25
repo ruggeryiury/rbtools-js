@@ -1,4 +1,4 @@
-def image_converter(src_path: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100, print_return = True) -> dict:
+def image_converter(src_path: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> dict:
   """
   Reads any compatible image file and converts it to any compatible format. This script also does resizing.
   
@@ -24,7 +24,6 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
 
       if (img.width == width and img.height == height):
         img.save(dest_path, quality=quality)
-        img.close()
       else:
         # resized = img.resize((width, height), resample=Image.Resampling[interpolation])
         x, y = img.size
@@ -33,7 +32,6 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         new_im.thumbnail((width,height), resample=Image.Resampling[interpolation])
         new_im.save(dest_path, quality=quality)
-        new_im.close()
       
   except Exception as e:
     raise e

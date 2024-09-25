@@ -3,7 +3,7 @@ import base64
 from PIL import Image
 from io import BytesIO
 
-def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100):
+def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> str:
   try:
     with Image.open(src_path) as img:
       if img.mode != 'RGB':
@@ -15,9 +15,8 @@ def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolat
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')
           data_url = f"data:image/webp;base64,{base64_data}"
-          img.close()
-          output.close()
           print(data_url)
+          return data_url
       else:
         x, y = img.size
         size = max(width, x, y)
@@ -30,9 +29,8 @@ def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolat
           webp_data = output.getvalue()
           base64_data = base64.b64encode(webp_data).decode('utf-8')
           data_url = f"data:image/webp;base64,{base64_data}"
-          img.close()
-          output.close()
           print(data_url)
+          return data_url
   except Exception as e:
     raise e
   

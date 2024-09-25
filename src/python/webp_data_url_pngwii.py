@@ -3,16 +3,15 @@ import base64
 from io import BytesIO
 from lib.tpl import PNG_WII
 
-def webp_data_url_pngwii(src_path: str, header: bytes, quality: int = 100):
+def webp_data_url_pngwii(src_path: str, header: bytes, quality: int = 100) -> str:
   with BytesIO() as output:
     image = PNG_WII(src_path, header).tpl.toImage()
     image.save(output, format="WEBP", quality=quality)
     webp_data = output.getvalue()
     base64_data = base64.b64encode(webp_data).decode('utf-8')
     data_url = f"data:image/webp;base64,{base64_data}"
-    image.close()
-    output.close()
     print(data_url)
+    return data_url
   
 if __name__ == '__main__':
   parser = argparse.ArgumentParser( description='RBToolsJS: WEBP DataURL Creator (for PNG_WII files)', epilog='By Ruggery Iury Corrêa.')

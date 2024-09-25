@@ -3,29 +3,27 @@ from PIL import Image
 import json
 from mido import MidiFile, MetaMessage
 
-def midi_file_stat(file_path: str, print_return = True) -> dict:
+def midi_file_stat(file_path: str) -> dict:
   try:
-    midi = MidiFile(file_path)
-    status = {
-      "format": "MID",
-      "charset": midi.charset,
-      "midiType": midi.type,
-      "ticksPerBeat": midi.ticks_per_beat,
-      "tracks": []
-    }
-    
-    for track in midi.tracks:
-      for msg in track:
-        if isinstance(msg, MetaMessage) and msg.type == 'track_name':
-          status['tracks'].append(msg.name)
-          
-    status['tracks'].pop(0)
+    with MidiFile(file_path) as midi:
+      status = {
+        "format": "MID",
+        "charset": midi.charset,
+        "midiType": midi.type,
+        "ticksPerBeat": midi.ticks_per_beat,
+        "tracks": []
+      }
+      
+      for track in midi.tracks:
+        for msg in track:
+          if isinstance(msg, MetaMessage) and msg.type == 'track_name':
+            status['tracks'].append(msg.name)
+            
+      status['tracks'].pop(0)
   except Exception as e:
     raise e
   
-  if print_return:
-    print(json.dumps(status))
-    
+  print(json.dumps(status))
   return status
 
 if __name__ == '__main__':

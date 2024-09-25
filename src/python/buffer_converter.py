@@ -1,4 +1,4 @@
-def buffer_converter(base64_string: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100, print_return = True) -> None:
+def buffer_converter(base64_string: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> None:
   """
   Converts a Base64-encoded Buffer string to any image format. This script also does resizing.
   
@@ -26,7 +26,6 @@ def buffer_converter(base64_string: str, dest_path: str, width: int = 256, heigh
 
       if (img.width == width and img.height == height):
         img.save(dest_path, quality=quality)
-        img.close()
       else:
         # resized = img.resize((width, height), resample=Image.Resampling[interpolation])
         x, y = img.size
@@ -35,7 +34,6 @@ def buffer_converter(base64_string: str, dest_path: str, width: int = 256, heigh
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         new_im.thumbnail((width,height), resample=Image.Resampling[interpolation])
         new_im.save(dest_path, quality=quality)
-        new_im.close()
         
   except Exception as e:
     raise e

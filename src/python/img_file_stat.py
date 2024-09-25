@@ -2,7 +2,7 @@ import argparse
 from PIL import Image
 import json
 
-def img_file_stat(file_path: str, print_return = True) -> dict:
+def img_file_stat(file_path: str) -> dict:
   try:
     with Image.open(file_path) as img:
       status = {
@@ -13,13 +13,10 @@ def img_file_stat(file_path: str, print_return = True) -> dict:
         "formatDesc": img.format_description,
         "imageMode": img.mode,
       }
-      img.close()
   except Exception as e:
     raise e
     
-  if print_return:
-    print(json.dumps(status))
-    
+  print(json.dumps(status))
   return status
 
 if __name__ == '__main__':

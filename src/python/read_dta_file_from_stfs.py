@@ -1,7 +1,7 @@
 from lib.stfs import STFS
 import argparse
 
-def read_dta_file_from_stfs(stfs_file_path: str) -> None:
+def read_dta_file_from_stfs(stfs_file_path: str) -> str:
   """
   Reads a RB3CON file and prints only its main DTA file contents.
   
@@ -16,10 +16,11 @@ def read_dta_file_from_stfs(stfs_file_path: str) -> None:
   try:
     contents = dta_file_contents_bytes.decode()
     print(contents)
+    return contents
   except UnicodeDecodeError:
     contents = dta_file_contents_bytes.decode('latin-1')
     print(contents)
-  return
+    return contents
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser( description='RB3CON DTA File Reader (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')

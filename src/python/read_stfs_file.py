@@ -3,7 +3,7 @@ from lib.stfs import STFS
 import argparse
 import json
 
-def read_dta_file_from_con(stfs_file_path: str) -> None:
+def read_dta_file_from_con(stfs_file_path: str) -> str:
   """
   Reads a RB3CON file and prints only its main DTA file contents.
   
@@ -29,7 +29,9 @@ def read_dta_file_from_con(stfs_file_path: str) -> None:
   except UnicodeDecodeError:
     parsed['dta'] = dta_file_contents_bytes.decode('latin-1')
   
-  print(json.dumps(parsed, indent=0, ensure_ascii=False))
+  return_obj = json.dumps(parsed, indent=0, ensure_ascii=False)
+  print(return_obj)
+  return return_obj
   
 
 if __name__ == '__main__':
