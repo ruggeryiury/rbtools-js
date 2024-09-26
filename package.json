@@ -49,9 +49,6 @@
     ".": {
       "import": "./dist/index.js"
     },
-    "./bin": {
-      "import": "./dist/bin.js"
-    },
     "./core": {
       "import": "./dist/core.js"
     },
@@ -60,6 +57,9 @@
     },
     "./errors": {
       "import": "./dist/errors.js"
+    },
+    "./exec": {
+      "import": "./dist/exec.js"
     },
     "./lib": {
       "import": "./dist/lib.js"

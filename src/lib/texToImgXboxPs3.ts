@@ -3,6 +3,14 @@ import { ImgFile } from '../index.js'
 import { getDDSHeader, stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 
+/**
+ * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.
+ * - - - -
+ * @param {string | Path} srcFile The path of the texture file to want to convert.
+ * @param {string | Path} destPath The path of the new converted image file.
+ * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
+ * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
+ */
 export const texToImgXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)

@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { BinaryExecutionError } from './errors.js'
+import { ExecutableError } from './errors.js'
 import { execPromise, stringToPath } from './lib.js'
 import { __root } from './index.js'
 
@@ -11,17 +11,18 @@ import { __root } from './index.js'
  * @param {string | Path} srcFile The path to the image file to be converted.
  * @param {string | Path} destPath The path to the new converted DDS file.
  * @param {boolean} DTX5 `OPTIONAL` Uses DTX5 encoding. Default is `true`.
+ * @param {boolean} mipMap `OPTIONAL` Uses MipMap on the DDS texture (needed for album artworks). Default is `true`.
  * @returns {Promise<string>}
  */
-export const NVCompress = async (srcFile: string | Path, destPath: string | Path, DTX5 = true): Promise<string> => {
+export const NVCompress = async (srcFile: string | Path, destPath: string | Path, DTX5 = true, mipMap = true): Promise<string> => {
   const moduleName = 'nvcompress.exe'
   const binPath = new Path(__root.path, `./bin/${moduleName}`)
   const src = stringToPath(srcFile)
   const dest = stringToPath(destPath)
 
-  const command = `${moduleName} -nocuda ${DTX5 ? ' -bc3' : ' -bc1'} "${src.path}" "${dest.path}"`
+  const command = `${moduleName} -nocuda ${mipMap ? '' : '-nomips'} ${DTX5 ? ' -bc3' : ' -bc1'} "${src.path}" "${dest.path}"`
   const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
-  if (stderr) throw new BinaryExecutionError(stderr)
+  if (stderr) throw new ExecutableError(stderr)
   return stdout
 }
 
@@ -40,7 +41,7 @@ export const WimgtEnc = async (srcFile: string | Path, destPath: string | Path):
 
   const command = `${moduleName} -d "${dest.path}" ENC -x TPL.CMPR "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
-  if (stderr) throw new BinaryExecutionError(stderr)
+  if (stderr) throw new ExecutableError(stderr)
   return stdout
 }
 
@@ -59,6 +60,6 @@ export const WimgtDec = async (srcFile: string | Path, destPath: string | Path):
 
   const command = `${moduleName} -d "${dest.path}" DEC -x TPL.CMPR "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
-  if (stderr) throw new BinaryExecutionError(stderr)
+  if (stderr) throw new ExecutableError(stderr)
   return stdout
 }

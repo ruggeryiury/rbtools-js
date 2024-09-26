@@ -82,19 +82,19 @@ export class FileConvertionError extends Error {
 }
 
 /**
- * An error that occurs when you executes a binary executable and
+ * An error that occurs when you use an executable and
  * it returns an error through `stderr`.
  * - - - -
  */
-export class BinaryExecutionError extends Error {
+export class ExecutableError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
   constructor(message: string) {
     super(message)
-    this.name = 'BinaryExecutionError'
-    Error.captureStackTrace(this, BinaryExecutionError)
-    Object.setPrototypeOf(this, BinaryExecutionError.prototype)
+    this.name = 'ExecutableError'
+    Error.captureStackTrace(this, ExecutableError)
+    Object.setPrototypeOf(this, ExecutableError.prototype)
   }
 }
 
@@ -144,5 +144,21 @@ export class OnyxCLIError extends Error {
     this.name = 'OnyxCLIError'
     Error.captureStackTrace(this, OnyxCLIError)
     Object.setPrototypeOf(this, OnyxCLIError.prototype)
+  }
+}
+
+/**
+ * An error that occurs when fetching an image from the internet.
+ * - - - -
+ */
+export class ImageFetchingError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'ImageFetchingError'
+    Error.captureStackTrace(this, ImageFetchingError)
+    Object.setPrototypeOf(this, ImageFetchingError.prototype)
   }
 }
