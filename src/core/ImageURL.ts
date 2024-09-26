@@ -14,7 +14,7 @@ import { bufferConverter, type ImageConverterOptions } from '../python.js'
 export class ImageURL {
   /** The URL of the image. */
   url: string
-  /** The buffer of the fetched image.  */
+  /** The buffer of the fetched image. */
   buf = Buffer.alloc(0)
   /** A flag that tells if the image has already been fetched and stored into memory. */
   private __isFetched = false
@@ -51,13 +51,14 @@ export class ImageURL {
   }
 
   /**
-   *
+   * Asynchronously fetches and download the image, converting to a new image file.
+   * - - - -
    * @param {string | Path} destPath The path of the new image file.
-   * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file. Default is `'png'`.
+   * @param {ArtworkImageFormatTypes} toFormat `OPTIONAL` The desired image format of the new image file. Default is `'png'`.
    * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
    */
-  async exportToImage(destPath: string | Path, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
+  async download(destPath: string | Path, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
     if (this.buf.length === 0) await this.__fetchURL()
     const opts = useDefaultOptions<NonNullable<typeof options>, true>(
       {

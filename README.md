@@ -19,17 +19,22 @@
 - [Package resources](#package-resources)
 - [API](#api)
   - [`ImgFile()` class](#imgfile-class)
+    - [Class properties](#class-properties)
     - [`.stat()`](#stat)
     - [`.toJSON()`](#tojson)
     - [`.convertToTexture()`](#converttotexture)
     - [`.convertToImage()`](#converttoimage)
     - [`.toDataURL()`](#todataurl)
   - [`TextureFile()` class](#texturefile-class)
+    - [Class properties](#class-properties-1)
     - [`.stat()`](#stat-1)
     - [`.toJSON()`](#tojson-1)
     - [`.convertToTexture()`](#converttotexture-1)
     - [`.convertToImage()`](#converttoimage-1)
     - [`.toDataURL()`](#todataurl-1)
+  - [`ImageURL()` class](#imageurl-class)
+    - [Class properties](#class-properties-2)
+    - [`.download()`](#download)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -97,6 +102,10 @@ import { ImgFile } from 'rbtools-js'
 
 const image = new ImgFile('path/to/image.png')
 ```
+
+### Class properties
+
+- **_path_** `Path` The path of the image file.
 
 ### `.stat()`
 
@@ -211,6 +220,10 @@ import { TextureFile } from 'rbtools-js'
 const tex = new TextureFile('path/to/texture.png_xbox')
 ```
 
+### Class properties
+
+- **_path_** `Path` The path of the texture file.
+
 ### `.stat()`
 
 Returns a JSON object with statistics of the texture file.
@@ -302,6 +315,57 @@ import { TextureFile } from 'rbtools-js'
 
 const tex = new TextureFile('path/to/texture.png_xbox')
 const texDataURL = await tex.toDataURL()
+```
+
+## `ImageURL()` class
+
+ImageURL is a class that represents an image file URL. It is initalized passing an image URL as an argument.
+
+- Parameters:
+  - **_url_** `string`: The URL of the image.
+
+```ts
+import { ImageURL } from 'rbtools-js'
+
+const imageURL = new ImageURL('https://image.com/image.png')
+```
+
+### Class properties
+
+- **_url_** `string` The URL of the image.
+- **_buf_** `Buffer` The buffer of the fetched image.
+
+### `.download()`
+
+Asynchronously fetches and download the image, converting to a new image file.
+
+- Parameters:
+
+  - **_destPath_** `string | Path`: The path of the new image file.
+  - **_toFormat ?_** `ArtworkImageFormatTypes` The desired image format of the new image file. Default is `'png'`.
+  - **_options ?_** `ImageConverterOptions` An object with values that changes the behavior of the converting process.
+
+- Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new image file.
+
+```ts
+import { ImageURL } from 'rbtools-js'
+
+const imageURL = new ImageURL('https://image.com/image.png')
+const imgFile = await imageURL.download(
+  'path/to/downloaded/image.jpg',
+
+  // If you want to convert the image to any format,
+  // provide the format as second argument:
+  'jpg',
+
+  // You can tweak the converting process through this
+  // options argument:
+  {
+    width: 512,
+    height: 512,
+    quality: 100,
+  }
+)
 ```
 
 # Special thanks
