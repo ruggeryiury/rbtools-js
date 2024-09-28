@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { getDDSHeader, stringToPath } from '../lib.js'
+import { getDDSHeader } from '../lib.js'
 import * as Py from '../python.js'
 
 /**
@@ -9,7 +9,7 @@ import * as Py from '../python.js'
  * @returns {Promise<string>} A Base64-encoded DataURL `string` of the texture file.
  */
 export const texBufferToWEBPDataUrl = async (srcPath: string | Path): Promise<string> => {
-  const src = stringToPath(srcPath)
+  const src = Path.stringToPath(srcPath)
   if (src.ext === '.png_wii') return await Py.webpDataURLPNGWii(src.path)
 
   const srcBuffer = await src.readFile()

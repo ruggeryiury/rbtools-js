@@ -1,7 +1,7 @@
 import Path from 'path-js'
 import { WimgtDec } from '../exec.js'
 import { ImgFile } from '../index.js'
-import { getTPLHeader, stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
+import { getTPLHeader, type ArtworkImageFormatTypes } from '../lib.js'
 
 /**
  * Asynchronously converts a PNG_WII texture file to any image format.
@@ -12,8 +12,8 @@ import { getTPLHeader, stringToPath, type ArtworkImageFormatTypes } from '../lib
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const texToImgWii = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
-  const src = stringToPath(srcFile)
-  const dest = stringToPath(destPath)
+  const src = Path.stringToPath(srcFile)
+  const dest = Path.stringToPath(destPath)
   const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
 
   const tpl = new Path(src.changeFileExt('tpl'))

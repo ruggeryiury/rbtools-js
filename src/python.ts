@@ -4,7 +4,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject, type ReadSTFSFileReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
-import { execPromise, getTPLHeader, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
+import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
 
 /**
@@ -16,7 +16,7 @@ import { __root } from './index.js'
 export const imgFileStat = async (imageFilePath: string | Path): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
-  const src = stringToPath(imageFilePath)
+  const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -33,7 +33,7 @@ export const imgFileStat = async (imageFilePath: string | Path): Promise<ImgFile
 export const imgFileStatSync = (imageFilePath: string | Path): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
-  const src = stringToPath(imageFilePath)
+  const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {
     return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as ImgFileStatReturnObject
@@ -52,7 +52,7 @@ export const imgFileStatSync = (imageFilePath: string | Path): ImgFileStatReturn
 export const midiFileStat = async (midiFilePath: string | Path): Promise<MidiFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
-  const src = stringToPath(midiFilePath)
+  const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -69,7 +69,7 @@ export const midiFileStat = async (midiFilePath: string | Path): Promise<MidiFil
 export const midiFileStatSync = (midiFilePath: string | Path): MidiFileStatObject => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
-  const src = stringToPath(midiFilePath)
+  const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
 
   try {
@@ -111,7 +111,7 @@ export const bufferConverter = async (buf: Buffer, destPath: string | Path, toFo
     options
   )
 
-  const dest = stringToPath(destPath)
+  const dest = Path.stringToPath(destPath)
   return new Promise<ImgFile>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
     const pyPath = new Path(__root.path, `./python/${moduleName}`)
@@ -160,8 +160,8 @@ export const imageConverter = async (srcFile: string | Path, destPath: string | 
     },
     options
   )
-  const src = stringToPath(srcFile)
-  const dest = stringToPath(destPath)
+  const src = Path.stringToPath(srcFile)
+  const dest = Path.stringToPath(destPath)
   const moduleName = 'image_converter.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
@@ -198,7 +198,7 @@ export const webpDataURL = async (srcFile: string | Path, options?: ConvertToWEB
   if (opts.height !== null) usedHeight = opts.height
   else usedHeight = srcHeight
 
-  const src = stringToPath(srcFile)
+  const src = Path.stringToPath(srcFile)
   const moduleName = 'webp_data_url.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
@@ -258,7 +258,7 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
  * @returns {Promise<string>}
  */
 export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string> => {
-  const src = stringToPath(srcFile)
+  const src = Path.stringToPath(srcFile)
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
@@ -271,7 +271,7 @@ export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string>
 }
 
 export const readSTFSFile = async (conFile: string | Path): Promise<ReadSTFSFileReturnObject> => {
-  const src = stringToPath(conFile)
+  const src = Path.stringToPath(conFile)
   const moduleName = 'read_stfs_file.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}"`
@@ -284,7 +284,7 @@ export const readSTFSFile = async (conFile: string | Path): Promise<ReadSTFSFile
 }
 
 export const readDTAFileFromSTFS = async (conFile: string | Path): Promise<string> => {
-  const src = stringToPath(conFile)
+  const src = Path.stringToPath(conFile)
   const moduleName = 'read_stfs_file.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}"`

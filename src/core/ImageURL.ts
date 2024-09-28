@@ -4,7 +4,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path from 'path-js'
 import type { ImgFile } from '../core.js'
 import { ImageFetchingError } from '../errors.js'
-import { isURL, stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
+import { isURL, type ArtworkImageFormatTypes } from '../lib.js'
 import { bufferConverter, type ImageConverterOptions } from '../python.js'
 
 /**
@@ -17,7 +17,7 @@ export class ImageURL {
   /** The buffer of the fetched image. */
   buf = Buffer.alloc(0)
   /** A flag that tells if the image has already been fetched and stored into memory. */
-  private __isFetched = false
+  private isFetched = false
 
   /**
    * @param {string} url The URL of the image.
@@ -33,8 +33,8 @@ export class ImageURL {
    * @param {number} fetchTimeout `OPTIONAL` Sets the timeout of the fetching process. Default is `5000` (5 seconds).
    * @returns {Promise<void>}
    */
-  private async __fetchURL(fetchTimeout = 5000): Promise<void> {
-    if (!this.url) throw new Error('not this.url you *uck')
+  private async fetchURL(fetchTimeout = 5000): Promise<void> {
+    if (!this.url) throw new ImageFetchingError('Provided URL is not a valid URL.')
     let imgRes: AxiosResponse<ArrayBuffer>
     try {
       imgRes = await axios.get<ArrayBuffer>(this.url, {
@@ -42,12 +42,12 @@ export class ImageURL {
         timeout: fetchTimeout,
       })
     } catch (err) {
-      if (err instanceof AxiosError) throw new ImageFetchingError(`${err.code ? `(${err.code})` : ''} : ${err.message}.`)
+      if (err instanceof AxiosError) throw new ImageFetchingError(err.message, err.status)
       throw err
     }
-    if (imgRes.status !== 200) throw new Error(`fetchOrConvertArtworkError: URL returned with error with status ${imgRes.status.toString()}.`)
+    if (imgRes.status !== 200) throw new ImageFetchingError(`URL returned with error with status ${imgRes.status.toString()}.`, imgRes.status)
     this.buf = Buffer.from(imgRes.data)
-    this.__isFetched = true
+    this.isFetched = true
   }
 
   /**
@@ -59,7 +59,7 @@ export class ImageURL {
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
    */
   async download(destPath: string | Path, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
-    if (this.buf.length === 0) await this.__fetchURL()
+    if (this.buf.length === 0) await this.fetchURL()
     const opts = useDefaultOptions<NonNullable<typeof options>, true>(
       {
         height: 256,
@@ -69,9 +69,9 @@ export class ImageURL {
       },
       options
     )
-    if (!this.__isFetched) throw new Error('')
+    if (!this.isFetched) throw new Error('')
     if (this.buf.length === 0) throw new Error('file terminated')
-    const dest = stringToPath(destPath)
+    const dest = Path.stringToPath(destPath)
 
     const image = await bufferConverter(this.buf, dest.changeFileExt(toFormat), toFormat, opts)
     this.buf = Buffer.alloc(0)

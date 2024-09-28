@@ -153,10 +153,18 @@ export class OnyxCLIError extends Error {
  */
 export class ImageFetchingError extends Error {
   /**
-   * @param {string} message The message you want to display.
+   * The number of the error that was returned from the URL fetching.
+   *
+   * Non-valid URLs will return a code `500 INTERNAL SERVER ERROR`.
    */
-  constructor(message: string) {
+  code: number
+  /**
+   * @param {string} message The message you want to display.
+   * @param {number} code The error code. Default is `500 INTERNAL SERVER ERROR`
+   */
+  constructor(message: string, code = 500) {
     super(message)
+    this.code = code
     this.name = 'ImageFetchingError'
     Error.captureStackTrace(this, ImageFetchingError)
     Object.setPrototypeOf(this, ImageFetchingError.prototype)

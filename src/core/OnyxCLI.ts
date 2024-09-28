@@ -1,6 +1,6 @@
 import Path from 'path-js'
 import { OnyxCLIError } from '../errors.js'
-import { execPromise, stringToPath } from '../lib.js'
+import { execPromise } from '../lib.js'
 import 'dotenv/config.js'
 
 export type OnyxCLIOperators = 'import' | 'build' | 'web-player' | 'reaper' | 'pro-keys-hanging' | 'stfs' | 'mogg' | 'encrypt-mogg-rb1' | 'u8' | 'milo' | 'encrypt-gh-fsb' | 'fsb' | 'pak' | 'pkg' | 'edat' | 'port-gh-ps3' | 'extract' | 'unwrap' | 'midi-text' | 'midi-merge' | 'bin-to-dta' | 'dta-to-bin'
@@ -21,8 +21,8 @@ export class OnyxCLI {
   static async stfs(srcFolder: string | Path, destFile: string | Path, game: 'rb3' | 'rb2' | 'gh2' = 'rb3') {
     this.checkOnyxPathIntegrity()
 
-    const src = stringToPath(srcFolder)
-    const dest = new Path(stringToPath(destFile).changeFileExt(''))
+    const src = Path.stringToPath(srcFolder)
+    const dest = new Path(Path.stringToPath(destFile).changeFileExt(''))
     const cmd = `"${Path.resolve(process.env.ONYX_PATH)}" stfs "${src.path}" --to ${dest.path} --game ${game}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
@@ -32,8 +32,8 @@ export class OnyxCLI {
   static async pkg(srcFolder: string | Path, destFile: string | Path, contentID: string) {
     this.checkOnyxPathIntegrity()
 
-    const src = stringToPath(srcFolder)
-    const dest = new Path(stringToPath(destFile).changeFileExt('pkg'))
+    const src = Path.stringToPath(srcFolder)
+    const dest = new Path(Path.stringToPath(destFile).changeFileExt('pkg'))
     const cmd = `"${Path.resolve(process.env.ONYX_PATH)}" pkg ${contentID} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
@@ -43,8 +43,8 @@ export class OnyxCLI {
   static async edat(srcFile: string | Path, destFile: string | Path, contentID: string, klic: string) {
     this.checkOnyxPathIntegrity()
 
-    const src = stringToPath(srcFile)
-    const dest = new Path(stringToPath(destFile).changeFileExt('edat'))
+    const src = Path.stringToPath(srcFile)
+    const dest = new Path(Path.stringToPath(destFile).changeFileExt('edat'))
     const cmd = `"${Path.resolve(process.env.ONYX_PATH)}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)

@@ -1,6 +1,6 @@
 import Path from 'path-js'
 import { ImgFile } from '../index.js'
-import { getDDSHeader, stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
+import { getDDSHeader, type ArtworkImageFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 
 /**
@@ -12,8 +12,8 @@ import * as Py from '../python.js'
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const texToImgXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
-  const src = stringToPath(srcFile)
-  const dest = stringToPath(destPath)
+  const src = Path.stringToPath(srcFile)
+  const dest = Path.stringToPath(destPath)
   const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
   const dds = new Path(src.changeFileExt('dds'))
 

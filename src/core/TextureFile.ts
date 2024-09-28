@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type PathJSONRepresentation } from 'path-js'
 import { TextureFileError } from '../errors.js'
 import { ImgFile } from '../index.js'
-import { stringToPath, pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl } from '../lib.js'
+import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl } from '../lib.js'
 
 export interface TextureFileStatReturnObject {
   /** The format of the texture file. */
@@ -56,7 +56,7 @@ export class TextureFile {
    * @param {string} textureFilePath The path to the texture file.
    */
   constructor(textureFilePath: string | Path) {
-    this.path = stringToPath(textureFilePath)
+    this.path = Path.stringToPath(textureFilePath)
     this.checkExistence()
 
     if (this.path.ext === '.png' || this.path.ext === '.bmp' || this.path.ext === '.jpg' || this.path.ext === '.webp' || this.path.ext === '.tga') throw new TextureFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "TextureFile()" class, try to use the "ImgFile()" class instead`)
@@ -101,7 +101,7 @@ export class TextureFile {
       },
       options
     )
-    const unformattedDestPath = stringToPath(destPath)
+    const unformattedDestPath = Path.stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name.slice(0, -5) : unformattedDestPath.name, toFormat)))
     return await texToTex(this.path, dest, toFormat, opts)
   }
@@ -114,7 +114,7 @@ export class TextureFile {
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
   async convertToImage(destPath: string | Path, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
-    const unformattedDestPath = stringToPath(destPath)
+    const unformattedDestPath = Path.stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
     if (this.path.ext === '.png_wii') return await texToImgWii(this.path, dest, toFormat)
     return await texToImgXboxPs3(this.path, dest, toFormat)

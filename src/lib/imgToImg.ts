@@ -3,7 +3,7 @@ import Path from 'path-js'
 import zod from 'zod'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
 import { FileConvertionError, ValueError } from '../errors.js'
-import { stringToPath, type ArtworkImageFormatTypes } from '../lib.js'
+import { type ArtworkImageFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 
 /**
@@ -33,8 +33,8 @@ export const imgToImg = async (srcFile: string | Path, destPath: string | Path, 
     throw new ValueError(`Quality value must be a number value from 1 to 100, given ${quality.toString()}.`)
   }
 
-  const src = stringToPath(srcFile)
-  const dest = stringToPath(destPath)
+  const src = Path.stringToPath(srcFile)
+  const dest = Path.stringToPath(destPath)
   const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
 
   if (src.ext === destWithCorrectExt.ext && src.name === destWithCorrectExt.name) throw new FileConvertionError('Source and destination file has the same file name and extension')

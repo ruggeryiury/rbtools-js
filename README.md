@@ -5,6 +5,7 @@
 <div align=center>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' width='30px' title='JavaScript'/>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg' width='30px' title='TypeScript'/>
+<img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original-wordmark.svg' width='30px' title='NodeJS'>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' width='30px' title='Python' />
 </div>
 
@@ -46,11 +47,14 @@
 
 ## Requirements
 
-- [Python v3](https://www.python.org/downloads/): **_RBToolsJS_** uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
+- [NodeJS](https://nodejs.org/en/download)
+- [Python v3 & PIP](https://www.python.org/downloads/): **_RBToolsJS_** uses _Python scripts_ to manipulate many kinds of files, like image and texture files.
 
 ## Installation steps
 
 Follow the steps below to install and set up the project on your local machine:
+
+- Install Python v3.
 
 - Clone the repository: Use the following command to clone the repository to your local machine:
 
@@ -64,9 +68,11 @@ git clone https://github.com/ruggeryiury/rbtools-js.git
 npm install
 ```
 
-- Config your environment file: Using the `dotenv` package included on the package dependencies, you must place the path of specific tools on it for all functions to work properly.
+_Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally._
 
-Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally.
+- Config your environment file: Create a `.env` file in the root of where you downloaded/cloned this repository and put these values:
+
+  - `ONYX_PATH`: The path to Onyx CLI and it is used on the Onyx CLI API. You can download it [here](https://github.com/mtolly/onyx/releases).
 
 # Package resources
 

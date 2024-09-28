@@ -3,7 +3,6 @@ import Path from 'path-js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { FileConvertionError } from '../errors.js'
 import { WimgtEnc } from '../exec.js'
-import { stringToPath } from '../lib.js'
 import * as Py from '../python.js'
 
 /**
@@ -21,8 +20,8 @@ export const imgToTexWii = async (srcFile: string | Path, destPath: string | Pat
     },
     options
   )
-  const src = stringToPath(srcFile)
-  const dest = stringToPath(destPath)
+  const src = Path.stringToPath(srcFile)
+  const dest = Path.stringToPath(destPath)
   const destWithCorrectExt = new Path(dest.changeFileExt('png_wii'))
 
   if (src.ext === destWithCorrectExt.ext) throw new FileConvertionError('Source and destination file has the same file extension')

@@ -2,7 +2,7 @@ import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type PathJSONRepresentation } from 'path-js'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
-import { imgToImg, imgToTexWii, imgToTexXboxPs3, stringToPath, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
+import { imgToImg, imgToTexWii, imgToTexXboxPs3, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
 import * as Py from '../python.js'
 
 export interface ImgFileStatReturnObject {
@@ -83,7 +83,7 @@ export class ImgFile {
    * @param {string | Path} imageFilePath The path to the image file.
    */
   constructor(imageFilePath: string | Path) {
-    this.path = stringToPath(imageFilePath)
+    this.path = Path.stringToPath(imageFilePath)
     this.checkExistence()
 
     if (this.path.ext === '.png_xbox' || this.path.ext === '.png_ps3' || this.path.ext === '.png_wii') throw new ImgFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "ImgFile()" class, try to use the "TextureFile()" class instead`)
@@ -129,7 +129,7 @@ export class ImgFile {
       },
       options
     )
-    const unformattedDestPath = stringToPath(destPath)
+    const unformattedDestPath = Path.stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
 
     if (toFormat === 'png_wii') {
@@ -156,7 +156,7 @@ export class ImgFile {
       },
       options
     )
-    const unformattedDestPath = stringToPath(destPath)
+    const unformattedDestPath = Path.stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
     return await imgToImg(this.path, dest, toFormat, opts)
   }
