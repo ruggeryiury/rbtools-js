@@ -19,21 +19,21 @@
   - [Installation steps](#installation-steps)
 - [Package resources](#package-resources)
 - [API](#api)
-  - [`ImgFile()` class](#imgfile-class)
+  - [`ImgFile` class](#imgfile-class)
     - [Class properties](#class-properties)
     - [`stat()`](#stat)
     - [`toJSON()`](#tojson)
     - [`convertToTexture()`](#converttotexture)
     - [`convertToImage()`](#converttoimage)
     - [`toDataURL()`](#todataurl)
-  - [`TextureFile()` class](#texturefile-class)
+  - [`TextureFile` class](#texturefile-class)
     - [Class properties](#class-properties-1)
     - [`stat()`](#stat-1)
     - [`toJSON()`](#tojson-1)
     - [`convertToTexture()`](#converttotexture-1)
     - [`convertToImage()`](#converttoimage-1)
     - [`toDataURL()`](#todataurl-1)
-  - [`ImageURL()` class](#imageurl-class)
+  - [`ImageURL` class](#imageurl-class)
     - [Class properties](#class-properties-2)
     - [`download()`](#download)
   - [`EDAT` class](#edat-class)
@@ -110,7 +110,7 @@ At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`
 
-## `ImgFile()` class
+## `ImgFile` class
 
 `ImgFile` is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
 
@@ -227,7 +227,7 @@ const image = new ImgFile('path/to/image.png')
 const imageDataURL = await image.toDataURL()
 ```
 
-## `TextureFile()` class
+## `TextureFile` class
 
 `TextureFile` is a class that represents a texture file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
 
@@ -337,7 +337,7 @@ const tex = new TextureFile('path/to/texture.png_xbox')
 const texDataURL = await tex.toDataURL()
 ```
 
-## `ImageURL()` class
+## `ImageURL` class
 
 `ImageURL` is a class that represents an image file URL. It is initalized passing an image URL as an argument.
 
