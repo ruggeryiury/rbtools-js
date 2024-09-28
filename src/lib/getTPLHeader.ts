@@ -18,10 +18,10 @@ export interface TPLHeaderParserObject {
 /**
  * Asynchronously builds the right Texture Pallete Library (`.tpl`) header to put on the PNG_WII texture file.
  * - - - -
- * @param {string | Path} pngWiiPath The path of the PNG_WII file.
+ * @param {StringOrPath} pngWiiPath The path of the PNG_WII file.
  * @returns {Promise<TPLHeaderParserObject>} An object with the header data and values.
  */
-export const getTPLHeader = async (pngWiiPath: string | Path): Promise<TPLHeaderParserObject> => {
+export const getTPLHeader = async (pngWiiPath: StringOrPath): Promise<TPLHeaderParserObject> => {
   const src = Path.stringToPath(pngWiiPath)
   if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
   if (src.type() === 'file' && src.ext === '.png_wii') {
@@ -43,10 +43,10 @@ export const getTPLHeader = async (pngWiiPath: string | Path): Promise<TPLHeader
 /**
  * Synchronously builds the right Texture Pallete Library (`.tpl`) header to put on the PNG_WII texture file.
  * - - - -
- * @param {string | Path} pngWiiPath The path of the PNG_WII file.
+ * @param {StringOrPath} pngWiiPath The path of the PNG_WII file.
  * @returns {TPLHeaderParserObject} An object with the header data and values.
  */
-export const getTPLHeaderSync = (pngWiiPath: string | Path): TPLHeaderParserObject => {
+export const getTPLHeaderSync = (pngWiiPath: StringOrPath): TPLHeaderParserObject => {
   const src = Path.stringToPath(pngWiiPath)
   if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
   if (src.type() === 'file' && src.ext === '.png_wii') {

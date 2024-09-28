@@ -1,4 +1,4 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { OnyxCLIError } from '../errors.js'
 import { execPromise } from '../lib.js'
 import 'dotenv/config.js'
@@ -18,7 +18,7 @@ export class OnyxCLI {
     return stdout
   }
 
-  static async stfs(srcFolder: string | Path, destFile: string | Path, game: 'rb3' | 'rb2' | 'gh2' = 'rb3') {
+  static async stfs(srcFolder: StringOrPath, destFile: StringOrPath, game: 'rb3' | 'rb2' | 'gh2' = 'rb3') {
     this.checkOnyxPathIntegrity()
 
     const src = Path.stringToPath(srcFolder)
@@ -29,7 +29,7 @@ export class OnyxCLI {
     return stdout
   }
 
-  static async pkg(srcFolder: string | Path, destFile: string | Path, contentID: string) {
+  static async pkg(srcFolder: StringOrPath, destFile: StringOrPath, contentID: string) {
     this.checkOnyxPathIntegrity()
 
     const src = Path.stringToPath(srcFolder)
@@ -40,7 +40,7 @@ export class OnyxCLI {
     return stdout
   }
 
-  static async edat(srcFile: string | Path, destFile: string | Path, contentID: string, klic: string) {
+  static async edat(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, klic: string) {
     this.checkOnyxPathIntegrity()
 
     const src = Path.stringToPath(srcFile)

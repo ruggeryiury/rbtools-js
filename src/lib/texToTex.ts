@@ -7,13 +7,13 @@ import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, tex
 /**
  * Asynchronously converts a texture file to any other texture file format.
  * - - - -
- * @param {string | Path} srcFile The path of the texture file to want to convert.
- * @param {string | Path} destPath The path of the new converted texture file.
+ * @param {StringOrPath} srcFile The path of the texture file to want to convert.
+ * @param {StringOrPath} destPath The path of the new converted texture file.
  * @param {ArtworkTextureFormatTypes} toFormat The desired texture format of the new texture file.
  * @param {ConvertTextureToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
-export const texToTex = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> => {
+export const texToTex = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> => {
   const { DTX5 } = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       DTX5: true,

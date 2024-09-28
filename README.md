@@ -21,21 +21,23 @@
 - [API](#api)
   - [`ImgFile()` class](#imgfile-class)
     - [Class properties](#class-properties)
-    - [`.stat()`](#stat)
-    - [`.toJSON()`](#tojson)
-    - [`.convertToTexture()`](#converttotexture)
-    - [`.convertToImage()`](#converttoimage)
-    - [`.toDataURL()`](#todataurl)
+    - [`stat()`](#stat)
+    - [`toJSON()`](#tojson)
+    - [`convertToTexture()`](#converttotexture)
+    - [`convertToImage()`](#converttoimage)
+    - [`toDataURL()`](#todataurl)
   - [`TextureFile()` class](#texturefile-class)
     - [Class properties](#class-properties-1)
-    - [`.stat()`](#stat-1)
-    - [`.toJSON()`](#tojson-1)
-    - [`.convertToTexture()`](#converttotexture-1)
-    - [`.convertToImage()`](#converttoimage-1)
-    - [`.toDataURL()`](#todataurl-1)
+    - [`stat()`](#stat-1)
+    - [`toJSON()`](#tojson-1)
+    - [`convertToTexture()`](#converttotexture-1)
+    - [`convertToImage()`](#converttoimage-1)
+    - [`toDataURL()`](#todataurl-1)
   - [`ImageURL()` class](#imageurl-class)
     - [Class properties](#class-properties-2)
-    - [`.download()`](#download)
+    - [`download()`](#download)
+  - [`EDAT` class](#edat-class)
+    - [`DEVKLICFromFolderName()`](#devklicfromfoldername)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -54,15 +56,21 @@
 
 Follow the steps below to install and set up the project on your local machine:
 
-- Install Python v3.
+- Install Python v3 with PIP.
 
-- Clone the repository: Use the following command to clone the repository to your local machine:
+- Execute the `/install_python_packages.py` script to install necessary Python packages:
+
+```bash
+python install_python_packages.py
+```
+
+- Clone the repository: If you have `git` installed, se the following command to clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/ruggeryiury/rbtools-js.git
 ```
 
-- Install dependencies: Navigate to the project directory and install the necessary packages by running:
+- Install project dependencies: Navigate to the project directory and install the necessary packages by running:
 
 ```bash
 npm install
@@ -70,9 +78,15 @@ npm install
 
 _Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally._
 
-- Config your environment file: Create a `.env` file in the root of where you downloaded/cloned this repository and put these values:
+- Config your environment file: Create a `env` file in the root of where you downloaded/cloned this repository and put these values:
 
   - `ONYX_PATH`: The path to Onyx CLI and it is used on the Onyx CLI API. You can download it [here](https://github.com/mtolly/onyx/releases).
+
+So, your `env` file should look like this:
+
+```text
+ONYX_PATH="C:/path/to/onyx_cli/onyx.exe"
+```
 
 # Package resources
 
@@ -94,14 +108,14 @@ At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 # API
 
-The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`.
+The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`
 
 ## `ImgFile()` class
 
-ImgFile is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+`ImgFile` is a class that represents an image file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
 
 - Parameters:
-  - **_imageFilePath_** `string | Path`: The path to the image file.
+  - **_imageFilePath_** `StringOrPath`: The path to the image file.
 
 ```ts
 import { ImgFile } from 'rbtools-js'
@@ -113,7 +127,7 @@ const image = new ImgFile('path/to/image.png')
 
 - **_path_** `Path` The path of the image file.
 
-### `.stat()`
+### `stat()`
 
 Returns a JSON object with statistics of the image file.
 
@@ -130,7 +144,7 @@ console.log(`Image width: ${width.toString()}`)
 console.log(`Image height: ${height.toString()}`)
 ```
 
-### `.toJSON()`
+### `toJSON()`
 
 Returns a JSON representation of the image file class.
 
@@ -152,13 +166,13 @@ console.log(`Image width: ${width.toString()}`)
 console.log(`Image height: ${height.toString()}`)
 ```
 
-### `.convertToTexture()`
+### `convertToTexture()`
 
 Asynchronously converts this image file to a texture file.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new texture file.
+  - **_destPath_** `StringOrPath`: The path of the new texture file.
   - **_toFormat_** `ArtworkTextureFormatTypes` The desired texture format of the new texture file.
   - **_options ?_** `ConvertToTextureOptions` An object with values that changes the behavior of the converting process.
 
@@ -171,13 +185,13 @@ const image = new ImgFile('path/to/image.png')
 const newImage = await image.convertToTexture('path/to/new/texture.png_xbox', 'png_xbox', { textureSize: 256 })
 ```
 
-### `.convertToImage()`
+### `convertToImage()`
 
 Asynchronously converts this image file to any other image file format.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new converted image file.
+  - **_destPath_** `StringOrPath`: The path of the new converted image file.
   - **_toFormat_** `ArtworkImageFormatTypes` The desired image format of the new image file.
   - **_options ?_** `ConvertToImageOptions` An object with values that changes the behavior of the converting process.
 
@@ -196,7 +210,7 @@ const newImage = await image.convertToImage(
 )
 ```
 
-### `.toDataURL()`
+### `toDataURL()`
 
 Asynchronously returns a Base64-encoded DataURL `string` of the image file.
 
@@ -215,10 +229,10 @@ const imageDataURL = await image.toDataURL()
 
 ## `TextureFile()` class
 
-TextureFile is a class that represents a texture file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+`TextureFile` is a class that represents a texture file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
 
 - Parameters:
-  - **_textureFilePath_** `string | Path`: The path to the texture file.
+  - **_textureFilePath_** `StringOrPath`: The path to the texture file.
 
 ```ts
 import { TextureFile } from 'rbtools-js'
@@ -230,7 +244,7 @@ const tex = new TextureFile('path/to/texture.png_xbox')
 
 - **_path_** `Path` The path of the texture file.
 
-### `.stat()`
+### `stat()`
 
 Returns a JSON object with statistics of the texture file.
 
@@ -247,7 +261,7 @@ console.log(`Texture width: ${width.toString()}`)
 console.log(`Texture height: ${height.toString()}`)
 ```
 
-### `.toJSON()`
+### `toJSON()`
 
 Returns a JSON representation of the texture file class.
 
@@ -269,13 +283,13 @@ console.log(`Texture width: ${width.toString()}`)
 console.log(`Texture height: ${height.toString()}`)
 ```
 
-### `.convertToTexture()`
+### `convertToTexture()`
 
 Asynchronously converts this texture file to any other texture file format.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new texture file.
+  - **_destPath_** `StringOrPath`: The path of the new texture file.
   - **_toFormat_** `ArtworkTextureFormatTypes` The desired image format of the image file.
   - **_options ?_** `ConvertToTextureOptions` An object with values that changes the behavior of the converting process.
 
@@ -288,13 +302,13 @@ const tex = new TextureFile('path/to/texture.png_xbox')
 const newTex = await tex.convertToTexture('path/to/new/texture.png_wii', 'png_wii')
 ```
 
-### `.convertToImage()`
+### `convertToImage()`
 
 Asynchronously converts this texture file to an image file.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new image file.
+  - **_destPath_** `StringOrPath`: The path of the new image file.
   - **_toFormat_** `ArtworkImageFormatTypes` The desired image format of the new image file.
 
 - Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new image file.
@@ -306,7 +320,7 @@ const tex = new TextureFile('path/to/texture.png_xbox')
 const newTex = await tex.convertToImage('path/to/new/image.png', 'png')
 ```
 
-### `.toDataURL()`
+### `toDataURL()`
 
 Asynchronously returns a Base64-encoded DataURL `string` of the texture file.
 
@@ -325,7 +339,7 @@ const texDataURL = await tex.toDataURL()
 
 ## `ImageURL()` class
 
-ImageURL is a class that represents an image file URL. It is initalized passing an image URL as an argument.
+`ImageURL` is a class that represents an image file URL. It is initalized passing an image URL as an argument.
 
 - Parameters:
   - **_url_** `string`: The URL of the image.
@@ -341,14 +355,14 @@ const imageURL = new ImageURL('https://image.com/image.png')
 - **_url_** `string` The URL of the image.
 - **_buf_** `Buffer` The buffer of the fetched image.
 
-### `.download()`
+### `download()`
 
 Asynchronously fetches and download the image, converting to a new image file.
 
 - Parameters:
 
-  - **_destPath_** `string | Path`: The path of the new image file.
-  - **_toFormat ?_** `ArtworkImageFormatTypes` The desired image format of the new image file. Default is `'png'`.
+  - **_destPath_** `StringOrPath`: The path of the new image file.
+  - **_toFormat ?_** `ArtworkImageFormatTypes` The desired image format of the new image file. Default is `'png'`
   - **_options ?_** `ImageConverterOptions` An object with values that changes the behavior of the converting process.
 
 - Returns: `Promise<ImgFile>` A new instantiated `ImgFile` class pointing to the new image file.
@@ -374,6 +388,27 @@ const imgFile = await imageURL.download(
 )
 ```
 
+## `EDAT` class
+
+`EDAT` is a class with static methods to deal with PS3 EDAT files.
+
+### `DEVKLICFromFolderName()`
+
+Generates a MD5 hash that decrypts `.mid.edat` files based on the installed DLC folder name.
+
+- Parameters:
+
+  - **_folderName_** `string` The installed DLC folder name.
+
+- Returns: `string`
+
+```ts
+import { EDAT } from 'rbtools-js'
+
+const folderName = 'foldername'
+console.log(EDAT.DEVKLICFromFolderName(folderName))
+```
+
 # Special thanks
 
 - [Onyxite](https://github.com/mtolly): General helping and for the creation of [Onyx Toolkit](https://github.com/mtolly/onyx)!
@@ -383,6 +418,6 @@ const imgFile = await imageURL.download(
 
 # More Rock Band related projects
 
-- [DTA Parser](https://github.com/ruggeryiury/dta-parser): A highly-typed `.dta` file parser.
+- [DTA Parser](https://github.com/ruggeryiury/dta-parser): A highly-typed `dta` file parser.
 - [My Customs Projects](https://github.com/ruggeryiury/ruggy-customs-projects): All my customs projects.
 - [PRO Guitar/Bass Guide](https://ruggeryiury.github.io/proguitarbass-guide/): My famous PRO Guitar/Bass guide.

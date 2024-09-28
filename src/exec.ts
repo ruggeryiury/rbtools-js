@@ -1,4 +1,4 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ExecutableError } from './errors.js'
 import { execPromise } from './lib.js'
 import { __root } from './index.js'
@@ -8,13 +8,13 @@ import { __root } from './index.js'
  *
  * _NVIDIA Texture Tools converts any image file format to DDS image files._
  * - - - -
- * @param {string | Path} srcFile The path to the image file to be converted.
- * @param {string | Path} destPath The path to the new converted DDS file.
+ * @param {StringOrPath} srcFile The path to the image file to be converted.
+ * @param {StringOrPath} destPath The path to the new converted DDS file.
  * @param {boolean} DTX5 `OPTIONAL` Uses DTX5 encoding. Default is `true`.
  * @param {boolean} mipMap `OPTIONAL` Uses MipMap on the DDS texture (needed for album artworks). Default is `true`.
  * @returns {Promise<string>}
  */
-export const NVCompress = async (srcFile: string | Path, destPath: string | Path, DTX5 = true, mipMap = true): Promise<string> => {
+export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, DTX5 = true, mipMap = true): Promise<string> => {
   const moduleName = 'nvcompress.exe'
   const binPath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
@@ -29,11 +29,11 @@ export const NVCompress = async (srcFile: string | Path, destPath: string | Path
 /**
  * Asynchronously executes the Wiimms Image Tool encoder.
  * - - - -
- * @param {string | Path} srcFile The path to the image file to be converted.
- * @param {string | Path} destPath The path to the new converted TPL file.
+ * @param {StringOrPath} srcFile The path to the image file to be converted.
+ * @param {StringOrPath} destPath The path to the new converted TPL file.
  * @returns {Promise<string>}
  */
-export const WimgtEnc = async (srcFile: string | Path, destPath: string | Path): Promise<string> => {
+export const WimgtEnc = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
   const binPath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
@@ -48,11 +48,11 @@ export const WimgtEnc = async (srcFile: string | Path, destPath: string | Path):
 /**
  * Asynchronously executes the Wiimms Image Tool decoder.
  * - - - -
- * @param {string | Path} srcFile The path to the TPL file to be converted.
- * @param {string | Path} destPath The path to the new converted TPL file.
+ * @param {StringOrPath} srcFile The path to the TPL file to be converted.
+ * @param {StringOrPath} destPath The path to the new converted TPL file.
  * @returns {Promise<string>}
  */
-export const WimgtDec = async (srcFile: string | Path, destPath: string | Path): Promise<string> => {
+export const WimgtDec = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
   const binPath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)

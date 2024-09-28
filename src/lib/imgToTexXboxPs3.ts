@@ -9,13 +9,13 @@ import * as Py from '../python.js'
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
  * - - - -
- * @param {string | Path} srcFile The path of the image to want to convert.
- * @param {string | Path} destPath The path of the new converted texture file.
+ * @param {StringOrPath} srcFile The path of the image to want to convert.
+ * @param {StringOrPath} destPath The path of the new converted texture file.
  * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the new texture file.
  * @param {ConvertToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
-export const imgToTexXboxPs3 = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
+export const imgToTexXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
   const { DTX5, interpolation, textureSize } = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       DTX5: true,

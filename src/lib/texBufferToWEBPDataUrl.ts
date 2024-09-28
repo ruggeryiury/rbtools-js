@@ -5,10 +5,10 @@ import * as Py from '../python.js'
 /**
  * Returns a Base64-encoded Data URL `string` of a texture file.
  * - - - -
- * @param {string | Path} srcPath The texture file path.
+ * @param {StringOrPath} srcPath The texture file path.
  * @returns {Promise<string>} A Base64-encoded DataURL `string` of the texture file.
  */
-export const texBufferToWEBPDataUrl = async (srcPath: string | Path): Promise<string> => {
+export const texBufferToWEBPDataUrl = async (srcPath: StringOrPath): Promise<string> => {
   const src = Path.stringToPath(srcPath)
   if (src.ext === '.png_wii') return await Py.webpDataURLPNGWii(src.path)
 

@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
-import SongsDTA from 'dta-parser'
+import { SongsDTA } from 'dta-parser'
 import { useDefaultOptions } from 'dta-parser/lib'
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject, type ReadSTFSFileReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
@@ -10,10 +10,10 @@ import { __root } from './index.js'
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the image file.
  * - - - -
- * @param {string | Path} imageFilePath The path of the image file.
+ * @param {StringOrPath} imageFilePath The path of the image file.
  * @returns {Promise<ImgFileStatReturnObject>}
  */
-export const imgFileStat = async (imageFilePath: string | Path): Promise<ImgFileStatReturnObject> => {
+export const imgFileStat = async (imageFilePath: StringOrPath): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
@@ -27,10 +27,10 @@ export const imgFileStat = async (imageFilePath: string | Path): Promise<ImgFile
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the image file.
  * - - - -
- * @param {string | Path} imageFilePath The path of the image file.
+ * @param {StringOrPath} imageFilePath The path of the image file.
  * @returns {ImgFileStatReturnObject}
  */
-export const imgFileStatSync = (imageFilePath: string | Path): ImgFileStatReturnObject => {
+export const imgFileStatSync = (imageFilePath: StringOrPath): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
@@ -46,10 +46,10 @@ export const imgFileStatSync = (imageFilePath: string | Path): ImgFileStatReturn
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {string | Path} midiFilePath The path of the MIDI file.
+ * @param {StringOrPath} midiFilePath The path of the MIDI file.
  * @returns {Promise<ImgFileStatReturnObject>}
  */
-export const midiFileStat = async (midiFilePath: string | Path): Promise<MidiFileStatObject> => {
+export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MidiFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
@@ -63,10 +63,10 @@ export const midiFileStat = async (midiFilePath: string | Path): Promise<MidiFil
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {string | Path} midiFilePath The path of the MIDI file.
+ * @param {StringOrPath} midiFilePath The path of the MIDI file.
  * @returns {MidiFileStatObject}
  */
-export const midiFileStatSync = (midiFilePath: string | Path): MidiFileStatObject => {
+export const midiFileStatSync = (midiFilePath: StringOrPath): MidiFileStatObject => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
@@ -95,12 +95,12 @@ export interface ImageConverterOptions {
  * Python script: Asynchronously converts an image file `Buffer` to an image file.
  * - - - -
  * @param {Buffer} buf The buffer of the image file.
- * @param {string | Path} destPath The path of the new converted image file.
+ * @param {StringOrPath} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes | undefined} toFormat The desired image format of the new image file. Default is `'png'`.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<ImgFile>}
  */
-export const bufferConverter = async (buf: Buffer, destPath: string | Path, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> => {
+export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> => {
   const opts = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       height: 256,
@@ -144,13 +144,13 @@ export const bufferConverter = async (buf: Buffer, destPath: string | Path, toFo
  *
  * If no _options_ argument is given, the image converter will return a 256x256 pixels size image file.
  * - - - -
- * @param {string | Path} srcFile The path of the image to want to convert.
- * @param {string | Path} destPath The path of the new converted image file.
+ * @param {StringOrPath} srcFile The path of the image to want to convert.
+ * @param {StringOrPath} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<ImgFile>}
  */
-export const imageConverter = async (srcFile: string | Path, destPath: string | Path, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
+export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
   const opts = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       height: 256,
@@ -174,11 +174,11 @@ export const imageConverter = async (srcFile: string | Path, destPath: string | 
 /**
  * Python script: Asynchronously returns a Base64-encoded DataURL `string` of the image file.
  * - - - -
- * @param {string | Path} srcFile The path to the image file.
+ * @param {StringOrPath} srcFile The path to the image file.
  * @param {ConvertToWEBPDataURLOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<string>}
  */
-export const webpDataURL = async (srcFile: string | Path, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
+export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
   const opts = useDefaultOptions<NonNullable<typeof options>, true>(
     {
       width: null,
@@ -254,10 +254,10 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
  * Python script: Asynchronously converts an PNG_WII texture file to a Base64-encoded
  * Data URL `string` of the texture file.
  * - - - -
- * @param {string | Path} srcFile The path of the PNG_WII file.
+ * @param {StringOrPath} srcFile The path of the PNG_WII file.
  * @returns {Promise<string>}
  */
-export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string> => {
+export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> => {
   const src = Path.stringToPath(srcFile)
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')
@@ -270,7 +270,7 @@ export const webpDataURLPNGWii = async (srcFile: string | Path): Promise<string>
   return dataurl
 }
 
-export const readSTFSFile = async (conFile: string | Path): Promise<ReadSTFSFileReturnObject> => {
+export const readSTFSFile = async (conFile: StringOrPath): Promise<ReadSTFSFileReturnObject> => {
   const src = Path.stringToPath(conFile)
   const moduleName = 'read_stfs_file.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
@@ -283,7 +283,7 @@ export const readSTFSFile = async (conFile: string | Path): Promise<ReadSTFSFile
   return { ...unparsed, dta: new SongsDTA(unparsed.dta) }
 }
 
-export const readDTAFileFromSTFS = async (conFile: string | Path): Promise<string> => {
+export const readDTAFileFromSTFS = async (conFile: StringOrPath): Promise<string> => {
   const src = Path.stringToPath(conFile)
   const moduleName = 'read_stfs_file.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
