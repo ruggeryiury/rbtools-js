@@ -1,4 +1,4 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ImgFile } from '../index.js'
 import { getDDSHeader, type ArtworkImageFormatTypes } from '../lib.js'
 import * as Py from '../python.js'

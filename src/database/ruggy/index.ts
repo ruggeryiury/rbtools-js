@@ -1,4 +1,4 @@
-import SongsDTA from 'dta-parser'
+import { SongsDTA } from 'dta-parser'
 import { createMAGMAProjectObject, type MAGMAProject } from '../../lib.js'
 import * as ruggy from './songs.js'
 

@@ -1,5 +1,5 @@
 import { useDefaultOptions } from 'dta-parser/lib'
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import zod from 'zod'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
 import { FileConvertionError, ValueError } from '../errors.js'

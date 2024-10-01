@@ -37,7 +37,7 @@
     - [Class properties](#class-properties-2)
     - [`download()`](#download)
   - [`EDAT` class](#edat-class)
-    - [`DEVKLICFromFolderName()`](#devklicfromfoldername)
+    - [`KLICFromFolderName()`](#klicfromfoldername)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -392,7 +392,7 @@ const imgFile = await imageURL.download(
 
 `EDAT` is a class with static methods to deal with PS3 EDAT files.
 
-### `DEVKLICFromFolderName()`
+### `KLICFromFolderName()`
 
 Generates a MD5 hash that decrypts `.mid.edat` files based on the installed DLC folder name.
 
@@ -406,7 +406,7 @@ Generates a MD5 hash that decrypts `.mid.edat` files based on the installed DLC 
 import { EDAT } from 'rbtools-js'
 
 const folderName = 'foldername'
-console.log(EDAT.DEVKLICFromFolderName(folderName))
+console.log(EDAT.KLICFromFolderName(folderName))
 ```
 
 # Special thanks

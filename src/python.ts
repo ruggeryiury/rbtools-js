@@ -1,8 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
-import { SongsDTA } from 'dta-parser'
 import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
-import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject, type ReadSTFSFileReturnObject } from './core.js'
+import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
@@ -270,7 +269,7 @@ export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> 
   return dataurl
 }
 
-export const readSTFSFile = async (conFile: StringOrPath): Promise<ReadSTFSFileReturnObject> => {
+export const readSTFSFile = async (conFile: StringOrPath): Promise<ReadSTFSFileRawReturnObject> => {
   const src = Path.stringToPath(conFile)
   const moduleName = 'read_stfs_file.py'
   const pyPath = new Path(__root.path, `./python/${moduleName}`)
@@ -280,7 +279,7 @@ export const readSTFSFile = async (conFile: StringOrPath): Promise<ReadSTFSFileR
 
   const unparsed = JSON.parse(stdout) as ReadSTFSFileRawReturnObject
 
-  return { ...unparsed, dta: new SongsDTA(unparsed.dta) }
+  return unparsed
 }
 
 export const readDTAFileFromSTFS = async (conFile: StringOrPath): Promise<string> => {

@@ -1,4 +1,4 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ImageHeaders } from '../core.js'
 import { FileNotFoundError, UnknownFileFormatError } from '../errors.js'
 import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes } from '../lib.js'

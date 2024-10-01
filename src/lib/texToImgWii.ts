@@ -1,4 +1,4 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { WimgtDec } from '../exec.js'
 import { ImgFile } from '../index.js'
 import { getTPLHeader, type ArtworkImageFormatTypes } from '../lib.js'

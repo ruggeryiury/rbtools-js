@@ -1,4 +1,4 @@
-import type SongsDTA from 'dta-parser'
+import { SongsDTA } from 'dta-parser'
 
 export interface ReadSTFSFileRawReturnObject {
   /** The name of the package. */
@@ -16,4 +16,4 @@ export type ReadSTFSFileReturnObject = Omit<ReadSTFSFileRawReturnObject, 'dta'> 
   dta: SongsDTA
 }
 
-export class STFSFile {}
+// export class STFSFile {}

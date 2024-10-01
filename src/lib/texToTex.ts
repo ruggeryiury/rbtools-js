@@ -1,5 +1,5 @@
 import { useDefaultOptions } from 'dta-parser/lib'
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import type { ConvertTextureToTextureOptions } from '../core.js'
 import type { TextureFile } from '../index.js'
 import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, texToImgXboxPs3 } from '../lib.js'

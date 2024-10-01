@@ -1,5 +1,5 @@
 import { useDefaultOptions } from 'dta-parser/lib'
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { FileConvertionError } from '../errors.js'
 import { WimgtEnc } from '../exec.js'
