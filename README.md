@@ -502,6 +502,6 @@ await EDAT.decryptEDATFromDLCFolder(edatFilePath)
 
 # More Rock Band related projects
 
-- [DTA Parser](https://github.com/ruggeryiury/rbdta-js): A highly-typed `dta` file parser.
+- [RBDTA-JS](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
 - [My Customs Projects](https://github.com/ruggeryiury/ruggy-customs-projects): All my customs projects.
 - [PRO Guitar/Bass Guide](https://ruggeryiury.github.io/proguitarbass-guide/): My famous PRO Guitar/Bass guide.
