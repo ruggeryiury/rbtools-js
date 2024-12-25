@@ -1,5 +1,5 @@
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
 import { imgToImg, imgToTexWii, imgToTexXboxPs3, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
@@ -121,7 +121,7 @@ export class ImgFile {
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
   async convertToTexture(destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
-    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+    const opts = setDefaultOptions<typeof options>(
       {
         DTX5: true,
         interpolation: 'bilinear',
@@ -147,7 +147,7 @@ export class ImgFile {
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
   async convertToImage(destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> {
-    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+    const opts = setDefaultOptions<typeof options>(
       {
         height: null,
         width: null,
@@ -168,7 +168,7 @@ export class ImgFile {
    * @returns {Promise<string>} A Base64-encoded DataURL `string` of the image file.
    */
   async toDataURL(options?: ConvertToWEBPDataURLOptions): Promise<string> {
-    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+    const opts = setDefaultOptions<typeof options>(
       {
         width: null,
         height: null,

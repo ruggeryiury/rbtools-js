@@ -1,5 +1,5 @@
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import zod from 'zod'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
 import { FileConvertionError, ValueError } from '../errors.js'
@@ -16,7 +16,7 @@ import * as Py from '../python.js'
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const imgToImg = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> => {
-  const { height, interpolation, quality, width } = useDefaultOptions<NonNullable<typeof options>, true>(
+  const { height, interpolation, quality, width } = setDefaultOptions<typeof options>(
     {
       height: null,
       width: null,

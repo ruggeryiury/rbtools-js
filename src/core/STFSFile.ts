@@ -1,4 +1,4 @@
-import { SongsDTA } from 'dta-parser'
+import { SongsDTA } from 'rbdta-js'
 
 export interface ReadSTFSFileRawReturnObject {
   /** The name of the package. */

@@ -4,6 +4,7 @@ src/
 src*/
 temp/
 tests/
+packages/
 .env
 .gitignore
 .npmignore

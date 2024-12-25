@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import type { ImgFile } from '../core.js'
 import { ImageFetchingError } from '../errors.js'
 import { isURL, type ArtworkImageFormatTypes } from '../lib.js'
@@ -60,7 +60,7 @@ export class ImageURL {
    */
   async download(destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
     if (this.buf.length === 0) await this.fetchURL()
-    const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+    const opts = setDefaultOptions<typeof options>(
       {
         height: 256,
         width: 256,

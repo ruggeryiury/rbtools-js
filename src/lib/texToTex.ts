@@ -1,5 +1,5 @@
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import type { ConvertTextureToTextureOptions } from '../core.js'
 import type { TextureFile } from '../index.js'
 import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, texToImgXboxPs3 } from '../lib.js'
@@ -14,7 +14,7 @@ import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, tex
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const texToTex = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> => {
-  const { DTX5 } = useDefaultOptions<NonNullable<typeof options>, true>(
+  const { DTX5 } = setDefaultOptions<typeof options>(
     {
       DTX5: true,
     },

@@ -1,5 +1,5 @@
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { FileConvertionError, UnknownFileFormatError } from '../errors.js'
 import { NVCompress } from '../exec.js'
@@ -16,7 +16,7 @@ import * as Py from '../python.js'
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const imgToTexXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
-  const { DTX5, interpolation, textureSize } = useDefaultOptions<NonNullable<typeof options>, true>(
+  const { DTX5, interpolation, textureSize } = setDefaultOptions<typeof options>(
     {
       DTX5: true,
       interpolation: 'bilinear',

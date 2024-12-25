@@ -38,6 +38,10 @@
     - [`download()`](#download)
   - [`EDAT` class](#edat-class)
     - [`KLICFromFolderName()`](#klicfromfoldername)
+    - [`encryptToEDAT()`](#encrypttoedat)
+    - [`decryptEDAT()`](#decryptedat)
+    - [`decryptRPCS3DLCFolder()`](#decryptrpcs3dlcfolder)
+    - [`decryptEDATFromDLCFolder()`](#decryptedatfromdlcfolder)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -104,7 +108,7 @@ Also, **_RBToolsJS_** uses modified Python scripts from:
 At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 - [Path-JS](https://github.com/ruggeryiury/path-js): A path utility suite that gathers several functions related to a specific path.
-- [DTAParser](https://github.com/ruggeryiury/dta-parser): A Rock Band song metadata file parser written in Javascript.
+- [DTAParser](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
 
 # API
 
@@ -409,6 +413,86 @@ const folderName = 'foldername'
 console.log(EDAT.KLICFromFolderName(folderName))
 ```
 
+### `encryptToEDAT()`
+
+Encrypts any file to EDAT.
+
+- Parameters:
+
+  - **_srcFile_** `StringOrPath` The path to the file to be encrypted.
+  - **_destFile_** `StringOrPath` The path to the new encrypted EDAT file.
+  - **_contentID_** `string` The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL`
+  - **_devKLic_** `string` A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
+
+- Returns: `Promise<string>`
+
+```ts
+import { EDAT } from 'rbtools-js'
+
+const src = 'path/to/unencrypted/midiFile.mid'
+const dest = 'path/to/encrypted/midiFile.mid.edat'
+const contentID = 'UP0002-BLUS30487_00-RBTOOLSJSEXAMP'
+const devKLic = EDAT.KLICFromFolderName('dlcfoldername')
+
+await EDAT.encryptToEDAT(src, dest, contentID, devKLic)
+```
+
+### `decryptEDAT()`
+
+Decrypts any file to EDAT.
+
+- Parameters:
+
+  - **_srcFile_** `StringOrPath` The path to the EDAT file to be decrypted.
+  - **_destFile_** `StringOrPath` The path to the decrypted file.
+  - **_devKLic_** `string` A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
+
+- Returns: `Promise<string>`
+
+```ts
+import { EDAT } from 'rbtools-js'
+
+const src = 'path/to/encrypted/midiFile.mid.edat'
+const dest = 'path/to/unencrypted/midiFile.mid'
+const devKLic = EDAT.KLICFromFolderName('dlcfoldername')
+
+await EDAT.decryptEDAT(src, dest, devKLic)
+```
+
+### `decryptRPCS3DLCFolder()`
+
+Converts all EDAT files from a RPCS3 DLC folder. The DLC folder name must be the one that the EDAT file were originally installed to work.
+
+- Parameters:
+
+  - **_dlcFolder_** `StringOrPath` The folder you want to convert all EDAT files.
+
+- Returns: `Promise<string>`
+
+```ts
+import { EDAT } from 'rbtools-js'
+
+const dlcFolder = 'path/to/rpcs3/dlc/folder'
+await EDAT.decryptRPCS3DLCFolder(dlcFolder)
+```
+
+### `decryptEDATFromDLCFolder()`
+
+Decrypts an EDAT file inside a RPCS3 DLC folder. The DLC folder name must be the one that the EDAT file were originally installed to work.
+
+- Parameters:
+
+  - **_edatFilePath_** `StringOrPath` The path to the EDAT file to be decrpted.
+
+- Returns: `Promise<string>`
+
+```ts
+import { EDAT } from 'rbtools-js'
+
+const edatFilePath = 'path/to/encrypted/midiFile.mid.edat'
+await EDAT.decryptEDATFromDLCFolder(edatFilePath)
+```
+
 # Special thanks
 
 - [Onyxite](https://github.com/mtolly): General helping and for the creation of [Onyx Toolkit](https://github.com/mtolly/onyx)!
@@ -418,6 +502,6 @@ console.log(EDAT.KLICFromFolderName(folderName))
 
 # More Rock Band related projects
 
-- [DTA Parser](https://github.com/ruggeryiury/dta-parser): A highly-typed `dta` file parser.
+- [DTA Parser](https://github.com/ruggeryiury/rbdta-js): A highly-typed `dta` file parser.
 - [My Customs Projects](https://github.com/ruggeryiury/ruggy-customs-projects): All my customs projects.
 - [PRO Guitar/Bass Guide](https://ruggeryiury.github.io/proguitarbass-guide/): My famous PRO Guitar/Bass guide.

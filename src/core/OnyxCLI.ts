@@ -74,7 +74,7 @@ export class OnyxCLI {
    * @param {StringOrPath} srcFile The path to the file to be encrypted.
    * @param {StringOrPath} destFile The path to the new `.edat` file.
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL`
-   * @param {string} klic A 16-byte hex string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
+   * @param {string} klic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>} The printable text from the child process.
    */
   static async edat(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, klic: string): Promise<string> {

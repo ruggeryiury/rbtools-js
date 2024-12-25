@@ -1,6 +1,6 @@
 {
   "name": "rbtools-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "A highly typed module package to manipulate several Rock Band game files.",
   "type": "module",
@@ -18,9 +18,10 @@
   "dependencies": {
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
-    "dta-parser": "file:./packages/dta-parser-2.0.2.tgz",
     "jschardet": "^3.1.2",
-    "path-js": "file:./packages/path-js-1.4.0.tgz",
+    "path-js": "file:./packages/path-js-1.5.0.tgz",
+    "rbdta-js": "file:./packages/rbdta-js-1.0.1.tgz",
+    "set-default-options": "file:./packages/set-default-options-1.0.0.tgz",
     "winston": "^3.13.0",
     "zod": "^3.23.8"
   },
@@ -51,9 +52,6 @@
     },
     "./core": {
       "import": "./dist/core.js"
-    },
-    "./database": {
-      "import": "./dist/database.js"
     },
     "./errors": {
       "import": "./dist/errors.js"

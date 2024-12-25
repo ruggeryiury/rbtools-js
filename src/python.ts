@@ -1,6 +1,6 @@
 import { execSync, spawn } from 'node:child_process'
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
@@ -100,7 +100,7 @@ export interface ImageConverterOptions {
  * @returns {Promise<ImgFile>}
  */
 export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> => {
-  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+  const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
       width: 256,
@@ -150,7 +150,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
  * @returns {Promise<ImgFile>}
  */
 export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
-  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+  const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
       width: 256,
@@ -178,7 +178,7 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
  * @returns {Promise<string>}
  */
 export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
-  const opts = useDefaultOptions<NonNullable<typeof options>, true>(
+  const opts = setDefaultOptions<typeof options>(
     {
       width: null,
       height: null,

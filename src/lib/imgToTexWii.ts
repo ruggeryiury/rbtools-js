@@ -1,5 +1,5 @@
-import { useDefaultOptions } from 'dta-parser/lib'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { FileConvertionError } from '../errors.js'
 import { WimgtEnc } from '../exec.js'
@@ -14,7 +14,7 @@ import * as Py from '../python.js'
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>): Promise<TextureFile> => {
-  const { interpolation } = useDefaultOptions<NonNullable<typeof options>, true>(
+  const { interpolation } = setDefaultOptions<typeof options>(
     {
       interpolation: 'bilinear',
     },

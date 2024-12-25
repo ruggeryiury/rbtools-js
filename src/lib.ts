@@ -1,4 +1,3 @@
-export * from './lib/createMAGMAFile.js'
 export * from './lib/execPromise.js'
 export * from './lib/getDDSHeader.js'
 export * from './lib/getTPLHeader.js'

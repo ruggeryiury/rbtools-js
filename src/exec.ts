@@ -16,12 +16,12 @@ import { __root } from './index.js'
  */
 export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, DTX5 = true, mipMap = true): Promise<string> => {
   const moduleName = 'nvcompress.exe'
-  const binPath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 
   const command = `${moduleName} -nocuda ${mipMap ? '' : '-nomips'} ${DTX5 ? ' -bc3' : ' -bc1'} "${src.path}" "${dest.path}"`
-  const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
+  const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
   if (stderr) throw new ExecutableError(stderr)
   return stdout
 }
@@ -35,12 +35,12 @@ export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, 
  */
 export const WimgtEnc = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
-  const binPath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 
   const command = `${moduleName} -d "${dest.path}" ENC -x TPL.CMPR "${src.path}"`
-  const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
+  const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
   if (stderr) throw new ExecutableError(stderr)
   return stdout
 }
@@ -54,12 +54,12 @@ export const WimgtEnc = async (srcFile: StringOrPath, destPath: StringOrPath): P
  */
 export const WimgtDec = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
-  const binPath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 
   const command = `${moduleName} -d "${dest.path}" DEC -x TPL.CMPR "${src.path}"`
-  const { stderr, stdout } = await execPromise(command, { cwd: binPath.root, windowsHide: true })
+  const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
   if (stderr) throw new ExecutableError(stderr)
   return stdout
 }
