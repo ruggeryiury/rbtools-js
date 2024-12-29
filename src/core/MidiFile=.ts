@@ -19,10 +19,10 @@ export interface MIDIFileJSONObject extends PathJSONRepresentation {
 }
 
 /**
- * MidiFile is a class that represents a MIDI file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+ * MIDIFile is a class that represents a MIDI file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
  * - - - -
  */
-export class MidiFile {
+export class MIDIFile {
   /** The path of the MIDI file. */
   path: Path
 

@@ -48,7 +48,7 @@ export class TextureFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `MidiFile` class.
+ * An error that generically occurs using the `MIDIFile` class.
  * - - - -
  */
 export class MIDIFileError extends Error {
