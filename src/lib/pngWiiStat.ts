@@ -1,18 +1,15 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import { ImageHeaders, type TextureFileStatReturnObject } from '../core.js'
 import { UnknownFileFormatError } from '../errors.js'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.
  * - - - -
- * @param {Path | string} filePath The path of the PNG_WII file.
+ * @param {StringOrPath} filePath The path of the PNG_WII file.
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_WII texture file
  */
-export const pngWiiStat = async (filePath: Path | string): Promise<TextureFileStatReturnObject> => {
-  let srcPath: Path
-
-  if (filePath instanceof Path) srcPath = filePath
-  else srcPath = new Path(filePath)
+export const pngWiiStat = async (filePath: StringOrPath): Promise<TextureFileStatReturnObject> => {
+  const srcPath = Path.stringToPath(filePath)
 
   const srcBuffer = await srcPath.readFile()
   const srcHeader = srcBuffer.subarray(0, 32)
@@ -51,14 +48,11 @@ export const pngWiiStat = async (filePath: Path | string): Promise<TextureFileSt
 /**
  * Synchronously returns an object with statistics of a PNG_WII texture file.
  * - - - -
- * @param {Path | string} filePath The path of the PNG_WII file.
+ * @param {StringOrPath} filePath The path of the PNG_WII file.
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_WII texture file
  */
-export const pngWiiStatSync = (filePath: Path | string): TextureFileStatReturnObject => {
-  let srcPath: Path
-
-  if (filePath instanceof Path) srcPath = filePath
-  else srcPath = new Path(filePath)
+export const pngWiiStatSync = (filePath: StringOrPath): TextureFileStatReturnObject => {
+  const srcPath = Path.stringToPath(filePath)
 
   const srcBuffer = srcPath.readFileSync()
   const srcHeader = srcBuffer.subarray(0, 32)

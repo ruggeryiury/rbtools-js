@@ -23,7 +23,7 @@ export class ImageURL {
    * @param {string} url The URL of the image.
    */
   constructor(url: string) {
-    if (!isURL(url)) throw new Error(`Provided link "${url}" is not a valid URL`)
+    if (!isURL(url)) throw new ImageFetchingError(`Provided link "${url}" is not a valid URL`)
     this.url = url
   }
 
@@ -69,8 +69,7 @@ export class ImageURL {
       },
       options
     )
-    if (!this.isFetched) throw new Error('')
-    if (this.buf.length === 0) throw new Error('file terminated')
+    if (this.buf.length === 0) throw new ImageFetchingError('File terminated')
     const dest = Path.stringToPath(destPath)
 
     const image = await bufferConverter(this.buf, dest.changeFileExt(toFormat), toFormat, opts)

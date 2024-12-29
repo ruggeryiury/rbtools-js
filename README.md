@@ -1,8 +1,4 @@
 <div align=center>
-<img src='https://raw.githubusercontent.com/ruggeryiury/rbtools-js/master/assets/header.webp' alt='RBToolsJS: Package Header Image'>
-</div>
-
-<div align=center>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' width='30px' title='JavaScript'/>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg' width='30px' title='TypeScript'/>
 <img src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original-wordmark.svg' width='30px' title='NodeJS'>
@@ -36,12 +32,17 @@
   - [`ImageURL` class](#imageurl-class)
     - [Class properties](#class-properties-2)
     - [`download()`](#download)
-  - [`EDAT` class](#edat-class)
-    - [`KLICFromFolderName()`](#klicfromfoldername)
+  - [`EDATFile` class](#edatfile-class)
+    - [`devklicFromFolderName()`](#devklicfromfoldername)
     - [`encryptToEDAT()`](#encrypttoedat)
     - [`decryptEDAT()`](#decryptedat)
     - [`decryptRPCS3DLCFolder()`](#decryptrpcs3dlcfolder)
     - [`decryptEDATFromDLCFolder()`](#decryptedatfromdlcfolder)
+  - [`STFSFile` class](#stfsfile-class)
+    - [Class properties](#class-properties-3)
+    - [`stat()`](#stat-2)
+    - [`toJSON()`](#tojson-2)
+    - [`extract()`](#extract)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -84,6 +85,7 @@ _Make sure that the `packages` folder are in the project's root folder to instal
 
 - Config your environment file: Create a `env` file in the root of where you downloaded/cloned this repository and put these values:
 
+  - `RBTOOLS_DEV`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder.
   - `ONYX_PATH`: The path to Onyx CLI and it is used on the Onyx CLI API. You can download it [here](https://github.com/mtolly/onyx/releases).
 
 So, your `env` file should look like this:
@@ -104,11 +106,13 @@ Also, **_RBToolsJS_** uses modified Python scripts from:
 
 - [TPL Module (from Wii.py)](https://github.com/DorkmasterFlek/Wii.py)
 - [STFS Module (from py360)](https://github.com/valmyzk/py360)
+- [MOGG Module (from moggulator)](https://github.com/LocalH/moggulator/tree/master)
 
 At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 - [Path-JS](https://github.com/ruggeryiury/path-js): A path utility suite that gathers several functions related to a specific path.
-- [DTAParser](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
+- [RBDTA-JS](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
+- [Set Default Options](https://github.com/ruggeryiury/set-default-options): Utility function to merge default options with user-defined ones.
 
 # API
 
@@ -392,11 +396,11 @@ const imgFile = await imageURL.download(
 )
 ```
 
-## `EDAT` class
+## `EDATFile` class
 
-`EDAT` is a class with static methods to deal with PS3 EDAT files.
+`EDATFile` is a class with static methods to deal with PS3 EDAT files.
 
-### `KLICFromFolderName()`
+### `devklicFromFolderName()`
 
 Generates a MD5 hash that decrypts `.mid.edat` files based on the installed DLC folder name.
 
@@ -410,7 +414,7 @@ Generates a MD5 hash that decrypts `.mid.edat` files based on the installed DLC 
 import { EDAT } from 'rbtools-js'
 
 const folderName = 'foldername'
-console.log(EDAT.KLICFromFolderName(folderName))
+console.log(EDAT.devklicFromFolderName(folderName))
 ```
 
 ### `encryptToEDAT()`
@@ -493,12 +497,86 @@ const edatFilePath = 'path/to/encrypted/midiFile.mid.edat'
 await EDAT.decryptEDATFromDLCFolder(edatFilePath)
 ```
 
+## `STFSFile` class
+
+`STFSFile` is a class that represents a Xbox CON file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+
+- Parameters:
+  - **_stfsFilePath_** `StringOrPath`: The path to the image file.
+
+```ts
+import { STFSFile } from 'rbtools-js'
+
+const stfs = new STFSFile('path/to/song_rb3con')
+```
+
+### Class properties
+
+- **_path_** `Path` The path of the CON file.
+
+### `stat()`
+
+Returns a JSON object with statistics of the CON file.
+
+- Returns: `STFSFileStatReturnObject`
+
+```ts
+import { STFSFile } from 'rbtools-js'
+
+const stfs = new STFSFile('path/to/song_rb3con')
+
+// Checks if the CON file is a pack of songs
+const { isPack } = stfs.stat()
+console.log(isPack)
+```
+
+### `toJSON()`
+
+Returns a JSON representation of the STFS file class.
+
+- Returns: `STFSFileJSONObject`
+
+```ts
+import { STFSFile } from 'rbtools-js'
+
+const stfs = new STFSFile('path/to/song_rb3con')
+
+// Get the path and if the CON file is a pack
+const {
+  path,
+  file: { isPack },
+} = tex.toJSON()
+
+console.log(`CON file path: ${path}`)
+console.log(`CON file is pack: ${isPack.toString()}`)
+```
+
+### `extract()`
+
+Asynchronously extract all files from a CON file and returns the folder path where all contents was extracted.
+
+- Parameters:
+
+  - **_destPath_** `StringOrPath` The folder path where you want the files to be extracted to.
+
+- Returns: `Promise<string>`
+
+```ts
+import { STFSFile } from 'rbtools-js'
+
+const stfs = new STFSFile('path/to/song_rb3con')
+const destPath = new Path('path/to/a/directory')
+
+await stfs.extract(destPath)
+```
+
 # Special thanks
 
+- [raphaelgoulart](https://github.com/raphaelgoulart): Close friend and always helping me in some sort.
 - [Onyxite](https://github.com/mtolly): General helping and for the creation of [Onyx Toolkit](https://github.com/mtolly/onyx)!
 - [TrojanNemo](https://github.com/trojannemo): General helping and for the creation of [Nautilus](https://github.com/trojannemo/Nautilus)!
+- [LocalH](https://github.com/LocalH): General helping and providing me the [moggulator](https://github.com/LocalH/moggulator/tree/master) python script.
 - [Emma](https://github.com/InvoxiPlayGames): General helping.
-- [raphaelgoulart](https://github.com/raphaelgoulart): Close friend and always helping me in some sort.
 
 # More Rock Band related projects
 

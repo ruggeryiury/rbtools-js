@@ -7,7 +7,6 @@ def midi_file_stat(file_path: str) -> dict:
   try:
     with MidiFile(file_path) as midi:
       status = {
-        "format": "MID",
         "charset": midi.charset,
         "midiType": midi.type,
         "ticksPerBeat": midi.ticks_per_beat,

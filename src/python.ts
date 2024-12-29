@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MidiFileStatObject, type ReadSTFSFileRawReturnObject } from './core.js'
+import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MIDIFileStatObject, type STFSFileStatRawReturnObject, type STFSFileStatReturnObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
@@ -14,7 +14,7 @@ import { __root } from './index.js'
  */
 export const imgFileStat = async (imageFilePath: StringOrPath): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -31,7 +31,7 @@ export const imgFileStat = async (imageFilePath: StringOrPath): Promise<ImgFileS
  */
 export const imgFileStatSync = (imageFilePath: StringOrPath): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {
@@ -46,33 +46,33 @@ export const imgFileStatSync = (imageFilePath: StringOrPath): ImgFileStatReturnO
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
  * @param {StringOrPath} midiFilePath The path of the MIDI file.
- * @returns {Promise<ImgFileStatReturnObject>}
+ * @returns {Promise<MIDIFileStatReturnObject>}
  */
-export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MidiFileStatObject> => {
+export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  return JSON.parse(stdout) as MidiFileStatObject
+  return JSON.parse(stdout) as MIDIFileStatObject
 }
 
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
  * @param {StringOrPath} midiFilePath The path of the MIDI file.
- * @returns {MidiFileStatObject}
+ * @returns {MIDIFileStatObject}
  */
-export const midiFileStatSync = (midiFilePath: StringOrPath): MidiFileStatObject => {
+export const midiFileStatSync = (midiFilePath: StringOrPath): MIDIFileStatObject => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
 
   try {
-    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as MidiFileStatObject
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as MIDIFileStatObject
   } catch (err) {
     if (err instanceof Error) throw new PythonExecutionError(err.message)
     else throw err
@@ -113,7 +113,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
   const dest = Path.stringToPath(destPath)
   return new Promise<ImgFile>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
-    const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    const pyPath = new Path(__root, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 
@@ -162,7 +162,7 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
   const moduleName = 'image_converter.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -199,7 +199,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 
   const src = Path.stringToPath(srcFile)
   const moduleName = 'webp_data_url.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -217,7 +217,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
     const moduleName = 'img_buffer_to_webp_data_url.py'
-    const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    const pyPath = new Path(__root, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 
@@ -261,7 +261,7 @@ export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> 
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(__root, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -269,26 +269,61 @@ export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> 
   return dataurl
 }
 
-export const readSTFSFile = async (conFile: StringOrPath): Promise<ReadSTFSFileRawReturnObject> => {
-  const src = Path.stringToPath(conFile)
-  const moduleName = 'read_stfs_file.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+/**
+ * Python script: Asynchronously prints a JSON object with the statistics of the CON file.
+ * - - - -
+ * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @returns {Promise<STFSFileStatReturnObject>}
+ */
+export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFileStatReturnObject> => {
+  const moduleName = 'stfs_file_stat.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
-  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  const unparsed = JSON.parse(stdout) as ReadSTFSFileRawReturnObject
-
-  return unparsed
+  return JSON.parse(stdout) as STFSFileStatReturnObject
 }
 
-export const readDTAFileFromSTFS = async (conFile: StringOrPath): Promise<string> => {
-  const src = Path.stringToPath(conFile)
-  const moduleName = 'read_stfs_file.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+/**
+ * Python script: Synchronously prints a JSON object with the statistics of the CON file.
+ * - - - -
+ * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @returns {STFSFileStatRawReturnObject}
+ */
+export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawReturnObject => {
+  const moduleName = 'stfs_file_stat.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
-  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  try {
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as STFSFileStatRawReturnObject
+  } catch (err) {
+    if (err instanceof Error) throw new PythonExecutionError(err.message)
+    else throw err
+  }
+}
+
+/**
+ * Python script: Asynchronously extract all files from a CON file and returns the folder path where all contents was extracted.
+ * - - - -
+ * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
+ * @returns {Promise<string>}
+ */
+export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<string> => {
+  const moduleName = 'stfs_extract.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(stfsFilePath)
+  const dest = Path.stringToPath(destPath)
+
+  if (dest.exists()) await dest.deleteDir()
+  await dest.mkDir()
+
+  const command = `python ${moduleName} "${src.path}" "${dest.path}"`
+  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  return stdout
+  return dest.path
 }

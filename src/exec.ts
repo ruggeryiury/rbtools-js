@@ -16,7 +16,7 @@ import { __root } from './index.js'
  */
 export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, DTX5 = true, mipMap = true): Promise<string> => {
   const moduleName = 'nvcompress.exe'
-  const exePath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 
@@ -35,7 +35,7 @@ export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, 
  */
 export const WimgtEnc = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
-  const exePath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 
@@ -54,7 +54,7 @@ export const WimgtEnc = async (srcFile: StringOrPath, destPath: StringOrPath): P
  */
 export const WimgtDec = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'wimgt.exe'
-  const exePath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(__root, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 

@@ -7,15 +7,29 @@ export type OnyxCLIOperators = 'import' | 'build' | 'web-player' | 'reaper' | 'p
 export type STFSGameTypes = 'rb3' | 'rb2' | 'gh2'
 
 /**
- * Use Onyx CLI features as an API.
+ * Use Onyx CLI features as an JavaScript API.
  */
 export class OnyxCLI {
-  static checkOnyxCLIIntegrity(): Path {
+  /**
+   * The path to the Onyx CLI executable.
+   */
+  path: Path
+
+  /**
+   * @param {StringOrPath} onyxCliPath The path to the Onyx CLI executable.
+   */
+  constructor(onyxCliPath: StringOrPath) {
+    const path = Path.stringToPath(onyxCliPath)
+    this.path = path
+
+    this.checkOnyxCLIIntegrity()
+  }
+
+  private checkOnyxCLIIntegrity(): void {
     if (!process.env.ONYX_CLI_PATH) throw new OnyxCLIError('No path for Onyx CLI executable was provided on the project\'s environment. Please, provide a path using the "ONYX_PATH" key')
 
     const onyxPath = new Path(process.env.ONYX_CLI_PATH)
     if (!onyxPath.exists()) throw new OnyxCLIError(`No Onyx CLI executable found on provided path "${onyxPath.path}"`)
-    return onyxPath
   }
 
   /**
@@ -24,9 +38,8 @@ export class OnyxCLI {
    * @param {OnyxCLIOperators} command `OPTIONAL` Displays general helping if no argument is provided.
    * @returns {string} The help text.
    */
-  static async help(command?: OnyxCLIOperators): Promise<string> {
-    const onyx = this.checkOnyxCLIIntegrity()
-    const cmd = `"${onyx.path}"${command ? ` ${command}` : ''} --help`
+  async help(command?: OnyxCLIOperators): Promise<string> {
+    const cmd = `"${this.path.path}"${command ? ` ${command}` : ''} --help`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
@@ -40,11 +53,10 @@ export class OnyxCLI {
    * @param {STFSGameTypes} game `OPTIONAL`. Change the game that the CON file will be created for. Default is `'rb3'`.
    * @returns {Promise<string>} The printable text from the child process.
    */
-  static async stfs(srcFolder: StringOrPath, destFile: StringOrPath, game: STFSGameTypes = 'rb3'): Promise<string> {
-    const onyx = this.checkOnyxCLIIntegrity()
+  async stfs(srcFolder: StringOrPath, destFile: StringOrPath, game: STFSGameTypes = 'rb3'): Promise<string> {
     const src = Path.stringToPath(srcFolder)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt(''))
-    const cmd = `"${onyx.path}" stfs "${src.path}" --to ${dest.path} --game ${game}`
+    const cmd = `"${this.path.path}" stfs "${src.path}" --to ${dest.path} --game ${game}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
@@ -58,11 +70,10 @@ export class OnyxCLI {
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0006-BLUS30050_00-RBSTILLALCCF005D`
    * @returns {Promise<string>} The printable text from the child process.
    */
-  static async pkg(srcFolder: StringOrPath, destFile: StringOrPath, contentID: string): Promise<string> {
-    const onyx = this.checkOnyxCLIIntegrity()
+  async pkg(srcFolder: StringOrPath, destFile: StringOrPath, contentID: string): Promise<string> {
     const src = Path.stringToPath(srcFolder)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt('pkg'))
-    const cmd = `"${onyx.path}" pkg ${contentID} "${src.path}" --to ${dest.path}`
+    const cmd = `"${this.path.path}" pkg ${contentID} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
@@ -77,11 +88,10 @@ export class OnyxCLI {
    * @param {string} klic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>} The printable text from the child process.
    */
-  static async edat(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, klic: string): Promise<string> {
-    const onyx = this.checkOnyxCLIIntegrity()
+  async edat(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, klic: string): Promise<string> {
     const src = Path.stringToPath(srcFile)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt('edat'))
-    const cmd = `"${onyx.path}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`
+    const cmd = `"${this.path.path}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout

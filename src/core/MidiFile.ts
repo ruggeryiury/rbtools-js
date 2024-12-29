@@ -1,44 +1,70 @@
-import Path from 'path-js'
+import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import { MIDIFileError } from '../errors.js'
 import * as Py from '../python.js'
 
-export interface MidiFileStatObject {
-  format: string
+export interface MIDIFileStatObject {
+  /** The charset of the MIDI file. */
   charset: string
+  /** The MIDI file type. */
   midiType: number
+  /** The ticks per beat of the MIDI file. */
   ticksPerBeat: number
-  formatDesc: string
+  /** An array with the name of all available tracks on the MIDI file. */
   tracks: string[]
 }
+
+export interface MIDIFileJSONObject extends PathJSONRepresentation {
+  /** The statistics of the MIDI file. */
+  file: MIDIFileStatObject
+}
+
+/**
+ * MidiFile is a class that represents a MIDI file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+ * - - - -
+ */
 export class MidiFile {
+  /** The path of the MIDI file. */
   path: Path
-  constructor(path: Path | string) {
-    if (path instanceof Path) {
-      if (!path.exists()) throw new Error(`MidiFileError: File "${path.path}" does not exists`)
 
-      this.path = path
-      return
-    }
+  /**
+   * @param {StringOrPath} midiFilePath The path to the MIDI file.
+   */
+  constructor(midiFilePath: StringOrPath) {
+    const path = Path.stringToPath(midiFilePath)
+    this.path = path
 
-    const p = new Path(path)
-    if (!p.exists()) throw new Error(`MidiFileError: File "${p.path}" does not exists`)
-
-    this.path = p
+    this.checkExistence()
   }
 
-  private checkExistence() {
-    if (!this.path.exists()) throw new Error(`MidiFileNotFoundError: MIDI file "${this.path.path}" does not exists`)
+  /**
+   * Checks if a path resolves to an existing MIDI file.
+   * - - - -
+   * @returns {boolean}
+   */
+  private checkExistence(): boolean {
+    if (!this.path.exists()) throw new MIDIFileError(`MIDI file "${this.path.path}" does not exists`)
     return true
   }
 
-  stat(): MidiFileStatObject {
+  /**
+   * Returns a JSON object with statistics of the MIDI file.
+   * - - - -
+   * @returns {MIDIFileStatObject}
+   */
+  stat(): MIDIFileStatObject {
     this.checkExistence()
     return Py.midiFileStatSync(this.path.path)
   }
 
-  toJSON() {
+  /**
+   * Returns a JSON representation of the MIDI file class.
+   * - - - -
+   * @returns {MIDIFileJSONObject}
+   */
+  toJSON(): MIDIFileJSONObject {
     return {
       ...this.path.toJSON(),
-      ...this.stat(),
+      file: this.stat(),
     }
   }
 }

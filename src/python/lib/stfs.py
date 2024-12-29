@@ -368,30 +368,3 @@ class STFS(object):
             self.table_size_shift = 0
         else:
             self.table_size_shift = 1
-
-# def extract_all(argv):
-#     if len(argv) < 3:
-#         print("Usage: stfs.py <input file> <output directory>")
-#         print("Dumps contents of stfs file to disk")
-#         return
-#     s = STFS(argv[1])
-#     for filename in s.allfiles:  # Loop once creating all the directories
-#         if s.allfiles[filename].isdirectory:
-#             print(("Creating directory %s" % filename))
-#             dirpath = filename[1:]
-#             dircomponents = dirpath.split("/")
-#             for i in range(len(dircomponents)):
-#                 try:
-#                     os.mkdir("%s/%s" % (argv[2], "/".join(dircomponents[: i + 1])))
-#                 except OSError:
-#                     pass
-#     for filename in s.allfiles:  # Loop again writing all the files
-#         if not s.allfiles[filename].isdirectory:
-#             print(("Writing file %s" % filename))
-#             try:
-#                 open("%s/%s" % (argv[2], filename), "wb").write(
-#                     s.read_file(s.allfiles[filename])
-#                 )
-#             except Exception as e:
-#                 print(e)
-#                 print((argv[2], filename))

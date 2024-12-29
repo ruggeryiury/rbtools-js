@@ -1,18 +1,15 @@
-import Path from 'path-js'
+import Path, { type StringOrPath } from 'path-js'
 import type { TextureFileStatReturnObject } from '../core.js'
 import { getDDSHeader, getDDSHeaderSync } from '../lib.js'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.
  * - - - -
- * @param {Path | string} filePath The path of the PNG_XBOX/PNG_PS3 file.
+ * @param {StringOrPath} filePath The path of the PNG_XBOX/PNG_PS3 file.
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
-export const pngXboxPs3TexStat = async (filePath: Path | string): Promise<TextureFileStatReturnObject> => {
-  let srcPath: Path
-
-  if (filePath instanceof Path) srcPath = filePath
-  else srcPath = new Path(filePath)
+export const pngXboxPs3TexStat = async (filePath: StringOrPath): Promise<TextureFileStatReturnObject> => {
+  const srcPath = Path.stringToPath(filePath)
 
   const srcBuffer = await srcPath.readFile()
   const fullSrcHeader = Buffer.alloc(16)
@@ -30,14 +27,11 @@ export const pngXboxPs3TexStat = async (filePath: Path | string): Promise<Textur
 /**
  * Synchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.
  * - - - -
- * @param {Path | string} filePath The path of the PNG_XBOX/PNG_PS3 file.
+ * @param {StringOrPath} filePath The path of the PNG_XBOX/PNG_PS3 file.
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
-export const pngXboxPs3TexStatSync = (filePath: Path | string): TextureFileStatReturnObject => {
-  let srcPath: Path
-
-  if (filePath instanceof Path) srcPath = filePath
-  else srcPath = new Path(filePath)
+export const pngXboxPs3TexStatSync = (filePath: StringOrPath): TextureFileStatReturnObject => {
+  const srcPath = Path.stringToPath(filePath)
 
   const srcBuffer = srcPath.readFileSync()
   const fullSrcHeader = Buffer.alloc(16)

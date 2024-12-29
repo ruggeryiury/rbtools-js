@@ -48,6 +48,38 @@ export class TextureFileError extends Error {
 }
 
 /**
+ * An error that generically occurs using the `MidiFile` class.
+ * - - - -
+ */
+export class MIDIFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'MIDIFileError'
+    Error.captureStackTrace(this, MIDIFileError)
+    Object.setPrototypeOf(this, MIDIFileError.prototype)
+  }
+}
+
+/**
+ * An error that generically occurs using the `STFSFileError` class.
+ * - - - -
+ */
+export class STFSFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'STFSFileError'
+    Error.captureStackTrace(this, STFSFileError)
+    Object.setPrototypeOf(this, STFSFileError.prototype)
+  }
+}
+
+/**
  * An error that occurs when a function logic tries to process a file
  * which format is not recognizable/compatible.
  * - - - -

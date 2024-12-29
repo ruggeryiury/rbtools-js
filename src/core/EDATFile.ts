@@ -14,7 +14,7 @@ export class EDATFile {
    * @param {string} folderName The installed DLC folder name.
    * @returns {string}
    */
-  static KLICFromFolderName(folderName: string): string {
+  static devklicFromFolderName(folderName: string): string {
     const key = `Ih38rtW1ng3r${folderName}10025250`
     return createHash('md5').update(key).digest('hex')
   }
@@ -30,7 +30,7 @@ export class EDATFile {
    */
   static async encryptToEDAT(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root.path, `./bin`)
+    const exePath = new Path(__root, `./bin`)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(destFile)
     const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.changeFileName(dest.fullname, '.edat')}"`
@@ -49,7 +49,7 @@ export class EDATFile {
    */
   static async decryptEDAT(srcFile: StringOrPath, destFile: StringOrPath, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root.path, `./bin/${moduleName}`)
+    const exePath = new Path(__root, `./bin/${moduleName}`)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(destFile)
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
@@ -70,7 +70,7 @@ export class EDATFile {
     const usrDirFolder = new Path(dlc.root)
     const eboot = new Path(usrDirFolder.path, 'EBOOT.BIN')
     if (!eboot.exists()) throw new FileNotFoundError(`Provided DLC folder path "${dlc.path}" is not on a valid RPCS3 DLC folder.`)
-    const devKLic = EDATFile.KLICFromFolderName(dlc.name)
+    const devKLic = EDATFile.devklicFromFolderName(dlc.name)
     const songsFolder = new Path(dlc.path, './songs')
     const songsFolderContents = await songsFolder.readDir(true)
     let funcOutput = ''
@@ -98,7 +98,7 @@ export class EDATFile {
     if (!midiFile.exists()) if (!edat.exists()) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)
     if (edat.ext !== '.edat') throw new UnknownFileFormatError(`Provided path "${edat.path} is not an EDAT file."`)
     const edatDLCFolderName = new Path(edat.root, '../../').name
-    const devKLic = EDATFile.KLICFromFolderName(edatDLCFolderName)
+    const devKLic = EDATFile.devklicFromFolderName(edatDLCFolderName)
     await midiFile.checkThenDeleteFile()
     const output = await EDATFile.decryptEDAT(edat.path, midiFile.path, devKLic)
     return output
