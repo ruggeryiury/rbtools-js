@@ -39,7 +39,6 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
 if __name__ == '__main__':
   import argparse
   from PIL import Image
-  from img_file_stat import img_file_stat
   
   parser = argparse.ArgumentParser( description='RBToolsJS: Image Converter CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)

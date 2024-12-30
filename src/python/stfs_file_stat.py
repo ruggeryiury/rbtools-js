@@ -1,11 +1,14 @@
-from typing import List
-from lib.stfs import STFS, FileListing
-import argparse
-import json
-
-def stfs_file_stat(stfs_file_path: str) -> str:
-  con = STFS(stfs_file_path)
-  parsed = { "path": stfs_file_path, "name": str(con.display_name_blob.decode()).replace("\u0000", ""), "desc": con.display_description_blob.decode().replace("\u0000", ""), "files": [], "dta": "" }
+def stfs_file_stat(file_path: str) -> dict:
+  """
+  Reads a CON file and prints its statistics.
+  
+  Parameters
+  ----------
+  file_path : str
+    The path of the CON file.
+  """
+  con = STFS(file_path)
+  status = { "path": file_path, "name": str(con.display_name_blob.decode()).replace("\u0000", ""), "desc": con.display_description_blob.decode().replace("\u0000", ""), "files": [], "dta": "" }
   
   all_files = con.allfiles.keys()
   
@@ -13,7 +16,7 @@ def stfs_file_stat(stfs_file_path: str) -> str:
     if file == "/songs/":
       pass
     else:
-      parsed['files'].append(file)
+      status['files'].append(file)
       
   dta_file = None
   dta_file_contents_bytes = None
@@ -34,9 +37,9 @@ def stfs_file_stat(stfs_file_path: str) -> str:
     dta_file_contents_bytes = con.read_file(dta_file)
     
     try:
-      parsed['dta'] = dta_file_contents_bytes.decode()
+      status['dta'] = dta_file_contents_bytes.decode()
     except UnicodeDecodeError:
-      parsed['dta'] = dta_file_contents_bytes.decode('latin-1')
+      status['dta'] = dta_file_contents_bytes.decode('latin-1')
   except AttributeError:
     pass
   
@@ -44,21 +47,24 @@ def stfs_file_stat(stfs_file_path: str) -> str:
     upg_file_contents_bytes = con.read_file(upg_file)
     
     try:
-      parsed['upgrades'] = upg_file_contents_bytes.decode()
+      status['upgrades'] = upg_file_contents_bytes.decode()
     except UnicodeDecodeError:
-      parsed['upgrades'] = upg_file_contents_bytes.decode('latin-1')
+      status['upgrades'] = upg_file_contents_bytes.decode('latin-1')
   except AttributeError:
     pass
   
-  return_obj = json.dumps(parsed, indent=0, ensure_ascii=False)
-  print(return_obj)
-  return return_obj
+  print(json.dumps(status, ensure_ascii=False))
+  return status
   
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='RB3CON Parser (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')
-  parser.add_argument('stfs_file_path', help='The RB3CON file you want to extract and print its contents', type=str)
+  from lib.stfs import STFS
+  import argparse
+  import json
+  
+  parser = argparse.ArgumentParser(description='RBToolsJS: CON File Stat CLI', epilog='By Ruggery Iury Corrêa.')
+  parser.add_argument('file_path', help='The RB3CON file you want to extract and print its contents', type=str)
 
   arg = parser.parse_args()
   
-  stfs_file_stat(arg.stfs_file_path)
+  stfs_file_stat(arg.file_path)

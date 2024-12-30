@@ -1,9 +1,12 @@
-import argparse
-from PIL import Image
-import json
-from mido import MidiFile, MetaMessage
-
 def midi_file_stat(file_path: str) -> dict:
+  """
+  Reads a MIDI file and prints its statistics.
+  
+  Parameters
+  ----------
+  file_path : str
+    The path of the MIDI file.
+  """
   try:
     with MidiFile(file_path) as midi:
       status = {
@@ -22,11 +25,15 @@ def midi_file_stat(file_path: str) -> dict:
   except Exception as e:
     raise e
   
-  print(json.dumps(status))
+  print(json.dumps(status, ensure_ascii=False))
   return status
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='RBToolsJS: MIDI File Status CLI')
+  import argparse
+  import json
+  from mido import MidiFile, MetaMessage
+  
+  parser = argparse.ArgumentParser(description='RBToolsJS: MIDI File Stat CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('file_path', help='The path of the MIDI file', type=str)
 
   arg = parser.parse_args()

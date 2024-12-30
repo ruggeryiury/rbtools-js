@@ -4,7 +4,7 @@ import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core
 import { FileConvertionError, UnknownFileFormatError } from '../errors.js'
 import { NVCompress } from '../exec.js'
 import { type ArtworkTextureFormatTypes } from '../lib.js'
-import * as Py from '../python.js'
+import { imageConverter } from '../python.js'
 
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
@@ -37,7 +37,7 @@ export const imgToTexXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrP
   await tga.checkThenDeleteFile()
   await dds.checkThenDeleteFile()
 
-  await Py.imageConverter(src.path, tga.path, 'tga', {
+  await imageConverter(src.path, tga.path, 'tga', {
     width: textureSize,
     height: textureSize,
     interpolation,

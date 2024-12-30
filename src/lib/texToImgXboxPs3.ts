@@ -1,7 +1,7 @@
 import Path, { type StringOrPath } from 'path-js'
 import { ImgFile } from '../index.js'
 import { getDDSHeader, type ArtworkImageFormatTypes } from '../lib.js'
-import * as Py from '../python.js'
+import { imageConverter } from '../python.js'
 
 /**
  * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.
@@ -46,7 +46,7 @@ export const texToImgXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrP
   ddsStream.stream.end()
   await ddsStream.once
 
-  await Py.imageConverter(dds.path, destWithCorrectExt.path, toFormat, { width: srcHeader.width, height: srcHeader.height })
+  await imageConverter(dds.path, destWithCorrectExt.path, toFormat, { width: srcHeader.width, height: srcHeader.height })
 
   await dds.checkThenDeleteFile()
   return new ImgFile(destWithCorrectExt)

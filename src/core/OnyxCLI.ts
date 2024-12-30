@@ -1,7 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
 import { OnyxCLIError } from '../errors.js'
 import { execPromise } from '../lib.js'
-import 'dotenv/config.js'
 
 export type OnyxCLIOperators = 'import' | 'build' | 'web-player' | 'reaper' | 'pro-keys-hanging' | 'stfs' | 'mogg' | 'encrypt-mogg-rb1' | 'u8' | 'milo' | 'encrypt-gh-fsb' | 'fsb' | 'pak' | 'pkg' | 'edat' | 'port-gh-ps3' | 'extract' | 'unwrap' | 'midi-text' | 'midi-merge' | 'bin-to-dta' | 'dta-to-bin'
 export type STFSGameTypes = 'rb3' | 'rb2' | 'gh2'
@@ -26,10 +25,7 @@ export class OnyxCLI {
   }
 
   private checkOnyxCLIIntegrity(): void {
-    if (!process.env.ONYX_CLI_PATH) throw new OnyxCLIError('No path for Onyx CLI executable was provided on the project\'s environment. Please, provide a path using the "ONYX_PATH" key')
-
-    const onyxPath = new Path(process.env.ONYX_CLI_PATH)
-    if (!onyxPath.exists()) throw new OnyxCLIError(`No Onyx CLI executable found on provided path "${onyxPath.path}"`)
+    if (!this.path.exists()) throw new OnyxCLIError(`No Onyx CLI executable found on provided path "${this.path.path}"`)
   }
 
   /**

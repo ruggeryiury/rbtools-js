@@ -1,6 +1,6 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import { MIDIFileError } from '../errors.js'
-import * as Py from '../python.js'
+import { midiFileStatSync } from '../python.js'
 
 export interface MIDIFileStatObject {
   /** The charset of the MIDI file. */
@@ -53,7 +53,7 @@ export class MIDIFile {
    */
   stat(): MIDIFileStatObject {
     this.checkExistence()
-    return Py.midiFileStatSync(this.path.path)
+    return midiFileStatSync(this.path.path)
   }
 
   /**

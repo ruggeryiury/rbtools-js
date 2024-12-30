@@ -3,7 +3,7 @@ import setDefaultOptions from 'set-default-options'
 import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
 import { FileConvertionError } from '../errors.js'
 import { WimgtEnc } from '../exec.js'
-import * as Py from '../python.js'
+import { imageConverter } from '../python.js'
 
 /**
  * Asynchronously converts an image file to PNG_WII texture file format.
@@ -33,7 +33,7 @@ export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath,
   await png.checkThenDeleteFile()
   await tpl.checkThenDeleteFile()
 
-  await Py.imageConverter(src.path, png.path, 'png', { width: 256, height: 256, interpolation, quality: 100 })
+  await imageConverter(src.path, png.path, 'png', { width: 256, height: 256, interpolation, quality: 100 })
   try {
     await WimgtEnc(png.path, tpl.path)
   } catch (err) {

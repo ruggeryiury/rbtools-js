@@ -161,6 +161,8 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
   )
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
+  await dest.checkThenDeleteFile()
+  
   const moduleName = 'image_converter.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
@@ -310,9 +312,9 @@ export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawRet
  * - - - -
  * @param {StringOrPath} stfsFilePath The path of the CON file.
  * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
- * @returns {Promise<string>}
+ * @returns {Promise<Path>}
  */
-export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<string> => {
+export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'stfs_extract.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
@@ -325,5 +327,19 @@ export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOr
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  return dest.path
+  return dest
+}
+
+export const moggDecrypt = async (moggFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
+  const moduleName = 'mogg_decrypt.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(moggFilePath)
+  const dest = Path.stringToPath(destPath)
+  await dest.checkThenDeleteFile()
+
+  const command = `python ${moduleName} "${src.path}" "${dest.path}"`
+  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return dest
 }

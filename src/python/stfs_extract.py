@@ -1,8 +1,14 @@
-import argparse
-import os
-from lib.stfs import STFS
-
 def stfs_extract(stfs_file_path: str, dest_path: str) -> str:
+  """
+  Extract all files from a CON file.
+  
+  Parameters
+  ----------
+  stfs_file_path : str
+    The path of the CON file to be extracted.
+  dest_path : str
+    The folder path where you want the files to be extracted to.
+  """
   con = STFS(stfs_file_path)
   
   # Create directories
@@ -29,7 +35,11 @@ def stfs_extract(stfs_file_path: str, dest_path: str) -> str:
       open(new_file_path, "wb").write(file_bytes)
   
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser( description='RB3CON Parser (Command Line Interface) v1.0', epilog='By Ruggery Iury Corrêa.')
+  import argparse
+  import os
+  from lib.stfs import STFS
+  
+  parser = argparse.ArgumentParser(description='RBToolsJS: CON Extractor CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('stfs_file_path', help='The RB3CON file you want to extract and print its contents', type=str)
   parser.add_argument('dest_path', help='The folder path where you want the files to be extracted to', type=str)
 

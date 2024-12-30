@@ -4,7 +4,7 @@ import zod from 'zod'
 import { ImgFile, type ConvertToImageOptions } from '../core.js'
 import { FileConvertionError, ValueError } from '../errors.js'
 import { type ArtworkImageFormatTypes } from '../lib.js'
-import * as Py from '../python.js'
+import { imageConverter, imgFileStat } from '../python.js'
 
 /**
  * Asynchronously converts an image file to any other image file format.
@@ -41,7 +41,7 @@ export const imgToImg = async (srcFile: StringOrPath, destPath: StringOrPath, to
 
   await destWithCorrectExt.checkThenDeleteFile()
 
-  const { width: srcWidth, height: srcHeight } = await Py.imgFileStat(src.path)
+  const { width: srcWidth, height: srcHeight } = await imgFileStat(src.path)
 
   let usedWidth: number
   let usedHeight: number
@@ -50,6 +50,6 @@ export const imgToImg = async (srcFile: StringOrPath, destPath: StringOrPath, to
   if (height !== null) usedHeight = height
   else usedHeight = srcHeight
 
-  await Py.imageConverter(src.path, destWithCorrectExt.path, toFormat, { height: usedHeight, width: usedWidth, interpolation, quality })
+  await imageConverter(src.path, destWithCorrectExt.path, toFormat, { height: usedHeight, width: usedWidth, interpolation, quality })
   return new ImgFile(destWithCorrectExt)
 }

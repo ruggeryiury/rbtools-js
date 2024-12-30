@@ -1,7 +1,7 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import { SongsDTA, SongUpdatesDTA } from 'rbdta-js'
 import { STFSFileError } from '../errors.js'
-import * as Py from '../python.js'
+import { stfsExtract, stfsFileStatSync } from '../python.js'
 
 export interface STFSFileStatRawReturnObject {
   /** The name of the package. */
@@ -67,7 +67,7 @@ export class STFSFile {
    */
   stat(): STFSFileStatReturnObject {
     this.checkExistence()
-    const stat = Py.stfsFileStatSync(this.path.path)
+    const stat = stfsFileStatSync(this.path.path)
     let isPack = false
     const hasUpgrades = stat.files.includes('/songs_upgrades/upgrades.dta')
 
@@ -99,7 +99,7 @@ export class STFSFile {
    * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<string>}
    */
-  async extract(destPath: StringOrPath): Promise<string> {
-    return await Py.stfsExtract(this.path.path, destPath)
+  async extract(destPath: StringOrPath): Promise<Path> {
+    return await stfsExtract(this.path.path, destPath)
   }
 }

@@ -3,7 +3,7 @@ import setDefaultOptions from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
 import { imgToImg, imgToTexWii, imgToTexXboxPs3, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
-import * as Py from '../python.js'
+import { imgFileStatSync, webpDataURL } from '../python.js'
 
 export interface ImgFileStatReturnObject {
   /** The format of the image file. */
@@ -97,7 +97,7 @@ export class ImgFile {
    */
   stat(): ImgFileStatReturnObject {
     this.checkExistence()
-    return Py.imgFileStatSync(this.path.path)
+    return imgFileStatSync(this.path.path)
   }
 
   /**
@@ -177,6 +177,6 @@ export class ImgFile {
       },
       options
     )
-    return await Py.webpDataURL(this.path.path, opts)
+    return await webpDataURL(this.path.path, opts)
   }
 }

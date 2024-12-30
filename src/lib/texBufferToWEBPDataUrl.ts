@@ -1,6 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
 import { getDDSHeader } from '../lib.js'
-import * as Py from '../python.js'
+import { imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../python.js'
 
 /**
  * Returns a Base64-encoded Data URL `string` of a texture file.
@@ -10,7 +10,7 @@ import * as Py from '../python.js'
  */
 export const texBufferToWEBPDataUrl = async (srcPath: StringOrPath): Promise<string> => {
   const src = Path.stringToPath(srcPath)
-  if (src.ext === '.png_wii') return await Py.webpDataURLPNGWii(src.path)
+  if (src.ext === '.png_wii') return await webpDataURLPNGWii(src.path)
 
   const srcBuffer = await src.readFile()
 
@@ -34,5 +34,5 @@ export const texBufferToWEBPDataUrl = async (srcPath: StringOrPath): Promise<str
     swappedBytes.copy(dds, x * 4 + srcHeader.data.length)
   }
 
-  return await Py.imgBufferToWEBPDataURL(dds)
+  return await imgBufferToWEBPDataURL(dds)
 }

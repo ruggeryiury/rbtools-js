@@ -44,7 +44,6 @@ if __name__ == '__main__':
   import base64
   from io import BytesIO
   from PIL import Image
-  from img_file_stat import img_file_stat
 
   stdin = sys.stdin.read()
   arg = json.loads(stdin)

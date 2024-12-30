@@ -83,15 +83,14 @@ npm install
 
 _Make sure that the `packages` folder are in the project's root folder to install all packages correctly. The reason for this is because there are some packages that is made by me and they're not uploaded to the NPM server, existing only locally._
 
-- Config your environment file: Create a `env` file in the root of where you downloaded/cloned this repository and put these values:
+- Config your environment file (OPTIONAL): Create a `env` file in the root of where you downloaded/cloned this repository and put these values:
 
-  - `RBTOOLS_DEV`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder.
-  - `ONYX_PATH`: The path to Onyx CLI and it is used on the Onyx CLI API. You can download it [here](https://github.com/mtolly/onyx/releases).
+  - `RBTOOLS_DEV`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder. This value is only need in development when doing new scripts to avoid building and copying the scripts to the `dist` folder.
 
 So, your `env` file should look like this:
 
 ```text
-ONYX_PATH="C:/path/to/onyx_cli/onyx.exe"
+RBTOOLS_DEV="C:/path/to/onyx_cli/onyx.exe"
 ```
 
 # Package resources
@@ -576,7 +575,7 @@ await stfs.extract(destPath)
 - [Onyxite](https://github.com/mtolly): General helping and for the creation of [Onyx Toolkit](https://github.com/mtolly/onyx)!
 - [TrojanNemo](https://github.com/trojannemo): General helping and for the creation of [Nautilus](https://github.com/trojannemo/Nautilus)!
 - [LocalH](https://github.com/LocalH): General helping and providing me the [moggulator](https://github.com/LocalH/moggulator/tree/master) python script.
-- [Emma](https://github.com/InvoxiPlayGames): General helping.
+- [Emma](https://github.com/InvoxiPlayGames): General helping!
 
 # More Rock Band related projects
 
