@@ -1,31 +1,19 @@
-import argparse, os
+import argparse
+from pathlib import Path
 from lib.stfs import STFS
 
-def stfs_extract(stfs_file_path: str, dest_path: str) -> str:
+def stfs_extract_all_files(stfs_file_path: str, dest_path: str) -> str:
   """
-  Extracts the CON file contents.
+  Extract all files from a CON file on the root directory of the destination path.
   
   Parameters
   ----------
   stfs_file_path : str
     The path of the CON file to be extracted.
   dest_path : str
-    The folder path where you want the CON file contents to be extracted to.
+    The folder path where you want the files to be extracted to.
   """
   con = STFS(stfs_file_path)
-  
-  # Create directories
-  for filename in con.allfiles:
-    if con.allfiles[filename].isdirectory:
-      dirpath = filename[1:]
-      dircomponents = dirpath.split("/")
-      for i in range(len(dircomponents)):
-        dir_path = "\\".join(dircomponents[:i+1])
-        new_folder_path = f"{dest_path}\\{dir_path}"
-        try:
-          os.mkdir(new_folder_path)
-        except OSError:
-          pass
         
   # Writing files
   for filename in con.allfiles:
@@ -33,7 +21,7 @@ def stfs_extract(stfs_file_path: str, dest_path: str) -> str:
       continue
     if not con.allfiles[filename].isdirectory:
       file_bytes = con.read_file(con.allfiles[filename])
-      new_file_path = f"{dest_path}{filename}"
+      new_file_path = f"{dest_path}/{Path(filename).name}"
       open(new_file_path, "wb").write(file_bytes)
   
 if __name__ == '__main__':
@@ -43,4 +31,4 @@ if __name__ == '__main__':
 
   arg = parser.parse_args()
   
-  stfs_extract(arg.stfs_file_path, arg.dest_path)
+  stfs_extract_all_files(arg.stfs_file_path, arg.dest_path)

@@ -1,3 +1,6 @@
+import argparse, json
+from mido import MidiFile, MetaMessage
+
 def midi_file_stat(file_path: str) -> dict:
   """
   Reads a MIDI file and prints its statistics.
@@ -29,10 +32,6 @@ def midi_file_stat(file_path: str) -> dict:
   return status
 
 if __name__ == '__main__':
-  import argparse
-  import json
-  from mido import MidiFile, MetaMessage
-  
   parser = argparse.ArgumentParser(description='RBToolsJS: MIDI File Stat CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('file_path', help='The path of the MIDI file', type=str)
 

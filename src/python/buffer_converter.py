@@ -1,3 +1,7 @@
+import sys, json, base64
+from io import BytesIO
+from PIL import Image
+
 def buffer_converter(base64_string: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> None:
   """
   Converts a Base64-encoded Buffer string to any image format. This script also does resizing.
@@ -39,12 +43,6 @@ def buffer_converter(base64_string: str, dest_path: str, width: int = 256, heigh
     raise e
 
 if __name__ == '__main__':
-  import sys
-  import json
-  import base64
-  from io import BytesIO
-  from PIL import Image
-
   stdin = sys.stdin.read()
   arg = json.loads(stdin)
   buffer_converter(arg['buf'], arg['dest'], arg['width'], arg['height'], arg['interpolation'], arg['quality'])

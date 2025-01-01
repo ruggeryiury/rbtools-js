@@ -3,7 +3,7 @@ import setDefaultOptions from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
 import { imgToImg, imgToTexWii, imgToTexXboxPs3, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
-import { imgFileStatSync, webpDataURL } from '../python.js'
+import { imgFileStat, imgFileStatSync, webpDataURL } from '../python.js'
 
 export interface ImgFileStatReturnObject {
   /** The format of the image file. */
@@ -95,9 +95,19 @@ export class ImgFile {
    * - - - -
    * @returns {ImgFileStatReturnObject}
    */
-  stat(): ImgFileStatReturnObject {
+  statSync(): ImgFileStatReturnObject {
     this.checkExistence()
     return imgFileStatSync(this.path.path)
+  }
+
+  /**
+   * Asynchronously returns a JSON object with statistics of the image file.
+   * - - - -
+   * @returns {Promise<ImgFileStatReturnObject>}
+   */
+  async stat(): Promise<ImgFileStatReturnObject> {
+    this.checkExistence()
+    return await imgFileStat(this.path.path)
   }
 
   /**
@@ -105,10 +115,22 @@ export class ImgFile {
    * - - - -
    * @returns {ImgFileJSONObject}
    */
-  toJSON(): ImgFileJSONObject {
+  toJSONSync(): ImgFileJSONObject {
     return {
       ...this.path.toJSON(),
-      file: this.stat(),
+      file: this.statSync(),
+    }
+  }
+
+  /**
+   * Asynchronously returns a JSON representation of the image file class.
+   * - - - -
+   * @returns {Promise<ImgFileJSONObject>}
+   */
+  async toJSON(): Promise<ImgFileJSONObject> {
+    return {
+      ...this.path.toJSON(),
+      file: await this.stat(),
     }
   }
 

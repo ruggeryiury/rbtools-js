@@ -1,6 +1,6 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import { MIDIFileError } from '../errors.js'
-import { midiFileStatSync } from '../python.js'
+import { midiFileStat, midiFileStatSync } from '../python.js'
 
 export interface MIDIFileStatObject {
   /** The charset of the MIDI file. */
@@ -51,9 +51,19 @@ export class MIDIFile {
    * - - - -
    * @returns {MIDIFileStatObject}
    */
-  stat(): MIDIFileStatObject {
+  statSync(): MIDIFileStatObject {
     this.checkExistence()
     return midiFileStatSync(this.path.path)
+  }
+
+  /**
+   * Asynchronously returns a JSON object with statistics of the MIDI file.
+   * - - - -
+   * @returns {Promise<MIDIFileStatObject>}
+   */
+  async stat(): Promise<MIDIFileStatObject> {
+    this.checkExistence()
+    return await midiFileStat(this.path.path)
   }
 
   /**
@@ -61,10 +71,22 @@ export class MIDIFile {
    * - - - -
    * @returns {MIDIFileJSONObject}
    */
-  toJSON(): MIDIFileJSONObject {
+  toJSONSync(): MIDIFileJSONObject {
     return {
       ...this.path.toJSON(),
-      file: this.stat(),
+      file: this.statSync(),
+    }
+  }
+
+  /**
+   * Asynchronously returns a JSON representation of the MIDI file class.
+   * - - - -
+   * @returns {Promise<MIDIFileJSONObject>}
+   */
+  async toJSON(): Promise<MIDIFileJSONObject> {
+    return {
+      ...this.path.toJSON(),
+      file: await this.stat(),
     }
   }
 }

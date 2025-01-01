@@ -1,8 +1,9 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import type { ConvertTextureToTextureOptions } from '../core.js'
-import type { TextureFile } from '../index.js'
-import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, texToImgXboxPs3 } from '../lib.js'
+import { TextureFile } from '../index.js'
+import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii } from '../lib.js'
+import { swapRBArtBytes } from '../python.js'
 
 /**
  * Asynchronously converts a texture file to any other texture file format.
@@ -27,16 +28,11 @@ export const texToTex = async (srcFile: StringOrPath, destPath: StringOrPath, to
   const tempPng = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
 
   if (src.ext === '.png_ps3' || src.ext === '.png_xbox') {
-    const temp = await texToImgXboxPs3(src, tempPng, 'png')
-    const { width } = temp.stat()
-    const newTex = await temp.convertToTexture(destWithCorrectExt, toFormat, { DTX5, textureSize: width as ArtworkSizeTypes })
-
-    await temp.path.checkThenDeleteFile()
-    return newTex
+    return new TextureFile(await swapRBArtBytes(src, destWithCorrectExt))
   }
 
   const temp = await texToImgWii(src, tempPng, 'png')
-  const { width } = temp.stat()
+  const { width } = temp.statSync()
   const newTex = await temp.convertToTexture(destWithCorrectExt, toFormat, { DTX5, textureSize: width as ArtworkSizeTypes })
 
   await temp.path.checkThenDeleteFile()

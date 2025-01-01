@@ -1,3 +1,13 @@
+"""
+MOGG Script taken from "moggulator" repository by GitHub user LocalH, typed by ruggeryiury.
+
+LocalH's "moggulator" repository:
+https://github.com/LocalH/moggulator/tree/master
+
+Multitrack OGG Vorbis File
+See https://milo.ipg.pw/index.php/MOGG_File_Format
+"""
+
 from io import BufferedReader
 from typing import Literal
 from Crypto.Cipher import AES
@@ -799,3 +809,72 @@ def reencrypt_mogg(xbox: bool, red: bool, enc_ver: int, fin: BufferedReader, fou
     
     fout.close()
     return failed
+
+def decrypt_mogg_bytes(xbox: bool, red: bool, mogg_data: bytes) -> bytearray:
+    decmogg_data = bytearray(mogg_data)
+
+    version = mogg_data[0]
+    ogg_offset = int.from_bytes(mogg_data[4:8], "little")
+    hmx_header_size = int.from_bytes(mogg_data[16:20], "little")
+
+    if version == 10:
+        return decmogg_data[ogg_offset:]
+
+    match version:
+        case 11:
+            key = bytearray(ctrkey_11)
+        case 12 | 13:
+            if red:
+                hvkey = hvkey_12_r
+            else:
+                hvkey = hvkey_12
+            key = gen_key(xbox, hvkey, mogg_data, version)
+        case 14:
+            if red:
+                hvkey = hvkey_14_r
+            else:
+                hvkey = hvkey_14
+            key = gen_key(xbox, hvkey, mogg_data, 14)
+        case 15:
+            if red:
+                hvkey = hvkey_15_r
+            else:
+                hvkey = hvkey_15
+            key = gen_key(xbox, hvkey, mogg_data, 15)
+        case 16:
+            if red:
+                hvkey = hvkey_16_r
+            else:
+                hvkey = hvkey_16
+            key = gen_key(xbox, hvkey, mogg_data, 16)
+        case 17:
+            if red:
+                hvkey = hvkey_17_r
+            else:
+                hvkey = hvkey_17
+            key = gen_key(xbox, hvkey, mogg_data, 17)
+        case _:
+            sys.exit(2)
+   
+    decmogg_data[0:ogg_offset] = mogg_data[0:ogg_offset] # copy header to output buffer
+    
+    if version == 13 and decmogg_data[20+hmx_header_size*8+16+16:20+hmx_header_size*8+16+32] == bytearray(b'\xc3\xc3\xc3\xc3\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b'):
+        decmogg_data[20+hmx_header_size*8+16+16:20+hmx_header_size*8+16+32] = bytearray(b'\xa5\xce\xfd\x06\x11\x93\x23\x21\xf8\x87\x85\xea\x95\xe4\x94\xd4')
+
+    if version == 12 and decmogg_data[20+hmx_header_size*8+16+16:20+hmx_header_size*8+16+32] == bytearray(b'\x6c\x6c\x65\x63\x74\x69\x76\x65\x2d\x74\x6f\x6f\x6c\x73\x2d\x62'):
+        decmogg_data[20+hmx_header_size*8+16+16:20+hmx_header_size*8+16+32] = bytearray(b'\xf1\xb4\xb8\xb0\x48\xaf\xcb\x9b\x4b\x53\xe0\x56\x64\x57\x68\x39')
+
+    nonce_offset = 20 + hmx_header_size * 8
+    nonce = bytearray(mogg_data[nonce_offset:nonce_offset+16])
+    
+    do_crypt(key, mogg_data, decmogg_data, nonce, ogg_offset)
+
+    if decmogg_data[ogg_offset:ogg_offset+4] == bytearray(b'\x48\x4d\x58\x41'):
+        hmxa_to_ogg(decmogg_data, ogg_offset, hmx_header_size)
+
+    if not decmogg_data[ogg_offset:ogg_offset+4] == bytearray(b'\x4f\x67\x67\x53'):
+        pass
+    else:
+        decmogg_data[0] = 10
+    
+    return decmogg_data[ogg_offset:]

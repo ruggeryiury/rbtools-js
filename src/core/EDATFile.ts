@@ -20,38 +20,60 @@ export class EDATFile {
   }
 
   /**
+   * Generate a default Content ID based on the given text.
+   * - - - -
+   * @param {string} text The custom text to place on the Content ID.
+   * @returns {string}
+   */
+  static genDefaultContentID(text: string): string {
+    let contentID = 'UP0002-BLUS30487_00-'
+    text = text.replace(/\s+/g, '').toUpperCase()
+    if ((contentID + text).length > 36) {
+      contentID += text
+      contentID = contentID.slice(0, 36)
+    } else if ((contentID + text).length < 36) {
+      const diff = 36 - (contentID + text).length
+      contentID += text
+      for (let i = 0; i < diff; i++) {
+        contentID += '0'
+      }
+    }
+    else contentID += text
+
+    return contentID
+  }
+
+  /**
    * Encrypts any file to EDAT.
    * - - - -
    * @param {StringOrPath} srcFile The path to the file to be encrypted.
-   * @param {StringOrPath} destFile The path to the new encrypted EDAT file.
-   * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL`
+   * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL00`
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async encryptToEDAT(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, devKLic: string): Promise<string> {
+  static async encryptToEDAT(srcFile: StringOrPath, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root, `./bin`)
+    const exePath = new Path(__root, `./bin/${moduleName}`)
     const src = Path.stringToPath(srcFile)
-    const dest = Path.stringToPath(destFile)
-    const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.changeFileName(dest.fullname, '.edat')}"`
+    const dest = Path.stringToPath(`${src.path}.edat`)
+    const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
     return stdout
   }
 
   /**
-   * Decrypts any file to EDAT.
+   * Decrypts an EDAT file.
    * - - - -
    * @param {StringOrPath} srcFile The path to the EDAT file to be decrypted.
-   * @param {StringOrPath} destFile The path to the decrypted file.
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async decryptEDAT(srcFile: StringOrPath, destFile: StringOrPath, devKLic: string): Promise<string> {
+  static async decryptEDAT(srcFile: StringOrPath, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
     const exePath = new Path(__root, `./bin/${moduleName}`)
     const src = Path.stringToPath(srcFile)
-    const dest = Path.stringToPath(destFile)
+    const dest = Path.stringToPath(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
@@ -80,7 +102,7 @@ export class EDATFile {
       const songMidi = new Path(s.path, `${songName}.mid`)
       const songEDAT = new Path(s.path, `${songName}.mid.edat`)
       await songMidi.checkThenDeleteFile()
-      const output = await EDATFile.decryptEDAT(songEDAT.path, songMidi.path, devKLic)
+      const output = await EDATFile.decryptEDAT(songEDAT.path, devKLic)
       funcOutput += `${output}\n`
     }
     return funcOutput
@@ -100,7 +122,7 @@ export class EDATFile {
     const edatDLCFolderName = new Path(edat.root, '../../').name
     const devKLic = EDATFile.devklicFromFolderName(edatDLCFolderName)
     await midiFile.checkThenDeleteFile()
-    const output = await EDATFile.decryptEDAT(edat.path, midiFile.path, devKLic)
+    const output = await EDATFile.decryptEDAT(edat.path, devKLic)
     return output
   }
 }

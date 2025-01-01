@@ -1,3 +1,7 @@
+import argparse, base64
+from io import BytesIO
+from lib.tpl import PNG_WII
+
 def webp_data_url_pngwii(src_path: str, header: bytes, quality: int = 100) -> str:
   with BytesIO() as output:
     image = PNG_WII(src_path, header).tpl.toImage()
@@ -9,10 +13,6 @@ def webp_data_url_pngwii(src_path: str, header: bytes, quality: int = 100) -> st
     return data_url
   
 if __name__ == '__main__':
-  import argparse
-  import base64
-  from io import BytesIO
-  from lib.tpl import PNG_WII
   
   parser = argparse.ArgumentParser( description='RBToolsJS: WEBP DataURL Creator (for PNG_WII files)', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)

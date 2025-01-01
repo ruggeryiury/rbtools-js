@@ -64,7 +64,7 @@ export class MIDIFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `STFSFileError` class.
+ * An error that generically occurs using the `STFSFile` class.
  * - - - -
  */
 export class STFSFileError extends Error {
@@ -76,6 +76,22 @@ export class STFSFileError extends Error {
     this.name = 'STFSFileError'
     Error.captureStackTrace(this, STFSFileError)
     Object.setPrototypeOf(this, STFSFileError.prototype)
+  }
+}
+
+/**
+ * An error that generically occurs using the `MOGGFile` class.
+ * - - - -
+ */
+export class MOGGFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message: string) {
+    super(message)
+    this.name = 'MOGGFileError'
+    Error.captureStackTrace(this, MOGGFileError)
+    Object.setPrototypeOf(this, MOGGFileError.prototype)
   }
 }
 

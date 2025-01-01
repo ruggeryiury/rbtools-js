@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import { ImgFile, type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MIDIFileStatObject, type STFSFileStatRawReturnObject, type STFSFileStatReturnObject } from './core.js'
+import { type ConvertToWEBPDataURLOptions, type ImgFileStatReturnObject, type MIDIFileStatObject, type MOGGFileStatRawObject, type STFSFileStatRawObject } from './core.js'
 import { PythonExecutionError } from './errors.js'
 import { execPromise, getTPLHeader, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes } from './lib.js'
 import { __root } from './index.js'
@@ -97,9 +97,9 @@ export interface ImageConverterOptions {
  * @param {StringOrPath} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes | undefined} toFormat The desired image format of the new image file. Default is `'png'`.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
- * @returns {Promise<ImgFile>}
+ * @returns {Promise<Path>}
  */
-export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> => {
+export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<Path> => {
   const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
@@ -111,7 +111,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
   )
 
   const dest = Path.stringToPath(destPath)
-  return new Promise<ImgFile>((resolve, reject) => {
+  return new Promise<Path>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
     const pyPath = new Path(__root, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
@@ -125,7 +125,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
 
     process.on('close', (code) => {
       if (code === 0) {
-        resolve(new ImgFile(dest.path))
+        resolve(dest)
       } else if (code === null) {
         reject(new PythonExecutionError(`Python script exited with unknown code: ${stderrData}`))
       } else {
@@ -147,9 +147,9 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
  * @param {StringOrPath} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
- * @returns {Promise<ImgFile>}
+ * @returns {Promise<Path>}
  */
-export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<ImgFile> => {
+export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<Path> => {
   const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
@@ -162,14 +162,14 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()
-  
+
   const moduleName = 'image_converter.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  return new ImgFile(dest)
+  return dest
 }
 
 /**
@@ -275,9 +275,9 @@ export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> 
  * Python script: Asynchronously prints a JSON object with the statistics of the CON file.
  * - - - -
  * @param {StringOrPath} stfsFilePath The path of the CON file.
- * @returns {Promise<STFSFileStatReturnObject>}
+ * @returns {Promise<STFSFileStatRawObject>}
  */
-export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFileStatReturnObject> => {
+export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFileStatRawObject> => {
   const moduleName = 'stfs_file_stat.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
@@ -285,22 +285,22 @@ export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFile
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
-  return JSON.parse(stdout) as STFSFileStatReturnObject
+  return JSON.parse(stdout) as STFSFileStatRawObject
 }
 
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the CON file.
  * - - - -
  * @param {StringOrPath} stfsFilePath The path of the CON file.
- * @returns {STFSFileStatRawReturnObject}
+ * @returns {STFSFileStatRawObject}
  */
-export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawReturnObject => {
+export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawObject => {
   const moduleName = 'stfs_file_stat.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {
-    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as STFSFileStatRawReturnObject
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as STFSFileStatRawObject
   } catch (err) {
     if (err instanceof Error) throw new PythonExecutionError(err.message)
     else throw err
@@ -308,7 +308,7 @@ export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawRet
 }
 
 /**
- * Python script: Asynchronously extract all files from a CON file and returns the folder path where all contents was extracted.
+ * Python script: Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
  * - - - -
  * @param {StringOrPath} stfsFilePath The path of the CON file.
  * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
@@ -330,10 +330,91 @@ export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOr
   return dest
 }
 
+/**
+ * Python script: Asynchronously extracts all files from a CON file on the root directory of the
+ * destination path and returns the folder path where all contents were extracted.
+ * - - - -
+ * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
+ * @returns {Promise<Path>}
+ */
+export const stfsExtractAllFiles = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
+  const moduleName = 'stfs_extract_all_files.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(stfsFilePath)
+  const dest = Path.stringToPath(destPath)
+
+  if (dest.exists()) await dest.deleteDir()
+  await dest.mkDir()
+
+  const command = `python ${moduleName} "${src.path}" "${dest.path}"`
+  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return dest
+}
+
+/**
+ * Python script: Asynchronously prints a JSON object with the statistics of the MOGG file.
+ * - - - -
+ * @param {StringOrPath} moggFilePath The path of the MOGG file.
+ * @returns {Promise<MOGGFileStatRawObject>}
+ */
+export const moggFileStat = async (moggFilePath: StringOrPath): Promise<MOGGFileStatRawObject> => {
+  const moduleName = 'mogg_file_stat.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(moggFilePath)
+  const command = `python ${moduleName} "${src.path}"`
+  const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return JSON.parse(stdout) as MOGGFileStatRawObject
+}
+
+/**
+ * Python script: Synchronously prints a JSON object with the statistics of the MOGG file.
+ * - - - -
+ * @param {StringOrPath} moggFilePath The path of the MOGG file.
+ * @returns {MOGGFileStatRawObject}
+ */
+export const moggFileStatSync = (moggFilePath: StringOrPath): MOGGFileStatRawObject => {
+  const moduleName = 'mogg_file_stat.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(moggFilePath)
+  const command = `python ${moduleName} "${src.path}"`
+  try {
+    return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as MOGGFileStatRawObject
+  } catch (err) {
+    if (err instanceof Error) throw new PythonExecutionError(err.message)
+    else throw err
+  }
+}
+
+/**
+ * Python script: Asynchronously decrypts a MOGG file and returns the new decrypted MOGG file path.
+ * - - - -
+ * @param {StringOrPath} moggFilePath The path of the MOGG file.
+ * @param {StringOrPath} destPath The new decrypted MOGG file path
+ * @returns {Promise<Path>}
+ */
 export const moggDecrypt = async (moggFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'mogg_decrypt.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
   const src = Path.stringToPath(moggFilePath)
+  const dest = Path.stringToPath(destPath)
+  await dest.checkThenDeleteFile()
+
+  const command = `python ${moduleName} "${src.path}" "${dest.path}"`
+  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return dest
+}
+
+export const swapRBArtBytes = async (srcPath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
+  const moduleName = 'swap_rb_art_bytes.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const src = Path.stringToPath(srcPath)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()
 

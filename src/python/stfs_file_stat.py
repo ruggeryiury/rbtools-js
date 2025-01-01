@@ -1,3 +1,6 @@
+import argparse, json
+from lib.stfs import STFS
+
 def stfs_file_stat(file_path: str) -> dict:
   """
   Reads a CON file and prints its statistics.
@@ -58,10 +61,6 @@ def stfs_file_stat(file_path: str) -> dict:
   
 
 if __name__ == '__main__':
-  from lib.stfs import STFS
-  import argparse
-  import json
-  
   parser = argparse.ArgumentParser(description='RBToolsJS: CON File Stat CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('file_path', help='The RB3CON file you want to extract and print its contents', type=str)
 

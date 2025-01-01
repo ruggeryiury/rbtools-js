@@ -2,7 +2,7 @@ import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { TextureFileError } from '../errors.js'
 import { ImgFile } from '../index.js'
-import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl } from '../lib.js'
+import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib.js'
 
 export interface TextureFileStatReturnObject {
   /** The format of the texture file. */
@@ -64,11 +64,22 @@ export class TextureFile {
   }
 
   /**
+   * Asynchronously returns a JSON object with statistics of the texture file.
+   * - - - -
+   * @returns {Promise<TextureFileStatReturnObject>}
+   */
+  async stat(): Promise<TextureFileStatReturnObject> {
+    this.checkExistence()
+    if (this.path.ext === '.png_wii') return pngWiiStat(this.path)
+    else return pngXboxPs3TexStat(this.path)
+  }
+
+  /**
    * Returns a JSON object with statistics of the texture file.
    * - - - -
    * @returns {TextureFileStatReturnObject}
    */
-  stat(): TextureFileStatReturnObject {
+  statSync(): TextureFileStatReturnObject {
     this.checkExistence()
     if (this.path.ext === '.png_wii') return pngWiiStatSync(this.path)
     else return pngXboxPs3TexStatSync(this.path)
@@ -79,10 +90,22 @@ export class TextureFile {
    * - - - -
    * @returns {TextureFileJSONObject}
    */
-  toJSON(): TextureFileJSONObject {
+  toJSONSync(): TextureFileJSONObject {
     return {
       ...this.path.toJSON(),
-      file: this.stat(),
+      file: this.statSync(),
+    }
+  }
+
+  /**
+   * Asynchronously returns a JSON representation of the texture file class.
+   * - - - -
+   * @returns {Promise<TextureFileJSONObject>}
+   */
+  async toJSON(): Promise<TextureFileJSONObject> {
+    return {
+      ...this.path.toJSON(),
+      file: await this.stat(),
     }
   }
 
@@ -102,7 +125,7 @@ export class TextureFile {
       options
     )
     const unformattedDestPath = Path.stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name.slice(0, -5) : unformattedDestPath.name, toFormat)))
+    const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
     return await texToTex(this.path, dest, toFormat, opts)
   }
 

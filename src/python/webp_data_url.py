@@ -1,3 +1,7 @@
+import argparse, base64
+from PIL import Image
+from io import BytesIO
+
 def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> str:
   try:
     with Image.open(src_path) as img:
@@ -30,11 +34,6 @@ def webp_data_url(src_path: str, width: int = 256, height: int = 256, interpolat
     raise e
   
 if __name__ == '__main__':
-  import argparse
-  import base64
-  from PIL import Image
-  from io import BytesIO
-  
   parser = argparse.ArgumentParser( description='RBToolsJS: WEBP DataURL Creator', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)
   parser.add_argument('-x', '--width', help='The width of the image', type=int, default=256, required=False)

@@ -1,3 +1,6 @@
+import argparse
+from PIL import Image
+
 def image_converter(src_path: str, dest_path: str, width: int = 256, height: int = 256, interpolation: str = 'BILINEAR', quality: int = 100) -> dict:
   """
   Reads any compatible image file and converts it to any compatible format. This script also does resizing.
@@ -37,9 +40,6 @@ def image_converter(src_path: str, dest_path: str, width: int = 256, height: int
     raise e
 
 if __name__ == '__main__':
-  import argparse
-  from PIL import Image
-  
   parser = argparse.ArgumentParser( description='RBToolsJS: Image Converter CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('src_path', help='The source file path to be converted', type=str)
   parser.add_argument('dest_path', help='The destination file path of the converted file', type=str)

@@ -1,9 +1,9 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import { SongsDTA, SongUpdatesDTA } from 'rbdta-js'
 import { STFSFileError } from '../errors.js'
-import { stfsExtract, stfsFileStatSync } from '../python.js'
+import { stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../python.js'
 
-export interface STFSFileStatRawReturnObject {
+export interface STFSFileStatRawObject {
   /** The name of the package. */
   name: string
   /** The description of the package. */
@@ -16,7 +16,7 @@ export interface STFSFileStatRawReturnObject {
   upgrades?: string
 }
 
-export type STFSFileStatReturnObject = Omit<STFSFileStatRawReturnObject, 'dta' | 'upgrades'> & {
+export type STFSFileStatObject = Omit<STFSFileStatRawObject, 'dta' | 'upgrades'> & {
   /** The contents of the package's DTA file. */
   dta?: SongsDTA
   /** The contents of the package's upgrades DTA file. */
@@ -29,7 +29,7 @@ export type STFSFileStatReturnObject = Omit<STFSFileStatRawReturnObject, 'dta' |
 
 export interface STFSFileJSONObject extends PathJSONRepresentation {
   /** The statistics of the CON file. */
-  file: STFSFileStatReturnObject
+  file: STFSFileStatObject
 }
 
 /**
@@ -56,16 +56,37 @@ export class STFSFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists()) throw new STFSFileError(`MIDI file "${this.path.path}" does not exists`)
+    if (!this.path.exists()) throw new STFSFileError(`Xbox CON file "${this.path.path}" does not exists`)
     return true
+  }
+
+  /**
+   * Asynchronously returns a JSON object with statistics of the CON file.
+   * - - - -
+   * @returns {Promise<STFSFileStatObject>}
+   */
+  async stat(): Promise<STFSFileStatObject> {
+    this.checkExistence()
+    const stat = await stfsFileStat(this.path.path)
+    let isPack = false
+    const hasUpgrades = stat.files.includes('/songs_upgrades/upgrades.dta')
+
+    let dta: SongsDTA | undefined
+    if (stat.dta) dta = new SongsDTA(stat.dta)
+    if (dta && dta.songs.length > 1) isPack = true
+
+    let upgrades: SongUpdatesDTA | undefined
+    if (stat.upgrades) upgrades = new SongUpdatesDTA(stat.upgrades)
+
+    return { ...stat, dta, upgrades, isPack, hasUpgrades }
   }
 
   /**
    * Returns a JSON object with statistics of the CON file.
    * - - - -
-   * @returns {STFSFileStatReturnObject}
+   * @returns {STFSFileStatObject}
    */
-  stat(): STFSFileStatReturnObject {
+  statSync(): STFSFileStatObject {
     this.checkExistence()
     const stat = stfsFileStatSync(this.path.path)
     let isPack = false
@@ -86,20 +107,36 @@ export class STFSFile {
    * - - - -
    * @returns {STFSFileJSONObject}
    */
-  toJSON(): STFSFileJSONObject {
+  toJSONSync(): STFSFileJSONObject {
     return {
       ...this.path.toJSON(),
-      file: this.stat(),
+      file: this.statSync(),
     }
   }
 
   /**
-   * Asynchronously extract all files from a CON file and returns the folder path where all contents was extracted.
+   * Asynchronously returns a JSON representation of the STFS file class.
+   * - - - -
+   * @returns {Promise<STFSFileJSONObject>}
+   */
+  async toJSON(): Promise<STFSFileJSONObject> {
+    return {
+      ...this.path.toJSON(),
+      file: await this.stat(),
+    }
+  }
+
+  /**
+   * Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
    * - - - -
    * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<string>}
    */
   async extract(destPath: StringOrPath): Promise<Path> {
-    return await stfsExtract(this.path.path, destPath)
+    return await stfsExtract(this.path, destPath)
+  }
+
+  async extractAllFiles(destPath: StringOrPath): Promise<Path> {
+    return await stfsExtractAllFiles(this.path, destPath)
   }
 }

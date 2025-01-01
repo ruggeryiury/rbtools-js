@@ -1,3 +1,6 @@
+import argparse, json
+from PIL import Image
+
 def img_file_stat(file_path: str) -> dict:
   """
   Reads an image file and prints its statistics.
@@ -24,10 +27,6 @@ def img_file_stat(file_path: str) -> dict:
   return status
 
 if __name__ == '__main__':
-  import argparse
-  from PIL import Image
-  import json
-  
   parser = argparse.ArgumentParser(description='RBToolsJS: Image File Stat CLI', epilog='By Ruggery Iury Corrêa.')
   parser.add_argument('file_path', help='The path of the image file', type=str)
 

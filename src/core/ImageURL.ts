@@ -2,7 +2,7 @@ import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import type { ImgFile } from '../core.js'
+import { ImgFile } from '../core.js'
 import { ImageFetchingError } from '../errors.js'
 import { isURL, type ArtworkImageFormatTypes } from '../lib.js'
 import { bufferConverter, type ImageConverterOptions } from '../python.js'
@@ -75,6 +75,6 @@ export class ImageURL {
     const image = await bufferConverter(this.buf, dest.changeFileExt(toFormat), toFormat, opts)
     this.buf = Buffer.alloc(0)
 
-    return image
+    return new ImgFile(image)
   }
 }
