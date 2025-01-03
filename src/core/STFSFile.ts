@@ -136,6 +136,13 @@ export class STFSFile {
     return await stfsExtract(this.path, destPath)
   }
 
+  /**
+   * Asynchronously extracts all files from a CON file on the root directory of the destination path and returns
+   * the folder path where all contents were extracted.
+   * - - - -
+   * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
+   * @returns {Promise<Path>}
+   */
   async extractAllFiles(destPath: StringOrPath): Promise<Path> {
     return await stfsExtractAllFiles(this.path, destPath)
   }

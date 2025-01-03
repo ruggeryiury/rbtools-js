@@ -62,7 +62,7 @@ _Make sure that the `packages` folder are in the project's root folder to instal
 So, your `env` file should look like this:
 
 ```text
-RBTOOLS_DEV="C:/path/to/onyx_cli/onyx.exe"
+RBTOOLS_DEV=1
 ```
 
 # Package resources

@@ -218,3 +218,27 @@ export class ImageFetchingError extends Error {
     Object.setPrototypeOf(this, ImageFetchingError.prototype)
   }
 }
+
+/**
+ * An error that occurs when fetching a request from RhythmVerse.
+ * - - - -
+ */
+export class RhythmverseAPIFetchingError extends Error {
+  /**
+   * The number of the error that was returned from the URL fetching.
+   *
+   * Non-valid URLs will return a code `500 INTERNAL SERVER ERROR`.
+   */
+  code: number
+  /**
+   * @param {string} message The message you want to display.
+   * @param {number} code The error code. Default is `500 INTERNAL SERVER ERROR`
+   */
+  constructor(message: string, code = 500) {
+    super(message)
+    this.code = code
+    this.name = 'RhythmverseAPIFetchingError'
+    Error.captureStackTrace(this, RhythmverseAPIFetchingError)
+    Object.setPrototypeOf(this, RhythmverseAPIFetchingError.prototype)
+  }
+}

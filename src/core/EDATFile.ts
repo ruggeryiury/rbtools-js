@@ -37,8 +37,7 @@ export class EDATFile {
       for (let i = 0; i < diff; i++) {
         contentID += '0'
       }
-    }
-    else contentID += text
+    } else contentID += text
 
     return contentID
   }

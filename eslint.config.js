@@ -48,5 +48,3 @@ const tseslintConfig = {
 }
 
 export default tseslint.config(tseslintConfig)
-
-// module.exports = tseslint.config(tseslintConfig)

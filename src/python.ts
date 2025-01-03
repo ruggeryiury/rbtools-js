@@ -411,6 +411,13 @@ export const moggDecrypt = async (moggFilePath: StringOrPath, destPath: StringOr
   return dest
 }
 
+/**
+ * Python script: Asynchronously swaps the bytes of `PNG_XBOX` or `PNG_PS3` texture files.
+ * - - - -
+ * @param {StringOrPath} srcPath The path of the texture file you want to swap its bytes.
+ * @param {StringOrPath} destPath The destination path of the new texture file.
+ * @returns {Promise<Path>}
+ */
 export const swapRBArtBytes = async (srcPath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'swap_rb_art_bytes.py'
   const pyPath = new Path(__root, `./python/${moduleName}`)
@@ -419,6 +426,25 @@ export const swapRBArtBytes = async (srcPath: StringOrPath, destPath: StringOrPa
   await dest.checkThenDeleteFile()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
+  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  if (stderr) throw new PythonExecutionError(stderr)
+
+  return dest
+}
+
+export const audioToMOGG = async (audioFiles: StringOrPath[], destPath: StringOrPath, quality = 3) => {
+  const moduleName = 'audio_to_mogg.py'
+  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const dest = Path.stringToPath(destPath)
+  await dest.checkThenDeleteFile()
+
+  if (quality < 1 || quality > 10) throw new PythonExecutionError(`MOGG quality must be between 1 and 10, got ${quality.toString()}`)
+
+  let audioFileInput = ''
+  for (const file of audioFiles) {
+    audioFileInput += `"${Path.stringToPath(file).path}" `
+  }
+  const command = `python ${moduleName} ${audioFileInput} -o "${dest.path}" -q ${quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
