@@ -7,7 +7,7 @@ export class FileNotFoundError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'FileNotFoundError'
     Error.captureStackTrace(this, FileNotFoundError)
@@ -16,14 +16,14 @@ export class FileNotFoundError extends Error {
 }
 
 /**
- * An error that generically occurs using the `ImgFile` class.
+ * A generic error that's thrown by the `ImgFile` class.
  * - - - -
  */
 export class ImgFileError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'ImgFileError'
     Error.captureStackTrace(this, ImgFileError)
@@ -32,14 +32,14 @@ export class ImgFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `TextureFile` class.
+ * A generic error that's thrown by the `TextureFile` class.
  * - - - -
  */
 export class TextureFileError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'TextureFileError'
     Error.captureStackTrace(this, TextureFileError)
@@ -48,14 +48,14 @@ export class TextureFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `MIDIFile` class.
+ * A generic error that's thrown by the `MIDIFile` class.
  * - - - -
  */
 export class MIDIFileError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'MIDIFileError'
     Error.captureStackTrace(this, MIDIFileError)
@@ -64,14 +64,14 @@ export class MIDIFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `STFSFile` class.
+ * A generic error that's thrown by the `STFSFile` class.
  * - - - -
  */
 export class STFSFileError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'STFSFileError'
     Error.captureStackTrace(this, STFSFileError)
@@ -80,14 +80,14 @@ export class STFSFileError extends Error {
 }
 
 /**
- * An error that generically occurs using the `MOGGFile` class.
+ * A generic error that's thrown by the `MOGGFile` class.
  * - - - -
  */
 export class MOGGFileError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'MOGGFileError'
     Error.captureStackTrace(this, MOGGFileError)
@@ -104,7 +104,7 @@ export class UnknownFileFormatError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'UnknownFileFormatError'
     Error.captureStackTrace(this, UnknownFileFormatError)
@@ -121,7 +121,7 @@ export class FileConvertionError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'FileConvertionError'
     Error.captureStackTrace(this, FileConvertionError)
@@ -138,7 +138,7 @@ export class ExecutableError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'ExecutableError'
     Error.captureStackTrace(this, ExecutableError)
@@ -155,7 +155,7 @@ export class PythonExecutionError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'PythonExecutionError'
     Error.captureStackTrace(this, PythonExecutionError)
@@ -171,7 +171,7 @@ export class ValueError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'ValueError'
     Error.captureStackTrace(this, ValueError)
@@ -180,14 +180,14 @@ export class ValueError extends Error {
 }
 
 /**
- * An error that occurs using the Onyx CLI class.
+ * A generic error that's thrown by the `OnyxCLI` class.
  * - - - -
  */
 export class OnyxCLIError extends Error {
   /**
    * @param {string} message The message you want to display.
    */
-  constructor(message: string) {
+  constructor(message = '') {
     super(message)
     this.name = 'OnyxCLIError'
     Error.captureStackTrace(this, OnyxCLIError)
@@ -210,7 +210,7 @@ export class ImageFetchingError extends Error {
    * @param {string} message The message you want to display.
    * @param {number} code The error code. Default is `500 INTERNAL SERVER ERROR`
    */
-  constructor(message: string, code = 500) {
+  constructor(message = '', code = 500) {
     super(message)
     this.code = code
     this.name = 'ImageFetchingError'
@@ -234,11 +234,76 @@ export class RhythmverseAPIFetchingError extends Error {
    * @param {string} message The message you want to display.
    * @param {number} code The error code. Default is `500 INTERNAL SERVER ERROR`
    */
-  constructor(message: string, code = 500) {
+  constructor(message = '', code = 500) {
     super(message)
     this.code = code
     this.name = 'RhythmverseAPIFetchingError'
     Error.captureStackTrace(this, RhythmverseAPIFetchingError)
     Object.setPrototypeOf(this, RhythmverseAPIFetchingError.prototype)
+  }
+}
+
+/**
+ * A generic error that occurs throughout the `RBDTA-JS` package functionality.
+ * - - - -
+ */
+export class RBDTAJSError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'RBDTAError'
+    Error.captureStackTrace(this, RBDTAJSError)
+    Object.setPrototypeOf(this, RBDTAJSError.prototype)
+  }
+}
+
+/**
+ * An error that occurs when the user tries to parse incomplete information through the `SongsDTA` class,
+ * which requires complete DTA information.
+ * - - - -
+ */
+export class WrongDTATypeError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'WrongDTATypeError'
+    Error.captureStackTrace(this, WrongDTATypeError)
+    Object.setPrototypeOf(this, WrongDTATypeError.prototype)
+  }
+}
+
+/**
+ * A generic error that's thrown by the `BinaryWriter` class.
+ * - - - -
+ */
+export class BinaryWriterError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'BinaryWriterError'
+    Error.captureStackTrace(this, BinaryWriterError)
+    Object.setPrototypeOf(this, BinaryWriterError.prototype)
+  }
+}
+
+/**
+ * A generic error that's thrown by the `BinaryWriter` class.
+ * - - - -
+ */
+export class BinaryReaderError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'BinaryReaderError'
+    Error.captureStackTrace(this, BinaryReaderError)
+    Object.setPrototypeOf(this, BinaryReaderError.prototype)
   }
 }

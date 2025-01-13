@@ -1,6 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
-import { ImageHeaders, type TextureFileStatReturnObject } from '../core.js'
-import { UnknownFileFormatError } from '../errors.js'
+import { ImageHeaders, type TextureFileStatReturnObject } from '../../core.js'
+import { UnknownFileFormatError } from '../../errors.js'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.

@@ -1,6 +1,6 @@
 {
   "name": "rbtools-js",
-  "version": "1.4.0-beta2",
+  "version": "1.5.0-beta1",
   "private": true,
   "description": "A module package to manipulate several Rock Band game files.",
   "type": "module",
@@ -21,10 +21,8 @@
     "exiftool-vendored": "^29.0.0",
     "jschardet": "^3.1.2",
     "path-js": "file:./packages/path-js-1.6.1.tgz",
-    "rbdta-js": "file:./packages/rbdta-js-1.1.0.tgz",
     "set-default-options": "file:./packages/set-default-options-1.0.0.tgz",
-    "tempy": "^3.1.0",
-    "zod": "^3.23.8"
+    "tempy": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
@@ -37,6 +35,7 @@
     "globals": "^15.3.0",
     "prettier": "^3.2.5",
     "tsx": "^4.10.5",
+    "type-fest": "^4.32.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.9.0"
   },
@@ -53,9 +52,6 @@
     },
     "./core": {
       "import": "./dist/core.js"
-    },
-    "./errors": {
-      "import": "./dist/errors.js"
     },
     "./exec": {
       "import": "./dist/exec.js"

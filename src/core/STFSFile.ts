@@ -1,7 +1,7 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
-import { SongsDTA, SongUpdatesDTA } from 'rbdta-js'
+import { SongsDTA, SongUpdatesDTA } from '../core.js'
 import { STFSFileError } from '../errors.js'
-import { stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../python.js'
+import { stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.js'
 
 export interface STFSFileStatRawObject {
   /** The name of the package. */

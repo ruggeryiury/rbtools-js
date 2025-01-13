@@ -1,6 +1,6 @@
 import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import { MIDIFileError } from '../errors.js'
-import { midiFileStat, midiFileStatSync } from '../python.js'
+import { midiFileStat, midiFileStatSync } from '../lib.js'
 
 export interface MIDIFileStatObject {
   /** The charset of the MIDI file. */

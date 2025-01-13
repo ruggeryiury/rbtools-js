@@ -1,9 +1,8 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import type { ConvertTextureToTextureOptions } from '../core.js'
-import { TextureFile } from '../index.js'
-import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii } from '../lib.js'
-import { swapRBArtBytes } from '../python.js'
+import type { ConvertTextureToTextureOptions } from '../../core.js'
+import { TextureFile } from '../../index.js'
+import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swapRBArtBytes } from '../../lib.js'
 
 /**
  * Asynchronously converts a texture file to any other texture file format.

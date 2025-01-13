@@ -1,10 +1,8 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import zod from 'zod'
-import { ImgFile, type ConvertToImageOptions } from '../core.js'
-import { FileConvertionError, ValueError } from '../errors.js'
-import { type ArtworkImageFormatTypes } from '../lib.js'
-import { imageConverter, imgFileStat } from '../python.js'
+import { type ConvertToImageOptions, ImgFile } from '../../core.js'
+import { ValueError, FileConvertionError } from '../../errors.js'
+import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../../lib.js'
 
 /**
  * Asynchronously converts an image file to any other image file format.
@@ -26,12 +24,7 @@ export const imgToImg = async (srcFile: StringOrPath, destPath: StringOrPath, to
     options
   )
 
-  const qualitySchema = zod.number().min(1).max(100)
-  try {
-    qualitySchema.parse(quality)
-  } catch (err) {
-    throw new ValueError(`Quality value must be a number value from 1 to 100, given ${quality.toString()}.`)
-  }
+  if (quality < 1 || quality > 100) throw new ValueError(`Quality value must be a number value from 1 to 100, given ${quality.toString()}.`)
 
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)

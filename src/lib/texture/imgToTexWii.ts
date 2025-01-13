@@ -1,10 +1,9 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../core.js'
-import { FileConvertionError } from '../errors.js'
-import { WimgtEnc } from '../exec.js'
-import { imageConverter } from '../python.js'
-
+import { temporaryFile } from 'tempy'
+import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../../core.js'
+import { FileConvertionError } from '../../errors.js'
+import { WimgtEnc, imageConverter } from '../../lib.js'
 /**
  * Asynchronously converts an image file to PNG_WII texture file format.
  * - - - -
@@ -21,15 +20,14 @@ export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath,
     options
   )
   const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt('png_wii'))
+  const dest = new Path(Path.stringToPath(destPath).changeFileExt('png_wii'))
 
-  if (src.ext === destWithCorrectExt.ext) throw new FileConvertionError('Source and destination file has the same file extension')
+  if (src.ext === dest.ext) throw new FileConvertionError('Source and destination file has the same texture format')
 
-  const png = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
-  const tpl = new Path(src.changeFileExt('tpl'))
+  const png = new Path(temporaryFile({ extension: '.png' }))
+  const tpl = new Path(temporaryFile({ extension: '.tpl' }))
 
-  await destWithCorrectExt.checkThenDeleteFile()
+  await dest.checkThenDeleteFile()
   await png.checkThenDeleteFile()
   await tpl.checkThenDeleteFile()
 
@@ -44,7 +42,7 @@ export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath,
   await png.checkThenDeleteFile()
 
   const tplBytes = await tpl.readFile()
-  const destStream = await destWithCorrectExt.createFileWriteStream()
+  const destStream = await dest.createFileWriteStream()
 
   // 64 is the size of the TPL file header we need to skip
   const loop = (tplBytes.length - 64) / 4
@@ -61,5 +59,5 @@ export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath,
   await destStream.once
 
   await tpl.checkThenDeleteFile()
-  return new TextureFile(destWithCorrectExt)
+  return new TextureFile(dest)
 }

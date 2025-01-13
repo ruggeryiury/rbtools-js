@@ -1,11 +1,19 @@
 import { ExifTool } from 'exiftool-vendored'
 import Path, { type StringOrPath } from 'path-js'
+import setDefaultOptions from 'set-default-options'
+import { temporaryFile } from 'tempy'
+import { MOGGFile } from '../core.js'
 import { MOGGFileError } from '../errors.js'
-import { MakeMogg } from '../exec.js'
-import { audioToMOGG } from '../python.js'
-import { MOGGFile } from './MOGGFile.js'
+import { audioToMOGG, MakeMogg } from '../lib.js'
 
 export type MOGGFileQualityLevels = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+
+export interface MOGGCreateOptions {
+  /** If `false`, the function will not throw an error when trying to create a MOGG file with six channels. Default is `true`. */
+  throwSixChannelsBugError: boolean
+  /** If `'ps3'` or `'xbox'`, the MOGG file will be encrypted using the keys to the specific console. Default is `false`. */
+  encryptMOGG: 'ps3' | 'xbox' | false
+}
 
 /** A class to create a MOGG file from audio files. */
 export class MOGGMaker {
@@ -81,10 +89,13 @@ export class MOGGMaker {
    * Asynchonously creates the MOGG file and returns a new `MOGGFile` class pointing to the new MOGG file.
    * - - - -
    * @param {StringOrPath} destPath The path to the new MOGG file to be created.
+   * @param {MOGGCreateOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the MOGG creation process.
    * @returns {Promise<MOGGFile>}
    */
-  async create(destPath: StringOrPath): Promise<MOGGFile> {
-    destPath = Path.stringToPath(Path.stringToPath(destPath).changeFileExt('.ogg'))
+  async create(destPath: StringOrPath, options?: MOGGCreateOptions): Promise<MOGGFile> {
+    const { throwSixChannelsBugError } = setDefaultOptions<MOGGCreateOptions>({ encryptMOGG: false, throwSixChannelsBugError: true }, options)
+    if (this.channelsCount === 6 && throwSixChannelsBugError) throw new MOGGFileError("Tried to create a MOGG file with six channels, which is known to cause glitches on the audio.\n\nIf you want to create the file anyway, set 'throwSixChannelsError' to false.")
+    destPath = Path.stringToPath(temporaryFile({ extension: '.ogg' }))
     const newMoggFile = Path.stringToPath(destPath).changeFileExt('.mogg')
     await this.exiftool.end()
     await audioToMOGG(this.tracks, Path.stringToPath(destPath))

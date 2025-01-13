@@ -1,4 +1,4 @@
-import type { PartialDTAFile } from "rbdta-js/core"
+import type { PartialDTAFile } from '../lib.js'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const rhythmverseAPISourceURL = {
@@ -16,6 +16,21 @@ export const rhythmverseAPISourceURL = {
   gh3pc: 'https://rhythmverse.co/api/gh3pc/songfiles/list',
 } as const
 
+export const rhythmverseAPISourceSearchURL: Record<keyof typeof rhythmverseAPISourceURL, string> = {
+  all: 'https://rhythmverse.co/api/all/songfiles/search/live',
+  rb3: 'https://rhythmverse.co/api/rb3/songfiles/search/live',
+  rb3xbox: 'https://rhythmverse.co/api/rb3xbox/songfiles/search/live',
+  rb3wii: 'https://rhythmverse.co/api/rb3wii/songfiles/search/live',
+  rb3ps3: 'https://rhythmverse.co/api/rb3ps3/songfiles/search/live',
+  wtde: 'https://rhythmverse.co/api/wtde/songfiles/search/live',
+  tbrbxbox: 'https://rhythmverse.co/api/tbrbxbox/songfiles/search/live',
+  yarg: 'https://rhythmverse.co/api/yarg/songfiles/search/live',
+  rb2xbox: 'https://rhythmverse.co/api/rb2xbox/songfiles/search/live',
+  ps: 'https://rhythmverse.co/api/ps/songfiles/search/live',
+  chm: 'https://rhythmverse.co/api/chm/songfiles/search/live',
+  gh3pc: 'https://rhythmverse.co/api/gh3pc/songfiles/search/live',
+}
+
 export interface RhythmverseFetchingOptions {
   /** The game source of the fetched songs. Default is `rb3xbox`. */
   source?: keyof typeof rhythmverseAPISourceURL
@@ -27,7 +42,7 @@ export interface RhythmverseFetchingOptions {
   page?: number
   /** The quantity of the records to be fetched. Default is `25`. */
   records?: number
-  /** If `true`, the API will only fetch songs with all instruments charted. Default is `true`. */
+  /** If `true`, the API will only fetch songs with all instruments charted. Default is `false`. */
   fullBand?: boolean
   /** If `true`, the API will only fetch songs with multitracks. Default is `false`. */
   multitrack?: boolean
@@ -60,10 +75,12 @@ export interface RawRhythmverseResponse {
       records: string
       page: string
     }
-    songs: {
-      data: RhythmverseResSongData
-      file: RhythmverseResSongFile
-    }[]
+    songs:
+      | {
+          data: RhythmverseResSongData
+          file: RhythmverseResSongFile
+        }[]
+      | false
   }
 }
 
@@ -287,12 +304,21 @@ export interface RhythmverseResSongFile {
 }
 
 export type ProcessedRhythmverseSongData = Omit<PartialDTAFile, 'id' | 'album_art'> & {
+  /** The URL of the album artwork. */
   album_art: string
+  /** The file name of the song. */
   file_name?: string
+  /** The Rhythmverse URL of the song. */
+  song_url: string
+  /** The download URL of the song. */
   file_download_url: string
+  /** A boolean value that tells if the song is hosted on Rhythmverse servers. */
   external_file_download: boolean
+  /** The size of the song CON file. */
   file_size?: number
+  /** The quantity of "thanks" to the song. */
   thanks: number
+  /** The quantity of downloads of the song. */
   downloads: number
 }
 

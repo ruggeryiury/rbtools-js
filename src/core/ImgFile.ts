@@ -2,8 +2,7 @@ import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
-import { imgToImg, imgToTexWii, imgToTexXboxPs3, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
-import { imgFileStat, imgFileStatSync, webpDataURL } from '../python.js'
+import { imgFileStat, imgFileStatSync, imgToImg, imgToTexWii, imgToTexXboxPs3, webpDataURL, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
 
 export interface ImgFileStatReturnObject {
   /** The format of the image file. */

@@ -1,6 +1,5 @@
 import Path, { type StringOrPath } from 'path-js'
-import { getDDSHeader } from '../lib.js'
-import { imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../python.js'
+import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib.js'
 
 /**
  * Returns a Base64-encoded Data URL `string` of a texture file.

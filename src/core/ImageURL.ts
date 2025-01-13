@@ -4,8 +4,7 @@ import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { ImgFile } from '../core.js'
 import { ImageFetchingError } from '../errors.js'
-import { isURL, type ArtworkImageFormatTypes } from '../lib.js'
-import { bufferConverter, type ImageConverterOptions } from '../python.js'
+import { bufferConverter, isURL, type ArtworkImageFormatTypes, type ImageConverterOptions } from '../lib.js'
 
 /**
  * ImageURL is a class that represents an image file URL. It is initalized passing an image URL as an argument.
@@ -16,8 +15,6 @@ export class ImageURL {
   url: string
   /** The buffer of the fetched image. */
   buf = Buffer.alloc(0)
-  /** A flag that tells if the image has already been fetched and stored into memory. */
-  private isFetched = false
 
   /**
    * @param {string} url The URL of the image.
@@ -47,7 +44,6 @@ export class ImageURL {
     }
     if (imgRes.status !== 200) throw new ImageFetchingError(`URL returned with error with status ${imgRes.status.toString()}.`, imgRes.status)
     this.buf = Buffer.from(imgRes.data)
-    this.isFetched = true
   }
 
   /**
@@ -60,7 +56,7 @@ export class ImageURL {
    */
   async download(destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
     if (this.buf.length === 0) await this.fetchURL()
-    const opts = setDefaultOptions<typeof options>(
+    const opts = setDefaultOptions<ImageConverterOptions>(
       {
         height: 256,
         width: 256,
@@ -69,7 +65,7 @@ export class ImageURL {
       },
       options
     )
-    if (this.buf.length === 0) throw new ImageFetchingError('File terminated')
+    if (this.buf.length === 0) throw new ImageFetchingError('Fetched image has no bytes')
     const dest = Path.stringToPath(destPath)
 
     const image = await bufferConverter(this.buf, dest.changeFileExt(toFormat), toFormat, opts)

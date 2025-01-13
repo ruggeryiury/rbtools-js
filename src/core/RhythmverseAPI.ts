@@ -1,8 +1,7 @@
 import axios, { AxiosError } from 'axios'
-import type { PartialDTAFile } from 'rbdta-js/core'
 import setDefaultOptions from 'set-default-options'
 import { RhythmverseAPIFetchingError } from '../errors.js'
-import { normalizeString, rhythmverseAPISourceURL, rhythmverseOptsLocale, type ProcessedRhythmverseSongData, type ProcessRhythmverseObject, type RawRhythmverseResponse, type RhythmverseFetchingOptions } from '../lib.js'
+import { normalizeString, rhythmverseAPISourceSearchURL, rhythmverseAPISourceURL, rhythmverseOptsLocale, type PartialDTAFile, type ProcessedRhythmverseSongData, type ProcessRhythmverseObject, type RawRhythmverseResponse, type RhythmverseFetchingOptions } from '../lib.js'
 
 /** A class with static methods to fetch songs from Rhythmverse database. */
 export class RhythmverseAPI {
@@ -21,14 +20,14 @@ export class RhythmverseAPI {
         sortOrder: 'asc',
         page: 1,
         records: 25,
-        fullBand: true,
+        fullBand: false,
         multitrack: false,
         pitchedVocals: true,
       },
       options
     )
 
-    const reqURL: string = rhythmverseAPISourceURL[opts.source]
+    const reqURL: string = rhythmverseAPISourceSearchURL[opts.source]
 
     const urlParams: Record<string, string> = {
       'sort[0][sort_by]': rhythmverseOptsLocale[opts.sortBy],
@@ -119,41 +118,55 @@ export class RhythmverseAPI {
     const { pagination, records, songs } = data.data
 
     const allSongs: ProcessedRhythmverseSongData[] = []
-    for (const song of songs) {
-      allSongs.push({
-        name: song.data.title,
-        artist: song.data.artist,
-        master: Boolean(song.data.master),
-        vocal_parts: Number(song.data.vocal_parts) as PartialDTAFile['vocal_parts'],
-        song_length: song.data.song_length * 1000,
-        rank_band: song.file.diff_band === -1 ? 0 : song.file.diff_band,
-        rank_drum: song.file.diff_drums === -1 ? 0 : song.file.diff_drums,
-        rank_bass: song.file.diff_bass === -1 ? 0 : song.file.diff_bass,
-        rank_guitar: song.file.diff_guitar === -1 ? 0 : song.file.diff_guitar,
-        rank_vocals: song.file.diff_vocals === -1 ? 0 : song.file.diff_vocals,
-        rank_keys: song.file.diff_keys === -1 ? 0 : song.file.diff_keys,
-        rank_real_bass: song.file.diff_probass === -1 ? 0 : song.file.diff_probass,
-        rank_real_guitar: song.file.diff_proguitar === -1 ? 0 : song.file.diff_proguitar,
-        rank_real_keys: song.file.diff_prokeys === -1 ? 0 : song.file.diff_prokeys,
-        tuning_offset_cents: Number(song.file.tuning_offset_cents),
-        encoding: song.file.encoding as PartialDTAFile['encoding'],
-        rating: song.data.rating === 'ff' ? 1 : song.data.rating === 'sr' ? 2 : song.data.rating === 'mc' ? 3 : 4,
-        genre: song.file.file_genre_id as PartialDTAFile['genre'],
-        vocal_gender: (song.data.gender as PartialDTAFile['vocal_gender']) ?? 'male',
-        year_released: song.data.year,
-        album_art: `https://rhythmverse.co${song.file.album_art}`,
-        album_name: song.data.album,
-        album_track_number: song.data.album_track_number ?? 1,
-        author: song.file.author.name,
+    if (songs !== false) {
+      for (const song of songs) {
+        allSongs.push({
+          name: song.data.title,
+          artist: song.data.artist,
+          master: Boolean(song.data.master),
+          song_id: song.file.custom_id,
+          vocal_parts: Number(song.data.vocal_parts) as PartialDTAFile['vocal_parts'],
+          song_length: song.data.song_length * 1000,
+          rank_band: song.file.diff_band === -1 ? 0 : song.file.diff_band,
+          rank_drum: song.file.diff_drums === -1 ? 0 : song.file.diff_drums,
+          rank_bass: song.file.diff_bass === -1 ? 0 : song.file.diff_bass,
+          rank_guitar: song.file.diff_guitar === -1 ? 0 : song.file.diff_guitar,
+          rank_vocals: song.file.diff_vocals === -1 ? 0 : song.file.diff_vocals,
+          rank_keys: song.file.diff_keys === -1 ? 0 : song.file.diff_keys,
+          rank_real_bass: song.file.diff_probass === -1 ? 0 : song.file.diff_probass,
+          rank_real_guitar: song.file.diff_proguitar === -1 ? 0 : song.file.diff_proguitar,
+          rank_real_keys: song.file.diff_prokeys === -1 ? 0 : song.file.diff_prokeys,
+          // rank_band: rankCalculator('band', song.file.diff_band),
+          // rank_drum: rankCalculator('drum', song.file.diff_drums),
+          // rank_bass: rankCalculator('bass', song.file.diff_bass),
+          // rank_guitar: rankCalculator('guitar', song.file.diff_guitar),
+          // rank_vocals: rankCalculator('vocals', song.file.diff_vocals),
+          // rank_keys: rankCalculator('keys', song.file.diff_keys),
+          // rank_real_bass: rankCalculator('real_bass', song.file.diff_probass),
+          // rank_real_guitar: rankCalculator('real_guitar', song.file.diff_proguitar),
+          // rank_real_keys: rankCalculator('real_keys', song.file.diff_prokeys),
+          tuning_offset_cents: Number(song.file.tuning_offset_cents),
+          encoding: song.file.encoding as PartialDTAFile['encoding'],
+          rating: song.data.rating === 'ff' ? 1 : song.data.rating === 'sr' ? 2 : song.data.rating === 'mc' ? 3 : 4,
+          genre: song.file.file_genre_id as PartialDTAFile['genre'],
+          vocal_gender: (song.data.gender as PartialDTAFile['vocal_gender']) ?? 'male',
+          year_released: song.data.year,
+          album_art: `https://rhythmverse.co${song.file.album_art}`,
+          album_name: song.data.album,
+          album_track_number: song.data.album_track_number ?? 1,
+          author: song.file.author.name,
+          multitrack: song.file.audio_type === 'full',
 
-        // Non-DTA values relative
-        file_name: song.file.file_name === 'file' ? song.file.file_name : undefined,
-        file_download_url: !song.file.download_url.startsWith('/download_file/') ? song.file.download_url : `https://rhythmverse.co${song.file.download_url}`,
-        external_file_download: !song.file.download_url.startsWith('/download_file/'),
-        file_size: song.file.size ? song.file.size : undefined,
-        thanks: song.file.thanks,
-        downloads: song.file.downloads
-      })
+          // Non-DTA values relative
+          file_name: song.file.file_name === 'file' ? undefined : song.file.file_name,
+          song_url: song.file.file_url_full,
+          file_download_url: !song.file.download_url.startsWith('/download_file/') ? song.file.download_url : `https://rhythmverse.co${song.file.download_url}`,
+          external_file_download: !song.file.download_url.startsWith('/download_file/'),
+          file_size: song.file.size ? song.file.size : undefined,
+          thanks: song.file.thanks,
+          downloads: song.file.downloads,
+        })
+      }
     }
 
     return {

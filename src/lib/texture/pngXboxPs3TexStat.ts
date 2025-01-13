@@ -1,6 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
-import type { TextureFileStatReturnObject } from '../core.js'
-import { getDDSHeader, getDDSHeaderSync } from '../lib.js'
+import type { TextureFileStatReturnObject } from '../../core.js'
+import { getDDSHeader, getDDSHeaderSync } from '../../lib.js'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.

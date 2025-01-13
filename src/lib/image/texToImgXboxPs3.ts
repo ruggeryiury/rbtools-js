@@ -1,7 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
-import { ImgFile } from '../index.js'
-import { getDDSHeader, type ArtworkImageFormatTypes } from '../lib.js'
-import { imageConverter } from '../python.js'
+import { ImgFile } from '../../index.js'
+import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib.js'
 
 /**
  * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.

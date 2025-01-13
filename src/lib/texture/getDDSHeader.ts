@@ -1,5 +1,5 @@
 import Path from 'path-js'
-import { __root } from '../index.js'
+import { __root } from '../../index.js'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
 export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes
