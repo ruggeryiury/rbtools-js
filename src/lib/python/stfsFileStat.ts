@@ -13,7 +13,7 @@ import { execPromise } from '../../lib.js'
  */
 export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFileStatRawObject> => {
   const moduleName = 'stfs_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -30,7 +30,7 @@ export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFile
  */
 export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawObject => {
   const moduleName = 'stfs_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {

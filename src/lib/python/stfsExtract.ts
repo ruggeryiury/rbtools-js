@@ -12,7 +12,7 @@ import { execPromise } from '../../lib.js'
  */
 export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'stfs_extract.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
   const dest = Path.stringToPath(destPath)
 
@@ -36,7 +36,7 @@ export const stfsExtract = async (stfsFilePath: StringOrPath, destPath: StringOr
  */
 export const stfsExtractAllFiles = async (stfsFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'stfs_extract_all_files.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(stfsFilePath)
   const dest = Path.stringToPath(destPath)
 

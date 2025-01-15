@@ -12,7 +12,7 @@ import { execPromise } from '../../lib.js'
  */
 export const moggDecrypt = async (moggFilePath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'mogg_decrypt.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(moggFilePath)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()

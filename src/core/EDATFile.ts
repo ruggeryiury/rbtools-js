@@ -52,7 +52,7 @@ export class EDATFile {
    */
   static async encryptToEDAT(srcFile: StringOrPath, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root, `./bin/${moduleName}`)
+    const exePath = new Path(__root.path, `./bin/${moduleName}`)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(`${src.path}.edat`)
     const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.path}"`
@@ -70,7 +70,7 @@ export class EDATFile {
    */
   static async decryptEDAT(srcFile: StringOrPath, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root, `./bin/${moduleName}`)
+    const exePath = new Path(__root.path, `./bin/${moduleName}`)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`

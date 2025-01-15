@@ -12,7 +12,7 @@ import { execPromise } from '../execPromise.js'
  */
 export const MakeMogg = async (srcFile: StringOrPath, destPath: StringOrPath): Promise<string> => {
   const moduleName = 'makemogg.exe'
-  const exePath = new Path(__root, `./bin/${moduleName}`)
+  const exePath = new Path(__root.path, `./bin/${moduleName}`)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 

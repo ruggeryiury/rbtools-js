@@ -1,6 +1,7 @@
 import Path, { type StringOrPath } from 'path-js'
-import { ImageHeaders, type TextureFileStatReturnObject } from '../../core.js'
+import { type TextureFileStatReturnObject } from '../../core.js'
 import { UnknownFileFormatError } from '../../errors.js'
+import { imageHeaders } from '../../lib.js'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.
@@ -18,10 +19,10 @@ export const pngWiiStat = async (filePath: StringOrPath): Promise<TextureFileSta
   let height = 0
   let type = ''
 
-  const allHeaders = (Object.keys(ImageHeaders) as (keyof typeof ImageHeaders)[]).filter((header) => header.startsWith('WII'))
+  const allHeaders = (Object.keys(imageHeaders) as (keyof typeof imageHeaders)[]).filter((header) => header.startsWith('WII'))
 
   for (const header of allHeaders) {
-    if (srcHeader.toString() === Buffer.from(ImageHeaders[header]).toString()) {
+    if (srcHeader.toString() === Buffer.from(imageHeaders[header]).toString()) {
       const [w, h] = header
         .slice(3)
         .split('_')[0]
@@ -61,10 +62,10 @@ export const pngWiiStatSync = (filePath: StringOrPath): TextureFileStatReturnObj
   let height = 0
   let type = ''
 
-  const allHeaders = (Object.keys(ImageHeaders) as (keyof typeof ImageHeaders)[]).filter((header) => header.startsWith('WII'))
+  const allHeaders = (Object.keys(imageHeaders) as (keyof typeof imageHeaders)[]).filter((header) => header.startsWith('WII'))
 
   for (const header of allHeaders) {
-    if (srcHeader.toString() === Buffer.from(ImageHeaders[header]).toString()) {
+    if (srcHeader.toString() === Buffer.from(imageHeaders[header]).toString()) {
       const [w, h] = header
         .slice(3)
         .split('_')[0]

@@ -5,16 +5,23 @@ import { FileNotFoundError, BinaryReaderError } from '../errors.js'
 export class BinaryReader {
   path?: Path
   handler?: FileHandle
+  buffer?: Buffer
   protected offset: number
 
-  static async loadFile(binaryFilePath: StringOrPath) {
-    const path = Path.stringToPath(binaryFilePath)
+  static async loadFile(filePath: StringOrPath) {
+    const path = Path.stringToPath(filePath)
     const handler = await path.openFile()
     return new BinaryReader(path, handler)
   }
 
+  static loadBuffer(buffer: Buffer) {
+    return new BinaryReader('', buffer)
+  }
+
   private checkExistence(): boolean {
-    if (this.path && this.handler) {
+    if (this.buffer) {
+      // Do nothing
+    } else if (this.path && this.handler) {
       const fileExists = this.path.exists()
       const fileType = this.path.type()
       if (!fileExists) throw new FileNotFoundError(`Binary file "${this.path.path}" does not exists`)
@@ -24,22 +31,32 @@ export class BinaryReader {
     throw new BinaryReaderError('Internal function error')
   }
 
-  private constructor(path: Path, handler: FileHandle) {
-    this.path = path
-    this.handler = handler
+  private constructor(path: StringOrPath, handlerOrBuffer: FileHandle | Buffer) {
+    this.path = Path.stringToPath(path)
+    if (Buffer.isBuffer(handlerOrBuffer)) this.buffer = handlerOrBuffer
+    else this.handler = handlerOrBuffer
     this.offset = 0
   }
 
   async read(allocSize?: number): Promise<Buffer> {
     this.checkExistence()
     if (this.path && this.handler) {
-      if (allocSize) {
+      if (allocSize !== undefined) {
         const buf = Buffer.alloc(allocSize)
         await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
         this.offset += allocSize
         return buf
       }
       const { buffer } = await this.handler.read({ offset: this.offset, length: allocSize })
+      this.offset = 0
+      return buffer
+    } else if (this.buffer) {
+      if (allocSize !== undefined) {
+        const buf = this.buffer.subarray(this.offset, allocSize)
+        this.offset += allocSize
+        return buf
+      }
+      const buffer = this.buffer.subarray(this.offset, allocSize)
       this.offset = 0
       return buffer
     }
@@ -49,7 +66,7 @@ export class BinaryReader {
   async readASCII(allocSize?: number): Promise<string> {
     this.checkExistence()
     if (this.path && this.handler) {
-      if (allocSize) {
+      if (allocSize !== undefined) {
         const buf = Buffer.alloc(allocSize)
         await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
         this.offset += allocSize
@@ -57,6 +74,15 @@ export class BinaryReader {
       }
       const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
       this.offset += 0
+      return buffer.toString('ascii').replaceAll('\x00', '')
+    } else if (this.buffer) {
+      if (allocSize !== undefined) {
+        const buf = this.buffer.subarray(this.offset, allocSize)
+        this.offset += allocSize
+        return buf.toString('ascii').replaceAll('\x00', '')
+      }
+      const buffer = this.buffer.subarray(this.offset, allocSize)
+      this.offset = 0
       return buffer.toString('ascii').replaceAll('\x00', '')
     }
     throw new BinaryReaderError('Internal function error')
@@ -74,6 +100,15 @@ export class BinaryReader {
       const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
       this.offset += 0
       return buffer.toString('latin1').replaceAll('\x00', '')
+    } else if (this.buffer) {
+      if (allocSize !== undefined) {
+        const buf = this.buffer.subarray(this.offset, allocSize)
+        this.offset += allocSize
+        return buf.toString('latin1').replaceAll('\x00', '')
+      }
+      const buffer = this.buffer.subarray(this.offset, allocSize)
+      this.offset = 0
+      return buffer.toString('latin1').replaceAll('\x00', '')
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -90,6 +125,15 @@ export class BinaryReader {
       const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
       this.offset += 0
       return buffer.toString('utf8').replace('\x00', '')
+    } else if (this.buffer) {
+      if (allocSize !== undefined) {
+        const buf = this.buffer.subarray(this.offset, allocSize)
+        this.offset += allocSize
+        return buf.toString('utf8').replaceAll('\x00', '')
+      }
+      const buffer = this.buffer.subarray(this.offset, allocSize)
+      this.offset = 0
+      return buffer.toString('utf8').replaceAll('\x00', '')
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -104,6 +148,9 @@ export class BinaryReader {
       const buf = Buffer.alloc(1)
       await this.handler.read({ buffer: buf, position: this.offset++, length: 1 })
       return buf.readUInt8()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset++, 1)
+      return buffer.readUInt8()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -115,6 +162,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 2 })
       this.offset += 2
       return buf.readUInt16LE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 2)
+      this.offset += 2
+      return buffer.readUInt16LE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -126,6 +177,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 2 })
       this.offset += 2
       return buf.readUInt16BE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 2)
+      this.offset += 2
+      return buffer.readUInt16BE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -137,6 +192,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 4 })
       this.offset += 4
       return buf.readUInt32LE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 4)
+      this.offset += 4
+      return buffer.readUInt32LE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -148,6 +207,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 4 })
       this.offset += 4
       return buf.readUInt32BE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 4)
+      this.offset += 4
+      return buffer.readUInt32BE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -158,6 +221,9 @@ export class BinaryReader {
       const buf = Buffer.alloc(1)
       await this.handler.read({ buffer: buf, position: this.offset++, length: 1 })
       return buf.readInt8()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset++, 1)
+      return buffer.readInt8()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -169,6 +235,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 2 })
       this.offset += 2
       return buf.readInt16LE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 2)
+      this.offset += 2
+      return buffer.readInt16LE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -180,6 +250,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 2 })
       this.offset += 2
       return buf.readInt16BE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 2)
+      this.offset += 2
+      return buffer.readUInt16BE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -191,6 +265,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 4 })
       this.offset += 4
       return buf.readInt32LE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 4)
+      this.offset += 4
+      return buffer.readUInt32LE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -202,6 +280,10 @@ export class BinaryReader {
       await this.handler.read({ buffer: buf, position: this.offset, length: 4 })
       this.offset += 4
       return buf.readInt32BE()
+    } else if (this.buffer) {
+      const buffer = this.buffer.subarray(this.offset, 2)
+      this.offset += 2
+      return buffer.readUInt32BE()
     }
     throw new BinaryReaderError('Internal function error')
   }
@@ -217,6 +299,7 @@ export class BinaryReader {
   async close(): Promise<void> {
     if (this.handler) {
       await this.handler.close()
+      return
     }
     throw new BinaryReaderError('Internal function error')
   }

@@ -12,7 +12,7 @@ import { execPromise } from '../../lib.js'
  */
 export const swapRBArtBytes = async (srcPath: StringOrPath, destPath: StringOrPath): Promise<Path> => {
   const moduleName = 'swap_rb_art_bytes.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(srcPath)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()

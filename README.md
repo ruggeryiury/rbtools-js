@@ -59,12 +59,6 @@ _Make sure that the `packages` folder are in the project's root folder to instal
 
   - `RBTOOLS_DEV`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder. This value is only need in development when doing new scripts to avoid building and copying the scripts to the `dist` folder.
 
-So, your `env` file should look like this:
-
-```text
-RBTOOLS_DEV=1
-```
-
 # Package resources
 
 **_RBToolsJS_** comes with a few binary executables, such as:
@@ -84,7 +78,6 @@ Also, **_RBToolsJS_** uses modified Python scripts from:
 At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 - [Path-JS](https://github.com/ruggeryiury/path-js): A path utility suite that gathers several functions related to a specific path.
-- [RBDTA-JS](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
 - [Set Default Options](https://github.com/ruggeryiury/set-default-options): Utility function to merge default options with user-defined ones.
 
 # API
@@ -103,6 +96,5 @@ API DOCUMENTATION COMING SOON
 
 # More Rock Band related projects
 
-- [RBDTA-JS](https://github.com/ruggeryiury/rbdta-js): A Rock Band song metadata file parser written in Javascript.
 - [My Customs Projects](https://github.com/ruggeryiury/ruggy-customs-projects): All my customs projects.
 - [PRO Guitar/Bass Guide](https://ruggeryiury.github.io/proguitarbass-guide/): My famous PRO Guitar/Bass guide.

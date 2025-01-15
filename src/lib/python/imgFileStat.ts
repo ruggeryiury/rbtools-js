@@ -13,7 +13,7 @@ import { execPromise } from '../execPromise.js'
  */
 export const imgFileStat = async (imageFilePath: StringOrPath): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -30,7 +30,7 @@ export const imgFileStat = async (imageFilePath: StringOrPath): Promise<ImgFileS
  */
 export const imgFileStatSync = (imageFilePath: StringOrPath): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(imageFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {

@@ -1,7 +1,6 @@
 import Path, { type StringOrPath } from 'path-js'
-import { ImageHeaders } from '../../core.js'
 import { FileNotFoundError, UnknownFileFormatError } from '../../errors.js'
-import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes } from '../../lib.js'
+import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes, imageHeaders } from '../../lib.js'
 
 export type TPLFormatTypes = 'RGBA32' | 'NORMAL'
 export interface TPLHeaderParserObject {
@@ -27,12 +26,12 @@ export const getTPLHeader = async (pngWiiPath: StringOrPath): Promise<TPLHeaderP
   if (src.type() === 'file' && src.ext === '.png_wii') {
     const { width, height, type } = await pngWiiStat(src)
     const headerKey = `TPL${width.toString()}x${height.toString()}${type === 'NORMAL' ? '' : `_${type}`}`
-    if (headerKey in ImageHeaders)
+    if (headerKey in imageHeaders)
       return {
         type: type as TPLFormatTypes,
         width: width as ArtworkSizeTypes,
         height: height as ArtworkSizeTypes,
-        data: Buffer.from(ImageHeaders[headerKey as keyof typeof ImageHeaders]),
+        data: Buffer.from(imageHeaders[headerKey as keyof typeof imageHeaders]),
       }
     else throw new UnknownFileFormatError('Provided file path is not recognizable as a PNG_WII file.')
   }
@@ -52,12 +51,12 @@ export const getTPLHeaderSync = (pngWiiPath: StringOrPath): TPLHeaderParserObjec
   if (src.type() === 'file' && src.ext === '.png_wii') {
     const { width, height, type } = pngWiiStatSync(src)
     const headerKey = `TPL${width.toString()}x${height.toString()}${type === 'NORMAL' ? '' : `_${type}`}`
-    if (headerKey in ImageHeaders)
+    if (headerKey in imageHeaders)
       return {
         type: type as TPLFormatTypes,
         width: width as ArtworkSizeTypes,
         height: height as ArtworkSizeTypes,
-        data: Buffer.from(ImageHeaders[headerKey as keyof typeof ImageHeaders]),
+        data: Buffer.from(imageHeaders[headerKey as keyof typeof imageHeaders]),
       }
     else throw new UnknownFileFormatError('Provided file path is not recognizable as a PNG_WII file.')
   }

@@ -40,7 +40,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
   const dest = Path.stringToPath(destPath)
   return new Promise<Path>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
-    const pyPath = new Path(__root, `./python/${moduleName}`)
+    const pyPath = new Path(__root.path, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 
@@ -91,7 +91,7 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
   await dest.checkThenDeleteFile()
 
   const moduleName = 'image_converter.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -128,7 +128,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 
   const src = Path.stringToPath(srcFile)
   const moduleName = 'webp_data_url.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -146,7 +146,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
     const moduleName = 'img_buffer_to_webp_data_url.py'
-    const pyPath = new Path(__root, `./python/${moduleName}`)
+    const pyPath = new Path(__root.path, `./python/${moduleName}`)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 
@@ -190,7 +190,7 @@ export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> 
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)

@@ -1,5 +1,4 @@
 export * from './core/EDATFile.js'
-export * from './core/ImageHeaders.js'
 export * from './core/ImageURL.js'
 export * from './core/ImgFile.js'
 export * from './core/MIDIFile.js'

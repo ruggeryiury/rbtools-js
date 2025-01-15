@@ -7,6 +7,6 @@ import 'dotenv/config'
 /**
  * The distribution folder path of the `RBToolsJS` package.
  */
-export const __root = process.env.RBTOOLS_BINPATH ? new Path(process.env.RBTOOLS_BINPATH) : new Path(dirname(decodeURIComponent(fileURLToPath(import.meta.url))), Number(process.env.RBTOOLS_DEV) === 1 ? '../src' : '../dist')
+export const __root = new Path(dirname(decodeURIComponent(fileURLToPath(import.meta.url))), Number(process.env.RBTOOLS_DEV) === 1 ? '../src' : '../dist')
 export { EDATFile, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, STFSFile, TextureFile }
 export * from './errors.js'

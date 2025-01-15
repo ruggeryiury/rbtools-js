@@ -1,8 +1,8 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
-import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../../core.js'
+import { TextureFile, type ConvertToTextureOptions } from '../../core.js'
 import { FileConvertionError, UnknownFileFormatError } from '../../errors.js'
-import { NVCompress, imageConverter, type ArtworkTextureFormatTypes } from '../../lib.js'
+import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeaders } from '../../lib.js'
 
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
@@ -45,8 +45,8 @@ export const imgToTexXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrP
   await NVCompress(tga.path, dds.path, DTX5)
   await tga.checkThenDeleteFile()
 
-  const headerName = `${textureSize.toString()}p${DTX5 ? 'DTX5' : 'DTX1'}` as keyof typeof ImageHeaders
-  const header = ImageHeaders[headerName] as readonly number[] | undefined
+  const headerName = `${textureSize.toString()}p${DTX5 ? 'DTX5' : 'DTX1'}` as keyof typeof imageHeaders
+  const header = imageHeaders[headerName] as readonly number[] | undefined
   if (header === undefined) throw new UnknownFileFormatError('Provided file path is not recognizable as a DDS file.')
   const headerBuffer = Buffer.from(header)
 

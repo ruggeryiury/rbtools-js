@@ -5,7 +5,7 @@ import { execPromise } from '../execPromise.js'
 
 export const audioToMOGG = async (audioFiles: StringOrPath[], destPath: StringOrPath, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()
 

@@ -307,3 +307,35 @@ export class BinaryReaderError extends Error {
     Object.setPrototypeOf(this, BinaryReaderError.prototype)
   }
 }
+
+/**
+ * A generic error that's thrown by the `PACKFile` class.
+ * - - - -
+ */
+export class PACKFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'PACKFileError'
+    Error.captureStackTrace(this, PACKFileError)
+    Object.setPrototypeOf(this, PACKFileError.prototype)
+  }
+}
+
+/**
+ * An error that occurs when a value does not match any declarated map's key value.
+ * - - - -
+ */
+export class UnknownMapValueError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'PACKFileError'
+    Error.captureStackTrace(this, PACKFileError)
+    Object.setPrototypeOf(this, PACKFileError.prototype)
+  }
+}

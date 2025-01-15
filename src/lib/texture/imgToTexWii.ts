@@ -1,9 +1,9 @@
 import Path, { type StringOrPath } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { temporaryFile } from 'tempy'
-import { ImageHeaders, TextureFile, type ConvertToTextureOptions } from '../../core.js'
+import { TextureFile, type ConvertToTextureOptions } from '../../core.js'
 import { FileConvertionError } from '../../errors.js'
-import { WimgtEnc, imageConverter } from '../../lib.js'
+import { WimgtEnc, imageConverter, imageHeaders } from '../../lib.js'
 /**
  * Asynchronously converts an image file to PNG_WII texture file format.
  * - - - -
@@ -47,7 +47,7 @@ export const imgToTexWii = async (srcFile: StringOrPath, destPath: StringOrPath,
   // 64 is the size of the TPL file header we need to skip
   const loop = (tplBytes.length - 64) / 4
   const tplBytesWOHeader = tplBytes.subarray(64)
-  destStream.stream.write(Buffer.from(ImageHeaders.WII256x256))
+  destStream.stream.write(Buffer.from(imageHeaders.WII256x256))
 
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)

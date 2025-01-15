@@ -13,7 +13,7 @@ import { execPromise } from '../../lib.js'
  */
 export const moggFileStat = async (moggFilePath: StringOrPath): Promise<MOGGFileStatRawObject> => {
   const moduleName = 'mogg_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(moggFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -30,7 +30,7 @@ export const moggFileStat = async (moggFilePath: StringOrPath): Promise<MOGGFile
  */
 export const moggFileStatSync = (moggFilePath: StringOrPath): MOGGFileStatRawObject => {
   const moduleName = 'mogg_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(moggFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {

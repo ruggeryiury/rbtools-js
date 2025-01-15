@@ -13,7 +13,7 @@ import { execPromise } from '../execPromise.js'
  */
 export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -30,7 +30,7 @@ export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFile
  */
 export const midiFileStatSync = (midiFilePath: StringOrPath): MIDIFileStatObject => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root, `./python/${moduleName}`)
+  const pyPath = new Path(__root.path, `./python/${moduleName}`)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
 
