@@ -355,15 +355,14 @@ export type UnformattedPartialDTAFile = Omit<PartialDTAFile, AcceptedUnformatted
  */
 export type DTAFileKeys = keyof DTAFile
 
-export type AnyDTAType = DTAFile | PartialDTAFile
 export type AnyDTATypeArray = DTAFile[] | PartialDTAFile[]
 export type DTASelfReturnType<T> = T
 
 /**
  * A `Map` class with `DTAFile` keys and values.
  */
-export type DTAMap = Map<keyof DTAFile, unknown>
-export type DTARecord = Record<keyof DTAFile, unknown>
+export type DTAMap = Map<DTAFileKeys, unknown>
+export type DTARecord = Record<DTAFileKeys, unknown>
 
 /**
  * Generates an empty `DTAFile` object with default values.

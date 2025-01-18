@@ -1,6 +1,5 @@
-import { RBDTAJSError } from "../../index.js"
-import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from "../../lib.js"
-
+import { RBDTAJSError } from '../../index.js'
+import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib.js'
 
 export class DTAStringIO {
   /**
@@ -49,11 +48,11 @@ export class DTAStringIO {
    * Registers any value on a song map.
    * - - - -
    * @param {string} id The unique string ID of the song.
-   * @param {keyof PartialDTAFile} key The name of the key you want to register.
+   * @param {DTAFileKeys} key The name of the key you want to register.
    * @param {PartialDTAFile[T]} value The key value.
    * @returns {void}
    */
-  addValueToSong<T extends keyof PartialDTAFile>(id: string, key: T, value: PartialDTAFile[T]): void {
+  addValueToSong<T extends DTAFileKeys>(id: string, key: T, value: PartialDTAFile[T]): void {
     const content = this.content[id]
     if (content) {
       if (key !== 'id') content.set(key, value)
@@ -90,7 +89,7 @@ export class DTAStringIO {
       // <-- Basic object check to assert stringify type
       if (this.type === 'complete' && !isDTAFile(song)) throw new RBDTAJSError('Tried to stringify a complete song with incomplete information required for a song to work in-game.')
 
-      const allValuesKeys = Object.keys(song) as (keyof PartialDTAFile)[]
+      const allValuesKeys = Object.keys(song) as DTAFileKeys[]
 
       const tracks = song.tracks_count ? genTracksCountArray(song.tracks_count) : undefined
 

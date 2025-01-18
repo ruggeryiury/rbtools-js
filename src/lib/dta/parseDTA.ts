@@ -1,6 +1,6 @@
 import setDefaultOptions from 'set-default-options'
 import { WrongDTATypeError } from '../../errors.js'
-import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFile, type DTAMap, type PartialDTAFile } from '../../lib.js'
+import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFile, type DTAFileKeys, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib.js'
 
 export type DTAContentParserFormatTypes = 'complete' | 'partial'
 
@@ -339,7 +339,7 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
 
     if (rankStarted && !rankFinished) {
       if (keyFilter === 'drum' || keyFilter === 'bass' || keyFilter === 'guitar' || keyFilter === 'keys' || keyFilter === 'vocals' || keyFilter === 'real_bass' || keyFilter === 'real_guitar' || keyFilter === 'real_keys' || keyFilter === 'band') {
-        const rankKey = `rank_${keyFilter}` as keyof PartialDTAFile
+        const rankKey = `rank_${keyFilter}` as DTAFileKeys
         newDTA.set(rankKey, Number(newValue))
         return
       } else {
@@ -444,13 +444,13 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
   if (opts.format === 'complete' && !newDTA.has('rating')) newDTA.set('rating', 4)
 
   if (opts.format === 'complete' && !isDTAFile(Object.fromEntries(newDTA))) {
-    throw new WrongDTATypeError(`Song with ID "${newDTA.get('id') as string}" has missing information for a complete parsing type. Missing values: ${getCompleteDTAMissingValues(newDTA).join(', ')}`)
+    throw new WrongDTATypeError(`Song with ID "${newDTA.get('id') as string}" has missing information for a complete parsing type. Missing values: ${getCompleteDTAMissingValues(Object.fromEntries(newDTA) as DTARecord as PartialDTAFile).join(', ')}`)
   }
 
   const defaultValuesObject = dtaDefault()
 
   if (opts.format === 'complete') {
-    for (const defaultKeys of Object.keys(defaultValuesObject) as (keyof DTAFile)[]) {
+    for (const defaultKeys of Object.keys(defaultValuesObject) as DTAFileKeys[]) {
       if (newDTA.has(defaultKeys)) break
       newDTA.set(defaultKeys, defaultValuesObject[defaultKeys])
     }

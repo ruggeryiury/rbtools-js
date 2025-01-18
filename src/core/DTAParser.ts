@@ -1,19 +1,17 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
 import Path, { type PathLikeTypes } from 'path-js'
-import { DTAParserError } from '../errors.js'
-import { depackDTA, detectBufferEncoding, isURL, parseDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile } from '../lib.js'
+import setDefaultOptions from 'set-default-options'
+import { DTAParserError, WrongDTATypeError } from '../errors.js'
+import { depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongSortingTypes } from '../lib.js'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
 /**
  * A class that represents the contents of a DTA file.
  *
- * The constructor accepts
- *
- * You can also automatically parse a DTA file (or DTA file contents) using the following static methods: `fromBuffer()`, `fromFile()`, `fromURL()`.
- *
- * It parses `songs.dta` files by default, but you can parse `songs_upgrades.dta` files, and metadata update DTA files
- * using `'partial'` as second argument for these static constructor callers.
+ * The constructor accepts a parsed song object or an array of parsed song objects.
+ * You can also automatically parse a DTA file (or DTA file contents) using the
+ * following static methods: `fromBuffer()`, `fromFile()`, `fromURL()`.
  * - - - -
  */
 export class DTAParser {
@@ -108,7 +106,7 @@ export class DTAParser {
   }
 
   /** An array with object that represents the contents of a DTA song entry. */
-  songs: PartialDTAFile[]
+  songs: PartialDTAFile[] = []
   /** The type of the DTA file contents. */
   type: DTAContentParserFormatTypes
 
@@ -116,10 +114,146 @@ export class DTAParser {
 
   /**
    * @param {AllParsedDTATypes} songs A parsed song object of an array of parsed song objects.
-   * @param {DTAContentParserFormatTypes} type The type of the DTA file contents.
+   * @param {DTAContentParserFormatTypes | undefined} type `OPTIONAL` The type of the DTA file contents. Some DTAs (like from updates, and official pre-RB3 DTA files) might need to set this as `'partial'`, since they might not have all the values expected to be recognized as a song on RB3's music library. Default is `'complete'`.
    */
-  private constructor(songs: AllParsedDTATypes, type: DTAContentParserFormatTypes) {
-    this.songs = Array.isArray(songs) ? songs : [songs]
+  constructor(songs: AllParsedDTATypes, type: DTAContentParserFormatTypes = 'complete') {
     this.type = type
+    const mustBeComplete = type === 'complete'
+    if (mustBeComplete) {
+      if (Array.isArray(songs)) {
+        for (const song of songs) {
+          if (!isDTAFile(song)) throw new WrongDTATypeError(`Song with ID "${song.id}" has missing information for a complete parsing type. Missing values: ${getCompleteDTAMissingValues(song).join(', ')}`)
+        }
+      } else {
+        if (!isDTAFile(songs)) throw new WrongDTATypeError(`Song with ID "${songs.id}" has missing information for a complete parsing type. Missing values: ${getCompleteDTAMissingValues(songs).join(', ')}`)
+      }
+    }
+    this.songs = Array.isArray(songs) ? songs : [songs]
+  }
+
+  /**
+   * Returns the songs count of the collection.
+   * - - - -
+   * @returns {number}
+   */
+  length(): number {
+    return this.songs.length
+  }
+
+  /**
+   * Returns all parsed song objects from the collection.
+   * - - - -
+   * @returns {PartialDTAFile[]}
+   */
+  toJSON(): PartialDTAFile[] {
+    return this.songs
+  }
+
+  /**
+   * Stringifies all songs from this class to `.dta` file contents.
+   * - - - -
+   * @param {DTAStringifyOptions} options `OPTIONAL` An object with values that changes the behavior of the stringify process.
+   * @returns {string}
+   */
+  toString(options?: DTAStringifyOptions): string {
+    const opts = setDefaultOptions<DTAStringifyOptions>(this.type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions, options)
+    return stringifyDTA(this.songs, this.type, opts)
+  }
+
+  /**
+   * Adds a new song to the collection. This function only adds songs when the instantiated class type is `'complete'`.
+   * - - - -
+   * @param {DTAFile | DTAFile[]} songs A parsed song object of an array of parsed song objects.
+   */
+  addNewSongs(songs: DTAFile | DTAFile[]): void {
+    if (this.type === 'complete') {
+      if (Array.isArray(songs)) {
+        this.songs.push(...songs)
+        return
+      }
+      this.songs.push(songs)
+    }
+  }
+
+  /**
+   * Get the parsed song object based on its ID (shortname).
+   * - - - -
+   * @param {string} id The ID (shortname) of the song.
+   * @returns {PartialDTAFile | undefined} Returns the found parsed song object or
+   * `undefined` if no song is found.
+   */
+  getSongByID(id: string): PartialDTAFile | undefined {
+    return this.songs.find((song) => String(song.id) === String(id))
+  }
+
+  /**
+   * Applies updates to each song individually by providing a parsed song object, or an
+   * array of parsed song objects that will update a song of the collection if the ID (shortname)
+   * of the update objects matches a song ID (shortname) from the collection.
+   * - - - -
+   * @param {AllParsedDTATypes} updates A parsed song object of an array of parsed song objects with unique
+   * text IDs that will update a song from the collection if the ID (shortname) of the update object matches
+   * a song ID (shortname) from the collection.
+   * @returns {void}
+   */
+  applyUpdates(updates: AllParsedDTATypes): void {
+    if (Array.isArray(updates)) {
+      for (const update of updates) {
+        const { id } = update
+        const index = this.songs.findIndex((song) => String(song.id) === String(id))
+        if (index === -1 && this.type === 'complete') continue
+        else if (index === -1 && this.type === 'partial') {
+          this.songs.push(update)
+          continue
+        } else {
+          const newSongObject = { ...this.songs[index], ...update }
+          this.songs[index] = newSongObject
+        }
+      }
+    } else {
+      const { id } = updates
+      const index = this.songs.findIndex((song) => String(song.id) === String(id))
+      if (index === -1 && this.type === 'complete') return
+      else if (index === -1 && this.type === 'partial') {
+        this.songs.push(updates)
+        return
+      } else {
+        const newSongObject = { ...this.songs[index], ...updates }
+        this.songs[index] = newSongObject
+      }
+    }
+  }
+
+  /**
+   * Updates a song contents based on its song ID (shortname).
+   * - - - -
+   * @param {string} id The unique shortname ID of the song you want to update.
+   * @param {PartialDTAFile} update An object with updates values to be applied on the matched song of the collection.
+   */
+  applyUpdatesByID(id: string, update: PartialDTAFile): void {
+    this.songs = this.songs.map((song) => {
+      if (String(song.id) === String(id)) {
+        return { ...song, ...update }
+      }
+      return song
+    })
+  }
+
+  /**
+   * Updates all songs from the collection with provided update values.
+   * - - - -
+   * @param {PartialDTAFile} update An object with updates values to be applied on each song of the collection.
+   */
+  applyUpdatesToAllSongs(update: PartialDTAFile): void {
+    this.songs = this.songs.map((song) => ({ ...song, ...update }))
+  }
+
+  /**
+   * Sorts all songs from the collection using several sorting methods.
+   * - - - -
+   * @param {SongSortingTypes} sortBy The sorting method type.
+   */
+  sort(sortBy: SongSortingTypes): void {
+    this.songs = sortDTA(this.songs, sortBy)
   }
 }

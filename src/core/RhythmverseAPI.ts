@@ -114,7 +114,7 @@ export class RhythmverseAPI {
     }
   }
 
-  static process(data: RawRhythmverseResponse): ProcessRhythmverseObject {
+  static processData(data: RawRhythmverseResponse): ProcessRhythmverseObject {
     const { pagination, records, songs } = data.data
 
     const allSongs: ProcessedRhythmverseSongData[] = []

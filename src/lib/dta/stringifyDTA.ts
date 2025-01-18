@@ -9,16 +9,16 @@ export interface DTAStringifyOptions {
   /**
    * If `true`, each song will occupy only one line of the document. Default is `false`.
    *
-   * This parameter only works when stringifying songs updates.
+   * This parameter only works when stringifying `'partial'` DTA types.
    */
   allSongsInline?: boolean
   /**
-   * Specify the generated type of the DTA. Default is `'rbn'`.
+   * Specify the generated type of the DTA. Default is `'rb3_dlc'`.
    */
   format?: DTAStringifyFormats
   /**
-   * By setting this to `true`, it places 1 to the
-   * guitar audio channels on `cores`. Default is `false`.
+   * By setting this to `true`, it places ``1`` to the
+   * guitar audio channels on `cores`. Default is `true`.
    */
   guitarCores?: boolean
   /**
@@ -30,7 +30,7 @@ export interface DTAStringifyOptions {
    */
   placeRB3DXAttributes?: boolean
   /**
-   * If `false`, fake songs won't be ignored from the generated DTA file contents. Default is `true`.
+   * If `false`, fake songs won't be ignored from the generated DTA file contents. Default is `false`.
    */
   ignoreFakeSongs?: boolean
   /**
@@ -44,9 +44,9 @@ export interface DTAStringifyOptions {
    */
   customSource?: UnformattedPartialDTAFile[] | null
   /**
-   * Generates `pans` and `vols` arrays for songs without these informations.
+   * Generates `pans` and `vols` arrays for songs without these informations. Default is `true`.
    *
-   * This parameter only takes effect using `'complete'` on the `type` parameter of the stringify function.
+   * This parameter only works when stringifying `'complete'` DTA types.
    */
   autoGeneratePansAndVols?: boolean
   /**

@@ -1,5 +1,5 @@
 import setDefaultOptions from 'set-default-options'
-import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileWithIndex, type InstrRankingNumbers, type RankTypes } from '../../lib.js'
+import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileKeys, type DTAFileWithIndex, type InstrRankingNumbers, type RankTypes } from '../../lib.js'
 
 /**
  * Adds literal indexes as values to each song from a collection.
@@ -210,7 +210,7 @@ export const filterSongsBySongDifficulty = (songs: DTAFile[], options?: SongFilt
   const sortedSongs = sortDTA(allSongsFiltered, 'Song Title')
 
   for (const song of sortedSongs) {
-    const diffKey = `rank_${instrument}` as keyof DTAFile
+    const diffKey = `rank_${instrument}` as DTAFileKeys
     const diff = song[diffKey] as number | undefined
     const rank = rankCalculator(instrument, diff)
     const index = localeRank.indexOf(rank)
