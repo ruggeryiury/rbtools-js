@@ -9,7 +9,7 @@ import { execPromise } from '../execPromise.js'
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
  * @param {StringOrPath} midiFilePath The path of the MIDI file.
- * @returns {Promise<MIDIFileStatReturnObject>}
+ * @returns {Promise<MIDIFileStatObject>}
  */
 export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFileStatObject> => {
   const moduleName = 'midi_file_stat.py'

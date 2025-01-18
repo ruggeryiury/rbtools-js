@@ -40,7 +40,7 @@ export class ImageURL {
       })
     } catch (err) {
       if (err instanceof AxiosError) throw new ImageFetchingError(err.message, err.status)
-      throw err
+      else throw err
     }
     if (imgRes.status !== 200) throw new ImageFetchingError(`URL returned with error with status ${imgRes.status.toString()}.`, imgRes.status)
     this.buf = Buffer.from(imgRes.data)

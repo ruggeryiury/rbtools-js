@@ -1,6 +1,7 @@
 import setDefaultOptions from 'set-default-options'
 import { RBDTAJSError } from '../../errors.js'
-import { addTabToAllLines, depackDTA, dtaLocale, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAMap, type PartialDTAFile, type SongSortingTypes, type UnformattedPartialDTAFile } from '../../lib.js'
+import { DTAParser } from '../../index.js'
+import { addTabToAllLines, depackDTA, dtaLocale, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAMap, type PartialDTAFile, type SongSortingTypes, type UnformattedPartialDTAFile } from '../../lib.js'
 
 export class DTAString {
   /**
@@ -16,8 +17,8 @@ export class DTAString {
    * which values are needed to perform a song or song updates, throwing specific errors
    * when necessary values are not found on the stringify process for any specific type.
    */
-  type: DTAStringifyTypes
-  constructor(type: DTAStringifyTypes, opts: Required<DTAStringifyOptions>) {
+  type: DTAContentParserFormatTypes
+  constructor(type: DTAContentParserFormatTypes, opts: Required<DTAStringifyOptions>) {
     this.content = {}
     this.type = type
     this.opts = opts
@@ -49,7 +50,7 @@ export class DTAString {
    * Registers any value on a song map.
    * - - - -
    * @param {string} id The unique string ID of the song.
-   * @param {T} key The name of the key you want to register.
+   * @param {keyof PartialDTAFile} key The name of the key you want to register.
    * @param {PartialDTAFile[T]} value The key value.
    * @returns {void}
    */
@@ -88,7 +89,7 @@ export class DTAString {
       if (this.opts.ignoreFakeSongs && song.fake === true) break
 
       // <-- Basic object check to assert stringify type
-      if (this.type === 'songs' && !isDTAFile(song)) throw new RBDTAJSError('Tried to stringify a complete song with incomplete information required for a song to work in-game.')
+      if (this.type === 'complete' && !isDTAFile(song)) throw new RBDTAJSError('Tried to stringify a complete song with incomplete information required for a song to work in-game.')
 
       const allValuesKeys = Object.keys(song) as (keyof PartialDTAFile)[]
 
@@ -125,10 +126,10 @@ export class DTAString {
           } else content += addTabToAllLines(renderStringOnQuotesValue('name', `songs/${song.songname}/${song.songname}`, format), 2)
         }
         if (song.tracks_count !== undefined && tracks) {
-          if (format === 'rbn' && this.type === 'songs') content += addTabToAllLines(renderArray('tracks_count', song.tracks_count, format), 2)
+          if (format === 'rbn' && this.type === 'complete') content += addTabToAllLines(renderArray('tracks_count', song.tracks_count, format), 2)
           content += addTabToAllLines(renderTrackMap(tracks, format), 2)
         }
-        if (!song.pans && this.type === 'songs' && tracks && this.opts.autoGeneratePansAndVols) {
+        if (!song.pans && this.type === 'complete' && tracks && this.opts.autoGeneratePansAndVols) {
           content += addTabToAllLines(
             renderArray(
               'pans',
@@ -147,7 +148,7 @@ export class DTAString {
             2
           )
 
-        if (!song.vols && this.type === 'songs' && tracks && this.opts.autoGeneratePansAndVols) {
+        if (!song.vols && this.type === 'complete' && tracks && this.opts.autoGeneratePansAndVols) {
           content += addTabToAllLines(
             renderArray(
               'vols',
@@ -165,7 +166,7 @@ export class DTAString {
             ),
             2
           )
-        if (this.type === 'songs' && song.tracks_count && tracks) {
+        if (this.type === 'complete' && song.tracks_count && tracks) {
           const coresArray = Array<number>(tracks.allTracksCount).fill(-1)
           const coresArrayGtr = coresArray.map((core, coreI) => {
             if (tracks.guitar?.includes(coreI)) return 1
@@ -175,7 +176,7 @@ export class DTAString {
         }
 
         if (song.vocal_parts !== undefined) content += addTabToAllLines(renderNumberOrStringValue('vocal_parts', song.vocal_parts, format), 2)
-        if (this.type === 'songs') content += addTabToAllLines(renderDrumsCue(format), 2)
+        if (this.type === 'complete') content += addTabToAllLines(renderDrumsCue(format), 2)
 
         if (song.mute_volume !== undefined) content += addTabToAllLines(renderNumberOrStringValue('mute_volume', song.mute_volume, format), 2)
         if (song.mute_volume_vocals !== undefined) content += addTabToAllLines(renderNumberOrStringValue('mute_volume_vocals', song.mute_volume_vocals, format), 2)
@@ -252,11 +253,11 @@ export class DTAString {
       }
       if (song.pack_name !== undefined) content += addTabToAllLines(renderStringOnQuotesValue('pack_name', song.pack_name, format))
 
-      if (this.type === 'songs' && this.opts.placeCustomAttributes) content += renderCustomAttributes(song)
+      if (this.type === 'complete' && this.opts.placeCustomAttributes) content += renderCustomAttributes(song)
 
       content += renderSongEntryClose()
     }
-    if (this.type === 'songs_updates' && this.opts.allSongsInline) {
+    if (this.type === 'partial' && this.opts.allSongsInline) {
       const separatedContent = depackDTA(content)
         .map((s) =>
           s.split('\n').map((val) => {
@@ -269,14 +270,12 @@ export class DTAString {
         .map((s) => s.slice(0, -2) + ')')
         .join('\n')
 
-      console.log(separatedContent)
       content = separatedContent
     }
     return content
   }
 }
 
-export type DTAStringifyTypes = 'songs' | 'songs_updates'
 export type StringGeneratorTypes = 'localeString' | 'string' | 'number' | 'numberOrLocaleString' | 'boolean' | 'array'
 export type StringGeneratorValueType<T extends StringGeneratorTypes> = T extends 'localeString' ? string : T extends 'string' ? string : T extends 'number' ? number : T extends 'boolean' ? boolean : T extends 'numberOrLocaleString' ? number | string : (string | number)[]
 export type DTAStringifyFormats = 'rbn' | 'rb3_dlc' | 'rb2'
@@ -322,7 +321,7 @@ export interface DTAStringifyOptions {
   /**
    * Generates `pans` and `vols` arrays for songs without these informations.
    *
-   * This parameter only takes effect using `'songs'` on the `type` parameter of the stringify function.
+   * This parameter only takes effect using `'complete'` on the `type` parameter of the stringify function.
    */
   autoGeneratePansAndVols?: boolean
   /**
@@ -346,27 +345,13 @@ export interface DTAStringifyOptions {
  * Converts a `DTAFile` object to DTA file contents.
  * - - - -
  * @param {PartialDTAFile | PartialDTAFile[]} songs An object containing all songs to be stringified.
- * @param {DTAStringifyTypes | undefined} type `OPTIONAL` The DTA type of the convertion. Default is `songs`.
+ * @param {DTAContentParserFormatTypes | undefined} type `OPTIONAL` The DTA type of the convertion. Default is `songs`.
  * @param {DTAStringifyOptions | undefined} options `OPTIONAL` An object with values that changes the behavior
  * of the DTA stringify process.
  * @returns {string} The generated DTA file contents.
  */
-export const stringifyDTA = (songs: PartialDTAFile | PartialDTAFile[], type: DTAStringifyTypes = 'songs', options?: DTAStringifyOptions): string => {
-  const opts = setDefaultOptions<DTAStringifyOptions>(
-    {
-      guitarCores: false,
-      ignoreFakeSongs: false,
-      placeCustomAttributes: true,
-      placeRB3DXAttributes: true,
-      sortBy: null,
-      format: 'rbn',
-      wiiMode: null,
-      allSongsInline: false,
-      customSource: null,
-      autoGeneratePansAndVols: false,
-    },
-    options
-  )
+export const stringifyDTA = (songs: PartialDTAFile | PartialDTAFile[], type: DTAContentParserFormatTypes = 'complete', options?: DTAStringifyOptions): string => {
+  const opts = setDefaultOptions<DTAStringifyOptions>(type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions, options)
 
   const io = new DTAString(type, opts)
   if (Array.isArray(songs)) {

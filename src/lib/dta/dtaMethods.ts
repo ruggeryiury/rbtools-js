@@ -142,9 +142,9 @@ export interface DTAFile {
    */
   guide_pitch_volume?: number
   /**
-   * The encoding of the MIDI song file. Default is `latin1`.
+   * The encoding of the song file DTA values. Default is `latin1`.
    *
-   * Songs which MIDI file is exported with UTF-8 encoding should have `utf8` as encoding.
+   * Songs with any characters with accents on the DTA must set the encoding to `utf8`.
    */
   encoding?: SongEncoding
   /**

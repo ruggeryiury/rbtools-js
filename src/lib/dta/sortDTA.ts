@@ -5,7 +5,7 @@ import { omitLeadingArticle, type AnyDTATypeArray, type DTASelfReturnType, type 
  * - - - -
  * @param {AnyDTATypeArray} songs An array with parsed song objects.
  * @param {SongSortingTypes} sortBy The sorting type.
- * @returns {PartialDTAFile[]} A sorted array of parsed song objects.
+ * @returns {DTASelfReturnType<AnyDTATypeArray>} A sorted array of parsed song objects.
  */
 export const sortDTA = <T extends AnyDTATypeArray>(songs: T, sortBy: SongSortingTypes): DTASelfReturnType<T> => {
   if (sortBy === 'Song Title') {

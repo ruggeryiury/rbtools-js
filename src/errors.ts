@@ -339,3 +339,19 @@ export class UnknownMapValueError extends Error {
     Object.setPrototypeOf(this, PACKFileError.prototype)
   }
 }
+
+/**
+ * A generic error that's thrown by the `DTAParser` class.
+ * - - - -
+ */
+export class DTAParserError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'DTAParserError'
+    Error.captureStackTrace(this, DTAParserError)
+    Object.setPrototypeOf(this, DTAParserError.prototype)
+  }
+}

@@ -49,19 +49,16 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./core": {
-      "import": "./dist/core.js"
-    },
-    "./exec": {
-      "import": "./dist/exec.js"
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts"
     },
     "./lib": {
-      "import": "./dist/lib.js"
-    },
-    "./python": {
-      "import": "./dist/python.js"
+      "import": "./dist/lib.js",
+      "types": "./dist/lib.d.ts"
     }
   }
 }

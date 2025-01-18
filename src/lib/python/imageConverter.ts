@@ -41,6 +41,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
   return new Promise<Path>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
     const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    console.log(pyPath)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 

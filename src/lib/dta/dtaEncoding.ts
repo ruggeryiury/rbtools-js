@@ -1,52 +1,20 @@
 import { detectAll } from 'jschardet'
-import type { PACKFileDTAEncodingOptions } from '../../core.js'
 import type { PartialDTAFile, SongEncoding } from '../../lib.js'
 
 /**
  * Figures out the encoding of a string of buffer for DTA file exporting.
  * - - - -
  * @param {string | Buffer} data The data you want to know the encoding type.
- * @returns {BufferEncoding} The encoding of the Buffer (formatted to DTA file).
+ * @returns {SongEncoding} The encoding of the Buffer (formatted to DTA file).
  */
-export const detectBufferEncoding = (data: string | Buffer): BufferEncoding => {
-  let bufEnc: BufferEncoding = 'latin1'
-  let encodingSure = false
-  const encodings = detectAll(data)
-  encodings.forEach((enc) => {
-    if (encodingSure) return
-    if (enc.encoding === 'ASCII' && enc.confidence === 1) {
-      bufEnc = 'ascii'
-      encodingSure = true
-      return
-    } else if (enc.encoding === 'UTF-8' && enc.confidence >= 0.975) {
-      bufEnc = 'utf8'
-      encodingSure = true
-      return
-    } else if (enc.encoding.includes('windows-125') || (enc.encoding.includes('ISO-8859') && enc.confidence >= 0.95)) {
-      encodingSure = true
-      return
-    }
-  })
-
-  return bufEnc
-}
-
-/**
- * Figures out the encoding of a string of buffer for DTA file exporting.
- * - - - -
- * @param {string | Buffer} data The data you want to know the encoding type.
- * @returns {BufferEncoding} The encoding of the Buffer (formatted to DTA file).
- */
-export const detectBufferEncodingStrict = (data: string | Buffer): PACKFileDTAEncodingOptions => {
-  let bufEnc: PACKFileDTAEncodingOptions = 'latin1'
+export const detectBufferEncoding = (data: string | Buffer): SongEncoding => {
+  let bufEnc: SongEncoding = 'latin1'
   const encodings = detectAll(data)
   for (const enc of encodings) {
-    if (enc.encoding === 'ASCII' && enc.confidence === 1) {
-      break
-    } else if (enc.encoding === 'UTF-8' && enc.confidence >= 0.975) {
+    if (enc.encoding === 'ASCII' && enc.confidence === 1) break
+    else if (enc.encoding.includes('windows-125') || (enc.encoding.includes('ISO-8859') && enc.confidence >= 0.96)) break
+    else if (enc.encoding === 'UTF-8' && enc.confidence > 0.96) {
       bufEnc = 'utf8'
-      break
-    } else if (enc.encoding.includes('windows-125') || (enc.encoding.includes('ISO-8859') && enc.confidence >= 0.95)) {
       break
     }
   }
@@ -80,7 +48,7 @@ export const containsLatin1SpecificChars = (input: string): boolean => {
  * @param {PartialDTAFile} song The song you want to know the encoding type.
  * @returns {SongEncoding} The correct encoding for the song.
  */
-export const checkSongEncoding = (song: PartialDTAFile): SongEncoding => {
+export const patchDTAEncodingFromDTAFileObject = (song: PartialDTAFile): SongEncoding => {
   const { name, artist, album_name, pack_name, author, loading_phrase } = song
   let proof = false
 

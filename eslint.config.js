@@ -28,8 +28,8 @@ const tseslintConfig = {
   },
   extends: [eslint.configs.recommended, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked, jsdoc.configs['flat/recommended']],
   rules: {
-    'jsdoc/no-undefined-types': 'off',
-    'jsdoc/valid-types': 'off',
+    // 'jsdoc/no-undefined-types': 'off',
+    // 'jsdoc/valid-types': 'off',
     'jsdoc/require-returns-description': 'off',
     '@typescript-eslint/non-nullable-type-assertion-style': 'warn',
     '@typescript-eslint/no-dynamic-delete': 'off',

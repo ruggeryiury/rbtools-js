@@ -385,7 +385,7 @@ export type LocaleKeyToValueTypes = Exclude<keyof typeof dtaLocale, 'allKeys' | 
  * Searchs for values in the locale type based on the type and the key of the value, returning the provided
  * key if the value is not found of the provided type.
  * - - - -
- * @param {T} type The type of the key value where it's going to be searched from.
+ * @param {LocaleKeyToValueTypes} type The type of the key value where it's going to be searched from.
  * @param {LiteralUnion<keyof (typeof dtaLocale)[T], string | number>} key The key of the value you want to search for.
  * @returns {string} The value or the provided key, if the value is not found on the locale object.
  */

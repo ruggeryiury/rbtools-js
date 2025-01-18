@@ -1,6 +1,6 @@
 import setDefaultOptions from 'set-default-options'
 import { WrongDTATypeError } from '../../errors.js'
-import { customSourceIfdefDeconstructor, dtaDefault, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFile, type DTAMap, type PartialDTAFile } from '../../lib.js'
+import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFile, type DTAMap, type PartialDTAFile } from '../../lib.js'
 
 export type DTAContentParserFormatTypes = 'complete' | 'partial'
 
@@ -433,7 +433,7 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
   })
 
   if (!isTracksCountEmpty(tracksCount)) newDTA.set('tracks_count', tracksCount)
-  if (preview[0] !== 0 && preview[1] !== 0) newDTA.set('preview', preview)
+  if (preview[1] !== 0) newDTA.set('preview', preview)
   if (solo.length > 0) newDTA.set('solo', solo)
   if (languages.length > 0) newDTA.set('languages', languages)
   if (extraAuthoring.length > 0) newDTA.set('extra_authoring', extraAuthoring)
@@ -443,7 +443,9 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
 
   if (opts.format === 'complete' && !newDTA.has('rating')) newDTA.set('rating', 4)
 
-  if (opts.format === 'complete' && !isDTAFile(Object.fromEntries(newDTA))) throw new WrongDTATypeError('Tried to parse songs with complete information but all necessary values were not found. Try using "SongsUpdatesDTA" class instead.')
+  if (opts.format === 'complete' && !isDTAFile(Object.fromEntries(newDTA))) {
+    throw new WrongDTATypeError(`Song with ID "${newDTA.get('id') as string}" has missing information for a complete parsing type. Missing values: ${getCompleteDTAMissingValues(newDTA).join(', ')}`)
+  }
 
   const defaultValuesObject = dtaDefault()
 

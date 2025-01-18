@@ -7,7 +7,7 @@ import { execPromise } from '../lib.js'
 /**
  * Class with static methods to deal with PS3 EDAT files.
  */
-export class EDATFile {
+export class EDAT {
   /**
    * Generates a MD5 hash that decrypts `.edat` files based on the installed DLC folder name.
    * - - - -
@@ -91,7 +91,7 @@ export class EDATFile {
     const usrDirFolder = new Path(dlc.root)
     const eboot = new Path(usrDirFolder.path, 'EBOOT.BIN')
     if (!eboot.exists()) throw new FileNotFoundError(`Provided DLC folder path "${dlc.path}" is not on a valid RPCS3 DLC folder.`)
-    const devKLic = EDATFile.devklicFromFolderName(dlc.name)
+    const devKLic = EDAT.devklicFromFolderName(dlc.name)
     const songsFolder = new Path(dlc.path, './songs')
     const songsFolderContents = await songsFolder.readDir(true)
     let funcOutput = ''
@@ -101,7 +101,7 @@ export class EDATFile {
       const songMidi = new Path(s.path, `${songName}.mid`)
       const songEDAT = new Path(s.path, `${songName}.mid.edat`)
       await songMidi.checkThenDeleteFile()
-      const output = await EDATFile.decryptEDAT(songEDAT.path, devKLic)
+      const output = await EDAT.decryptEDAT(songEDAT.path, devKLic)
       funcOutput += `${output}\n`
     }
     return funcOutput
@@ -119,9 +119,9 @@ export class EDATFile {
     if (!midiFile.exists()) if (!edat.exists()) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)
     if (edat.ext !== '.edat') throw new UnknownFileFormatError(`Provided path "${edat.path} is not an EDAT file."`)
     const edatDLCFolderName = new Path(edat.root, '../../').name
-    const devKLic = EDATFile.devklicFromFolderName(edatDLCFolderName)
+    const devKLic = EDAT.devklicFromFolderName(edatDLCFolderName)
     await midiFile.checkThenDeleteFile()
-    const output = await EDATFile.decryptEDAT(edat.path, devKLic)
+    const output = await EDAT.decryptEDAT(edat.path, devKLic)
     return output
   }
 }
