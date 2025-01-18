@@ -1,5 +1,5 @@
 import type { FileHandle } from 'fs/promises'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { FileNotFoundError, BinaryReaderError } from '../errors.js'
 
 export class BinaryReader {
@@ -8,7 +8,7 @@ export class BinaryReader {
   buffer?: Buffer
   protected offset: number
 
-  static async loadFile(filePath: StringOrPath) {
+  static async loadFile(filePath: PathLikeTypes) {
     const path = Path.stringToPath(filePath)
     const handler = await path.openFile()
     return new BinaryReader(path, handler)
@@ -31,7 +31,7 @@ export class BinaryReader {
     throw new BinaryReaderError('Internal function error')
   }
 
-  private constructor(path: StringOrPath, handlerOrBuffer: FileHandle | Buffer) {
+  private constructor(path: PathLikeTypes, handlerOrBuffer: FileHandle | Buffer) {
     if (path instanceof Path) this.path = path
     else this.path = Path.stringToPath(path)
 

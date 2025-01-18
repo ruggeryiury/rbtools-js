@@ -1,11 +1,11 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { PythonExecutionError, ValueError } from '../../errors.js'
-import { __root } from '../../index.js'
+import { RBTools } from '../../index.js'
 import { execPromise } from '../execPromise.js'
 
-export const audioToMOGG = async (audioFiles: StringOrPath[], destPath: StringOrPath, quality = 3) => {
+export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLikeTypes, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const dest = Path.stringToPath(destPath)
   await dest.checkThenDeleteFile()
 

@@ -57,7 +57,8 @@ _Make sure that the `packages` folder are in the project's root folder to instal
 
 - Config your environment file (OPTIONAL): Create a `env` file in the root of where you downloaded/cloned this repository and put these values:
 
-  - `RBTOOLS_DEV`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder. This value is only need in development when doing new scripts to avoid building and copying the scripts to the `dist` folder.
+  - `RBTOOLS_USESOURCE`: Setting this variable to `1` changes the root path of the package to use `src` rather than the `dist` folder. This value is only need in development when doing new scripts to avoid building and copying the scripts to the `dist` folder.
+  - `RBTOOLS_BIN_PATH`: Changes the path used as the `bin` directory path for the module. Default is the module `dist/bin` (or `src/bin` if `RBTOOLS_USESOURCE` is set to 1) folder.
 
 # Package resources
 

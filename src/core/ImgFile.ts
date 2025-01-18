@@ -1,4 +1,4 @@
-import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors.js'
 import type { TextureFile } from '../index.js'
@@ -79,9 +79,9 @@ export class ImgFile {
   }
 
   /**
-   * @param {StringOrPath} imageFilePath The path to the image file.
+   * @param {PathLikeTypes} imageFilePath The path to the image file.
    */
-  constructor(imageFilePath: StringOrPath) {
+  constructor(imageFilePath: PathLikeTypes) {
     this.path = Path.stringToPath(imageFilePath)
     this.checkExistence()
 
@@ -136,12 +136,12 @@ export class ImgFile {
   /**
    * Asynchronously converts this image file to a texture file.
    * - - - -
-   * @param {StringOrPath} destPath The path of the new texture file.
+   * @param {PathLikeTypes} destPath The path of the new texture file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired texture format of the new texture file.
    * @param {ConvertToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
-  async convertToTexture(destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
+  async convertToTexture(destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
     const opts = setDefaultOptions<typeof options>(
       {
         DTX5: true,
@@ -162,12 +162,12 @@ export class ImgFile {
   /**
    * Asynchronously converts this image file to any other image file format.
    * - - - -
-   * @param {StringOrPath} destPath The path of the new image file.
+   * @param {PathLikeTypes} destPath The path of the new image file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the new image file.
    * @param {ConvertToImageOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
-  async convertToImage(destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> {
+  async convertToImage(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> {
     const opts = setDefaultOptions<typeof options>(
       {
         height: null,

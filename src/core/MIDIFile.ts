@@ -1,4 +1,4 @@
-import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
 import { MIDIFileError } from '../errors.js'
 import { midiFileStat, midiFileStatSync } from '../lib.js'
 
@@ -27,9 +27,9 @@ export class MIDIFile {
   path: Path
 
   /**
-   * @param {StringOrPath} midiFilePath The path to the MIDI file.
+   * @param {PathLikeTypes} midiFilePath The path to the MIDI file.
    */
-  constructor(midiFilePath: StringOrPath) {
+  constructor(midiFilePath: PathLikeTypes) {
     const path = Path.stringToPath(midiFilePath)
     this.path = path
 

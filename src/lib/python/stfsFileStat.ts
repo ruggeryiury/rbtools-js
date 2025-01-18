@@ -1,19 +1,19 @@
 import { execSync } from 'child_process'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import type { STFSFileStatRawObject } from '../../core.js'
 import { PythonExecutionError } from '../../errors.js'
-import { __root } from '../../index.js'
+import { RBTools } from '../../index.js'
 import { execPromise } from '../../lib.js'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the CON file.
  * - - - -
- * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @param {PathLikeTypes} stfsFilePath The path of the CON file.
  * @returns {Promise<STFSFileStatRawObject>}
  */
-export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFileStatRawObject> => {
+export const stfsFileStat = async (stfsFilePath: PathLikeTypes): Promise<STFSFileStatRawObject> => {
   const moduleName = 'stfs_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -25,12 +25,12 @@ export const stfsFileStat = async (stfsFilePath: StringOrPath): Promise<STFSFile
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the CON file.
  * - - - -
- * @param {StringOrPath} stfsFilePath The path of the CON file.
+ * @param {PathLikeTypes} stfsFilePath The path of the CON file.
  * @returns {STFSFileStatRawObject}
  */
-export const stfsFileStatSync = (stfsFilePath: StringOrPath): STFSFileStatRawObject => {
+export const stfsFileStatSync = (stfsFilePath: PathLikeTypes): STFSFileStatRawObject => {
   const moduleName = 'stfs_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const src = Path.stringToPath(stfsFilePath)
   const command = `python ${moduleName} "${src.path}"`
   try {

@@ -1,4 +1,4 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { type ConvertToImageOptions, ImgFile } from '../../core.js'
 import { ValueError, FileConvertionError } from '../../errors.js'
@@ -7,13 +7,13 @@ import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../..
 /**
  * Asynchronously converts an image file to any other image file format.
  * - - - -
- * @param {StringOrPath} srcFile The path of the image to want to convert.
- * @param {StringOrPath} destPath The path of the new converted image file.
+ * @param {PathLikeTypes} srcFile The path of the image to want to convert.
+ * @param {PathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @param {ConvertToImageOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
-export const imgToImg = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> => {
+export const imgToImg = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> => {
   const { height, interpolation, quality, width } = setDefaultOptions<typeof options>(
     {
       height: null,

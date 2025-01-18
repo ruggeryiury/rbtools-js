@@ -1,4 +1,4 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { OnyxCLIError } from '../errors.js'
 import { execPromise } from '../lib.js'
 
@@ -15,9 +15,9 @@ export class OnyxCLI {
   path: Path
 
   /**
-   * @param {StringOrPath} onyxCliPath The path to the Onyx CLI executable.
+   * @param {PathLikeTypes} onyxCliPath The path to the Onyx CLI executable.
    */
-  constructor(onyxCliPath: StringOrPath) {
+  constructor(onyxCliPath: PathLikeTypes) {
     const path = Path.stringToPath(onyxCliPath)
     this.path = path
 
@@ -44,12 +44,12 @@ export class OnyxCLI {
   /**
    * Compile a folder's contents into an Xbox 360 STFS file (CON file).
    * - - - -
-   * @param {StringOrPath} srcFolder The path to the folder with contents to the CON file.
-   * @param {StringOrPath} destFile The path to the new CON file.
+   * @param {PathLikeTypes} srcFolder The path to the folder with contents to the CON file.
+   * @param {PathLikeTypes} destFile The path to the new CON file.
    * @param {STFSGameTypes} game `OPTIONAL`. Change the game that the CON file will be created for. Default is `'rb3'`.
    * @returns {Promise<string>} The printable text from the child process.
    */
-  async stfs(srcFolder: StringOrPath, destFile: StringOrPath, game: STFSGameTypes = 'rb3'): Promise<string> {
+  async stfs(srcFolder: PathLikeTypes, destFile: PathLikeTypes, game: STFSGameTypes = 'rb3'): Promise<string> {
     const src = Path.stringToPath(srcFolder)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt(''))
     const cmd = `"${this.path.path}" stfs "${src.path}" --to ${dest.path} --game ${game}`
@@ -61,12 +61,12 @@ export class OnyxCLI {
   /**
    * Compile a folder's contents into a PS3 `.pkg` file.
    * - - - -
-   * @param {StringOrPath} srcFolder The path to the folder with contents to the `.pkg` file.
-   * @param {StringOrPath} destFile The path to the new `.pkg` file.
+   * @param {PathLikeTypes} srcFolder The path to the folder with contents to the `.pkg` file.
+   * @param {PathLikeTypes} destFile The path to the new `.pkg` file.
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0006-BLUS30050_00-RBSTILLALCCF005D`
    * @returns {Promise<string>} The printable text from the child process.
    */
-  async pkg(srcFolder: StringOrPath, destFile: StringOrPath, contentID: string): Promise<string> {
+  async pkg(srcFolder: PathLikeTypes, destFile: PathLikeTypes, contentID: string): Promise<string> {
     const src = Path.stringToPath(srcFolder)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt('pkg'))
     const cmd = `"${this.path.path}" pkg ${contentID} "${src.path}" --to ${dest.path}`
@@ -78,13 +78,13 @@ export class OnyxCLI {
   /**
    * Encrypt a file into a PS3 `.edat` file.
    * - - - -
-   * @param {StringOrPath} srcFile The path to the file to be encrypted.
-   * @param {StringOrPath} destFile The path to the new `.edat` file.
+   * @param {PathLikeTypes} srcFile The path to the file to be encrypted.
+   * @param {PathLikeTypes} destFile The path to the new `.edat` file.
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL`
    * @param {string} klic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>} The printable text from the child process.
    */
-  async edat(srcFile: StringOrPath, destFile: StringOrPath, contentID: string, klic: string): Promise<string> {
+  async edat(srcFile: PathLikeTypes, destFile: PathLikeTypes, contentID: string, klic: string): Promise<string> {
     const src = Path.stringToPath(srcFile)
     const dest = new Path(Path.stringToPath(destFile).changeFileExt('edat'))
     const cmd = `"${this.path.path}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`

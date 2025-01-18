@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors.js'
-import { __root } from '../index.js'
+import { RBTools } from '../index.js'
 import { execPromise } from '../lib.js'
 
 /**
@@ -45,14 +45,14 @@ export class EDAT {
   /**
    * Encrypts any file to EDAT.
    * - - - -
-   * @param {StringOrPath} srcFile The path to the file to be encrypted.
+   * @param {PathLikeTypes} srcFile The path to the file to be encrypted.
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL00`
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async encryptToEDAT(srcFile: StringOrPath, contentID: string, devKLic: string): Promise<string> {
+  static async encryptToEDAT(srcFile: PathLikeTypes, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root.path, `./bin/${moduleName}`)
+    const exePath = new Path(RBTools.getBinPath().path, moduleName)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(`${src.path}.edat`)
     const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.path}"`
@@ -64,13 +64,13 @@ export class EDAT {
   /**
    * Decrypts an EDAT file.
    * - - - -
-   * @param {StringOrPath} srcFile The path to the EDAT file to be decrypted.
+   * @param {PathLikeTypes} srcFile The path to the EDAT file to be decrypted.
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async decryptEDAT(srcFile: StringOrPath, devKLic: string): Promise<string> {
+  static async decryptEDAT(srcFile: PathLikeTypes, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(__root.path, `./bin/${moduleName}`)
+    const exePath = new Path(RBTools.getBinPath().path, moduleName)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
@@ -82,10 +82,10 @@ export class EDAT {
   /**
    * Converts all EDAT files from a RPCS3 DLC folder.
    * - - - -
-   * @param {StringOrPath} dlcFolder The folder you want to convert all EDAT files. The DLC folder name must be the one that the EDAT file were originally installed to work.
+   * @param {PathLikeTypes} dlcFolder The folder you want to convert all EDAT files. The DLC folder name must be the one that the EDAT file were originally installed to work.
    * @returns {Promise<string>}
    */
-  static async decryptRPCS3DLCFolder(dlcFolder: StringOrPath): Promise<string> {
+  static async decryptRPCS3DLCFolder(dlcFolder: PathLikeTypes): Promise<string> {
     const dlc = Path.stringToPath(dlcFolder)
     if (dlc.type() !== 'directory') throw new FileNotFoundError(`Provided path "${dlc.path} is not a directory."`)
     const usrDirFolder = new Path(dlc.root)
@@ -110,10 +110,10 @@ export class EDAT {
   /**
    * Decrypts an EDAT file inside a RPCS3 DLC folder. The DLC folder name must be the one that the EDAT file were originally installed to work.
    * - - - -
-   * @param {StringOrPath} edatFilePath The path to the EDAT file to be decrpted.
+   * @param {PathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
    * @returns {Promise<string>}
    */
-  static async decryptEDATFromDLCFolder(edatFilePath: StringOrPath): Promise<string> {
+  static async decryptEDATFromDLCFolder(edatFilePath: PathLikeTypes): Promise<string> {
     const edat = Path.stringToPath(edatFilePath)
     const midiFile = new Path(edat.changeFileName(edat.name.split('.')[0], '.mid'))
     if (!midiFile.exists()) if (!edat.exists()) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)

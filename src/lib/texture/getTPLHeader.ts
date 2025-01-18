@@ -1,4 +1,4 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { FileNotFoundError, UnknownFileFormatError } from '../../errors.js'
 import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes, imageHeaders } from '../../lib.js'
 
@@ -17,10 +17,10 @@ export interface TPLHeaderParserObject {
 /**
  * Asynchronously builds the right Texture Pallete Library (`.tpl`) header to put on the PNG_WII texture file.
  * - - - -
- * @param {StringOrPath} pngWiiPath The path of the PNG_WII file.
+ * @param {PathLikeTypes} pngWiiPath The path of the PNG_WII file.
  * @returns {Promise<TPLHeaderParserObject>} An object with the header data and values.
  */
-export const getTPLHeader = async (pngWiiPath: StringOrPath): Promise<TPLHeaderParserObject> => {
+export const getTPLHeader = async (pngWiiPath: PathLikeTypes): Promise<TPLHeaderParserObject> => {
   const src = Path.stringToPath(pngWiiPath)
   if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
   if (src.type() === 'file' && src.ext === '.png_wii') {
@@ -42,10 +42,10 @@ export const getTPLHeader = async (pngWiiPath: StringOrPath): Promise<TPLHeaderP
 /**
  * Synchronously builds the right Texture Pallete Library (`.tpl`) header to put on the PNG_WII texture file.
  * - - - -
- * @param {StringOrPath} pngWiiPath The path of the PNG_WII file.
+ * @param {PathLikeTypes} pngWiiPath The path of the PNG_WII file.
  * @returns {TPLHeaderParserObject} An object with the header data and values.
  */
-export const getTPLHeaderSync = (pngWiiPath: StringOrPath): TPLHeaderParserObject => {
+export const getTPLHeaderSync = (pngWiiPath: PathLikeTypes): TPLHeaderParserObject => {
   const src = Path.stringToPath(pngWiiPath)
   if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
   if (src.type() === 'file' && src.ext === '.png_wii') {

@@ -1,6 +1,6 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { ExecutableError } from '../../errors.js'
-import { __root } from '../../index.js'
+import { RBTools } from '../../index.js'
 import { execPromise } from '../execPromise.js'
 
 /**
@@ -8,15 +8,15 @@ import { execPromise } from '../execPromise.js'
  *
  * _NVIDIA Texture Tools converts any image file format to DDS image files._
  * - - - -
- * @param {StringOrPath} srcFile The path to the image file to be converted.
- * @param {StringOrPath} destPath The path to the new converted DDS file.
+ * @param {PathLikeTypes} srcFile The path to the image file to be converted.
+ * @param {PathLikeTypes} destPath The path to the new converted DDS file.
  * @param {boolean} DTX5 `OPTIONAL` Uses DTX5 encoding. Default is `true`.
  * @param {boolean} mipMap `OPTIONAL` Uses MipMap on the DDS texture (needed for album artworks). Default is `true`.
  * @returns {Promise<string>}
  */
-export const NVCompress = async (srcFile: StringOrPath, destPath: StringOrPath, DTX5 = true, mipMap = true): Promise<string> => {
+export const NVCompress = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, DTX5 = true, mipMap = true): Promise<string> => {
   const moduleName = 'nvcompress.exe'
-  const exePath = new Path(__root.path, `./bin/${moduleName}`)
+  const exePath = new Path(RBTools.getBinPath().path, moduleName)
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
 

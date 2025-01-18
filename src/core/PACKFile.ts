@@ -1,4 +1,4 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { temporaryFile } from 'tempy'
 import { SongsDTA } from '../core.js'
@@ -73,7 +73,7 @@ export interface PACKFileCreationOptions {
    * - A path to a DTA file as `string`.
    * - The contents of a DTA file as decoded `string`.
    */
-  dta: StringOrPath | Buffer
+  dta: PathLikeTypes | Buffer
   /**
    * The thumbnail file to be apprended to the PACK file.
    * - A path to an image file as an instantiated `Path` class.
@@ -81,7 +81,7 @@ export interface PACKFileCreationOptions {
    * - A `Buffer`, empty or not (empty buffers will return a default empty values to write).
    * - A path to an image file as `string`.
    */
-  thumbnail: StringOrPath | Buffer
+  thumbnail: PathLikeTypes | Buffer
   /** The name of the pack. */
   packName: string
   /** The original folder name of pack. */
@@ -144,7 +144,7 @@ export class PACKFile {
   /**
    * Returns all the data needed for DTA injections on a PACK file.
    * - - - -
-   * @param {StringOrPath | Buffer} content The contents of a DTA file, that can be:
+   * @param {PathLikeTypes | Buffer} content The contents of a DTA file, that can be:
    * - A path to a DTA file as an instantiated `Path` class.
    * - A `Path` class JSON representation object.
    * - A `Buffer`, empty or not (empty buffers will return a default empty values to write).
@@ -152,7 +152,7 @@ export class PACKFile {
    * - The contents of a DTA file as decoded `string`.
    * @returns {Promise<DTAFileContentsData>}
    */
-  static async getDTAContentsData(content: StringOrPath | Buffer): Promise<DTAFileContentsData> {
+  static async getDTAContentsData(content: PathLikeTypes | Buffer): Promise<DTAFileContentsData> {
     let buffer: Buffer
     let enc: PACKFileDTAEncodingOptions
     let bufferSize: number
@@ -213,14 +213,14 @@ export class PACKFile {
   /**
    * Returns all the data needed for thumbnail injections on a PACK file.
    * - - - -
-   * @param {StringOrPath | Buffer} content The contents of an image file, that can be:
+   * @param {PathLikeTypes | Buffer} content The contents of an image file, that can be:
    * - A path to an image file as an instantiated `Path` class.
    * - A `Path` class JSON representation object.
    * - A `Buffer`, empty or not (empty buffers will return a default empty values to write).
    * - A path to an image file as `string`.
    * @returns {Promise<ThumbnailFileContentsData>}
    */
-  static async getThumbnailContentsData(content: StringOrPath | Buffer): Promise<ThumbnailFileContentsData> {
+  static async getThumbnailContentsData(content: PathLikeTypes | Buffer): Promise<ThumbnailFileContentsData> {
     const tempWebp = new Path(temporaryFile({ extension: '.webp' }))
     const webpImgOpts: ImageConverterOptions = { quality: 100, width: 256, height: 256, interpolation: 'lanczos' }
     let buffer: Buffer
@@ -269,10 +269,10 @@ export class PACKFile {
    * Asynchronously creates a PACK file based on the provided arguments.
    * - - - -
    * @param {Partial<PACKFileCreationOptions>} content An object with data to write to the PACK file.
-   * @param {StringOrPath | undefined} destPath The path that the PACK file will be written.
+   * @param {PathLikeTypes | undefined} destPath The path that the PACK file will be written.
    * @returns {Promise<void>}
    */
-  static async writeFile(content: Partial<PACKFileCreationOptions>, destPath?: StringOrPath): Promise<Buffer> {
+  static async writeFile(content: Partial<PACKFileCreationOptions>, destPath?: PathLikeTypes): Promise<Buffer> {
     const data = setDefaultOptions<PACKFileCreationOptions>(
       {
         fileVersion: 1,
@@ -369,7 +369,7 @@ export class PACKFile {
     return patches
   }
 
-  static async readFile(packFilePath: StringOrPath): Promise<PACKFileContentsObject> {
+  static async readFile(packFilePath: PathLikeTypes): Promise<PACKFileContentsObject> {
     const path = Path.stringToPath(packFilePath)
     const reader = await BinaryReader.loadFile(path)
     const magic = await reader.readASCII(0x04)
@@ -437,7 +437,7 @@ export class PACKFile {
     }
   }
 
-  // static async rewriteFile(srcFilePath: StringOrPath, newContents: Partial<PACKFileCreationOptions>, destFilePath?: StringOrPath): Promise<Buffer> {
+  // static async rewriteFile(srcFilePath: PathLikeTypes, newContents: Partial<PACKFileCreationOptions>, destFilePath?: PathLikeTypes): Promise<Buffer> {
   //   const src = Path.stringToPath(srcFilePath)
   //   const srcData = await PACKFile.readFile(src)
   //   const newCon = setDefaultOptions<PACKFileCreationOptions>(

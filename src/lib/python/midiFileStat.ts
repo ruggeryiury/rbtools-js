@@ -1,19 +1,19 @@
 import { execSync } from 'child_process'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import type { MIDIFileStatObject } from '../../core.js'
 import { PythonExecutionError } from '../../errors.js'
-import { __root } from '../../index.js'
+import { RBTools } from '../../index.js'
 import { execPromise } from '../execPromise.js'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {StringOrPath} midiFilePath The path of the MIDI file.
+ * @param {PathLikeTypes} midiFilePath The path of the MIDI file.
  * @returns {Promise<MIDIFileStatObject>}
  */
-export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFileStatObject> => {
+export const midiFileStat = async (midiFilePath: PathLikeTypes): Promise<MIDIFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
@@ -25,12 +25,12 @@ export const midiFileStat = async (midiFilePath: StringOrPath): Promise<MIDIFile
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {StringOrPath} midiFilePath The path of the MIDI file.
+ * @param {PathLikeTypes} midiFilePath The path of the MIDI file.
  * @returns {MIDIFileStatObject}
  */
-export const midiFileStatSync = (midiFilePath: StringOrPath): MIDIFileStatObject => {
+export const midiFileStatSync = (midiFilePath: PathLikeTypes): MIDIFileStatObject => {
   const moduleName = 'midi_file_stat.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const src = Path.stringToPath(midiFilePath)
   const command = `python ${moduleName} "${src.path}"`
 

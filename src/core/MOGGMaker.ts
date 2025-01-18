@@ -1,5 +1,5 @@
 import { ExifTool } from 'exiftool-vendored'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { temporaryFile } from 'tempy'
 import { MOGGFile } from '../core.js'
@@ -18,7 +18,7 @@ export interface MOGGCreateOptions {
 /** A class to create a MOGG file from audio files. */
 export class MOGGMaker {
   /** An array with paths of the audio files to be placed on the MOGG file. */
-  private tracks: StringOrPath[]
+  private tracks: PathLikeTypes[]
   /** The quality level of the MOGG file. Default is `3`. */
   private quality: MOGGFileQualityLevels
   /** The channels count of the MOGG file. */
@@ -33,7 +33,7 @@ export class MOGGMaker {
   /**
    * @param {string[]} paths The paths of the audio files that will be placed on the MOGG file.
    */
-  constructor(...paths: StringOrPath[]) {
+  constructor(...paths: PathLikeTypes[]) {
     this.tracks = [...paths]
     this.quality = 3
     this.channelsCount = 0
@@ -62,9 +62,9 @@ export class MOGGMaker {
   /**
    * Asynchonously adds a new audio track to the MOGG file.
    * - - - -
-   * @param {StringOrPath} audioFilePath The path to the audio track that will be added to the MOGG file.
+   * @param {PathLikeTypes} audioFilePath The path to the audio track that will be added to the MOGG file.
    */
-  async addTrack(audioFilePath: StringOrPath): Promise<void> {
+  async addTrack(audioFilePath: PathLikeTypes): Promise<void> {
     const path = Path.stringToPath(audioFilePath)
     const data = await this.exiftool.read(path.path)
 
@@ -88,11 +88,11 @@ export class MOGGMaker {
   /**
    * Asynchonously creates the MOGG file and returns a new `MOGGFile` class pointing to the new MOGG file.
    * - - - -
-   * @param {StringOrPath} destPath The path to the new MOGG file to be created.
+   * @param {PathLikeTypes} destPath The path to the new MOGG file to be created.
    * @param {MOGGCreateOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the MOGG creation process.
    * @returns {Promise<MOGGFile>}
    */
-  async create(destPath: StringOrPath, options?: MOGGCreateOptions): Promise<MOGGFile> {
+  async create(destPath: PathLikeTypes, options?: MOGGCreateOptions): Promise<MOGGFile> {
     const { throwSixChannelsBugError } = setDefaultOptions<MOGGCreateOptions>({ encryptMOGG: false, throwSixChannelsBugError: true }, options)
     if (this.channelsCount === 6 && throwSixChannelsBugError) throw new MOGGFileError("Tried to create a MOGG file with six channels, which is known to cause glitches on the audio.\n\nIf you want to create the file anyway, set 'throwSixChannelsError' to false.")
     destPath = Path.stringToPath(temporaryFile({ extension: '.ogg' }))

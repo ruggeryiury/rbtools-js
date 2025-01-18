@@ -1,4 +1,4 @@
-import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { TextureFileError } from '../errors.js'
 import { ImgFile } from '../index.js'
@@ -55,7 +55,7 @@ export class TextureFile {
   /**
    * @param {string} textureFilePath The path to the texture file.
    */
-  constructor(textureFilePath: StringOrPath) {
+  constructor(textureFilePath: PathLikeTypes) {
     this.path = Path.stringToPath(textureFilePath)
     this.checkExistence()
 
@@ -112,12 +112,12 @@ export class TextureFile {
   /**
    * Asynchronously converts this texture file to any other texture file format.
    * - - - -
-   * @param {StringOrPath} destPath The path of the new texture file.
+   * @param {PathLikeTypes} destPath The path of the new texture file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the image file.
    * @param {ConvertTextureToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
-  async convertToTexture(destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
+  async convertToTexture(destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
     const opts = setDefaultOptions<typeof options>(
       {
         DTX5: true,
@@ -132,11 +132,11 @@ export class TextureFile {
   /**
    * Asynchronously converts this texture file to an image file.
    * - - - -
-   * @param {StringOrPath} destPath The path of the new image file.
+   * @param {PathLikeTypes} destPath The path of the new image file.
    * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
-  async convertToImage(destPath: StringOrPath, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
+  async convertToImage(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
     const unformattedDestPath = Path.stringToPath(destPath)
     const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
     if (this.path.ext === '.png_wii') return await texToImgWii(this.path, dest, toFormat)

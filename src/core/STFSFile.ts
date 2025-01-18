@@ -1,4 +1,4 @@
-import Path, { type PathJSONRepresentation, type StringOrPath } from 'path-js'
+import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
 import { SongsDTA, SongUpdatesDTA } from '../core.js'
 import { STFSFileError } from '../errors.js'
 import { stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.js'
@@ -41,9 +41,9 @@ export class STFSFile {
   path: Path
 
   /**
-   * @param {StringOrPath} stfsFilePath The path to the CON file.
+   * @param {PathLikeTypes} stfsFilePath The path to the CON file.
    */
-  constructor(stfsFilePath: StringOrPath) {
+  constructor(stfsFilePath: PathLikeTypes) {
     const path = Path.stringToPath(stfsFilePath)
     this.path = path
 
@@ -129,10 +129,10 @@ export class STFSFile {
   /**
    * Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
    * - - - -
-   * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
+   * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<string>}
    */
-  async extract(destPath: StringOrPath): Promise<Path> {
+  async extract(destPath: PathLikeTypes): Promise<Path> {
     return await stfsExtract(this.path, destPath)
   }
 
@@ -140,10 +140,10 @@ export class STFSFile {
    * Asynchronously extracts all files from a CON file on the root directory of the destination path and returns
    * the folder path where all contents were extracted.
    * - - - -
-   * @param {StringOrPath} destPath The folder path where you want the files to be extracted to.
+   * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<Path>}
    */
-  async extractAllFiles(destPath: StringOrPath): Promise<Path> {
+  async extractAllFiles(destPath: PathLikeTypes): Promise<Path> {
     return await stfsExtractAllFiles(this.path, destPath)
   }
 }

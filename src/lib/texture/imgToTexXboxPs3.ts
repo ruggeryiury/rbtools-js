@@ -1,4 +1,4 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { TextureFile, type ConvertToTextureOptions } from '../../core.js'
 import { FileConvertionError, UnknownFileFormatError } from '../../errors.js'
@@ -7,13 +7,13 @@ import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeader
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
  * - - - -
- * @param {StringOrPath} srcFile The path of the image to want to convert.
- * @param {StringOrPath} destPath The path of the new converted texture file.
+ * @param {PathLikeTypes} srcFile The path of the image to want to convert.
+ * @param {PathLikeTypes} destPath The path of the new converted texture file.
  * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the new texture file.
  * @param {ConvertToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
-export const imgToTexXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
+export const imgToTexXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
   const { DTX5, interpolation, textureSize } = setDefaultOptions<typeof options>(
     {
       DTX5: true,

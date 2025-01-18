@@ -1,9 +1,9 @@
 import { spawn } from 'child_process'
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import type { ConvertToWEBPDataURLOptions } from '../../core.js'
 import { PythonExecutionError } from '../../errors.js'
-import { __root } from '../../index.js'
+import { RBTools } from '../../index.js'
 import { execPromise, type ArtworkInterpolationTypes, type ArtworkImageFormatTypes, getTPLHeader, imgFileStat } from '../../lib.js'
 
 export interface ImageConverterOptions {
@@ -21,12 +21,12 @@ export interface ImageConverterOptions {
  * Python script: Asynchronously converts an image file `Buffer` to an image file.
  * - - - -
  * @param {Buffer} buf The buffer of the image file.
- * @param {StringOrPath} destPath The path of the new converted image file.
+ * @param {PathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes | undefined} toFormat The desired image format of the new image file. Default is `'png'`.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<Path>}
  */
-export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<Path> => {
+export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<Path> => {
   const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
@@ -40,7 +40,7 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
   const dest = Path.stringToPath(destPath)
   return new Promise<Path>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
-    const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
     console.log(pyPath)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
@@ -71,13 +71,13 @@ export const bufferConverter = async (buf: Buffer, destPath: StringOrPath, toFor
  *
  * If no _options_ argument is given, the image converter will return a 256x256 pixels size image file.
  * - - - -
- * @param {StringOrPath} srcFile The path of the image to want to convert.
- * @param {StringOrPath} destPath The path of the new converted image file.
+ * @param {PathLikeTypes} srcFile The path of the image to want to convert.
+ * @param {PathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<Path>}
  */
-export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<Path> => {
+export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<Path> => {
   const opts = setDefaultOptions<typeof options>(
     {
       height: 256,
@@ -92,7 +92,7 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
   await dest.checkThenDeleteFile()
 
   const moduleName = 'image_converter.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat)}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -103,11 +103,11 @@ export const imageConverter = async (srcFile: StringOrPath, destPath: StringOrPa
 /**
  * Python script: Asynchronously returns a Base64-encoded DataURL `string` of the image file.
  * - - - -
- * @param {StringOrPath} srcFile The path to the image file.
+ * @param {PathLikeTypes} srcFile The path to the image file.
  * @param {ConvertToWEBPDataURLOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<string>}
  */
-export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
+export const webpDataURL = async (srcFile: PathLikeTypes, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
   const opts = setDefaultOptions<typeof options>(
     {
       width: null,
@@ -129,7 +129,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 
   const src = Path.stringToPath(srcFile)
   const moduleName = 'webp_data_url.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -147,7 +147,7 @@ export const webpDataURL = async (srcFile: StringOrPath, options?: ConvertToWEBP
 export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
     const moduleName = 'img_buffer_to_webp_data_url.py'
-    const pyPath = new Path(__root.path, `./python/${moduleName}`)
+    const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 
@@ -183,15 +183,15 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
  * Python script: Asynchronously converts an PNG_WII texture file to a Base64-encoded
  * Data URL `string` of the texture file.
  * - - - -
- * @param {StringOrPath} srcFile The path of the PNG_WII file.
+ * @param {PathLikeTypes} srcFile The path of the PNG_WII file.
  * @returns {Promise<string>}
  */
-export const webpDataURLPNGWii = async (srcFile: StringOrPath): Promise<string> => {
+export const webpDataURLPNGWii = async (srcFile: PathLikeTypes): Promise<string> => {
   const src = Path.stringToPath(srcFile)
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')
   const moduleName = 'webp_data_url_pngwii.py'
-  const pyPath = new Path(__root.path, `./python/${moduleName}`)
+  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
   const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)

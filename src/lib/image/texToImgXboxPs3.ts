@@ -1,16 +1,16 @@
-import Path, { type StringOrPath } from 'path-js'
+import Path, { type PathLikeTypes } from 'path-js'
 import { ImgFile } from '../../index.js'
 import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib.js'
 
 /**
  * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.
  * - - - -
- * @param {StringOrPath} srcFile The path of the texture file to want to convert.
- * @param {StringOrPath} destPath The path of the new converted image file.
+ * @param {PathLikeTypes} srcFile The path of the texture file to want to convert.
+ * @param {PathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
-export const texToImgXboxPs3 = async (srcFile: StringOrPath, destPath: StringOrPath, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
+export const texToImgXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
   const src = Path.stringToPath(srcFile)
   const dest = Path.stringToPath(destPath)
   const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
