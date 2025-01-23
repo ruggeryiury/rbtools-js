@@ -154,7 +154,7 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
  */
 export const getDDSHeader = async (fullDDSHeader: Buffer, shortDDSHeader: Buffer): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = new Path(__root.path, 'bin/headers')
+  const headerFolderPath = RBTools.getImageHeadersPath()
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512
@@ -200,7 +200,7 @@ export const getDDSHeader = async (fullDDSHeader: Buffer, shortDDSHeader: Buffer
  */
 export const getDDSHeaderSync = (fullDDSHeader: Buffer, shortDDSHeader: Buffer): DDSHeaderParserObject => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = new Path(__root.path, 'bin/headers')
+  const headerFolderPath = RBTools.getImageHeadersPath()
   const headerPaths = headerFolderPath.readDirSync(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512

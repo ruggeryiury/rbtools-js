@@ -36,6 +36,14 @@ export class RBTools {
   static getPythonScriptsPath(): Path {
     return new Path(RBTools.getBinPath().path, 'python')
   }
+  /**
+   * Gets the `dist/bin/headers` path of the module.
+   * - - - -
+   * @returns {Path}
+   */
+  static getImageHeadersPath(): Path {
+    return new Path(RBTools.getBinPath().path, 'headers')
+  }
 }
 
 export { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, STFSFile, TextureFile }

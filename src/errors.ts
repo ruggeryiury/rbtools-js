@@ -260,8 +260,9 @@ export class RBDTAJSError extends Error {
 }
 
 /**
- * An error that occurs when the user tries to parse incomplete information through the `SongsDTA` class,
- * which requires complete DTA information.
+ * An error that occurs when a `DTAParser` class with type `complete` received incomplete parsed
+ * song objects to parse (possibly a DTA with updates, not actually a `songs.dta` file). Set the `type`
+ * parameter where you initialized the class instance to `partial` to work.
  * - - - -
  */
 export class WrongDTATypeError extends Error {

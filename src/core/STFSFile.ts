@@ -1,7 +1,7 @@
 import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { SongsDTA, SongUpdatesDTA } from '../core.js'
-import { STFSFileError } from '../errors.js'
-import { stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.js'
+import { STFSFileError, WrongDTATypeError } from '../errors.js'
+import { DTAParser } from '../index.js'
+import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.js'
 
 export interface STFSFileStatRawObject {
   /** The name of the package. */
@@ -18,9 +18,9 @@ export interface STFSFileStatRawObject {
 
 export type STFSFileStatObject = Omit<STFSFileStatRawObject, 'dta' | 'upgrades'> & {
   /** The contents of the package's DTA file. */
-  dta?: SongsDTA
+  dta?: DTAParser
   /** The contents of the package's upgrades DTA file. */
-  upgrades?: SongUpdatesDTA
+  upgrades?: DTAParser
   /** A boolean value that tells if the package has two or more songs. */
   isPack: boolean
   /** A boolean value that tells if the package has PRO Guitar/Bass upgrades. */
@@ -71,12 +71,23 @@ export class STFSFile {
     let isPack = false
     const hasUpgrades = stat.files.includes('/songs_upgrades/upgrades.dta')
 
-    let dta: SongsDTA | undefined
-    if (stat.dta) dta = new SongsDTA(stat.dta)
+    let dta: DTAParser | undefined
+    let upgrades: DTAParser | undefined
+    if (stat.dta) {
+      const enc = detectBufferEncoding(stat.dta)
+      try {
+        dta = DTAParser.fromBuffer(Buffer.from(stat.dta, enc))
+      } catch (err) {
+        if (err instanceof WrongDTATypeError) dta = DTAParser.fromBuffer(Buffer.from(stat.dta, enc), 'partial')
+        else throw err
+      }
+    }
     if (dta && dta.songs.length > 1) isPack = true
 
-    let upgrades: SongUpdatesDTA | undefined
-    if (stat.upgrades) upgrades = new SongUpdatesDTA(stat.upgrades)
+    if (stat.upgrades) {
+      const enc = detectBufferEncoding(stat.upgrades)
+      upgrades = DTAParser.fromBuffer(Buffer.from(stat.upgrades, enc))
+    }
 
     return { ...stat, dta, upgrades, isPack, hasUpgrades }
   }
@@ -92,12 +103,23 @@ export class STFSFile {
     let isPack = false
     const hasUpgrades = stat.files.includes('/songs_upgrades/upgrades.dta')
 
-    let dta: SongsDTA | undefined
-    if (stat.dta) dta = new SongsDTA(stat.dta)
+    let dta: DTAParser | undefined
+    let upgrades: DTAParser | undefined
+    if (stat.dta) {
+      const enc = detectBufferEncoding(stat.dta)
+      try {
+        dta = DTAParser.fromBuffer(Buffer.from(stat.dta, enc))
+      } catch (err) {
+        if (err instanceof WrongDTATypeError) dta = DTAParser.fromBuffer(Buffer.from(stat.dta, enc), 'partial')
+        else throw err
+      }
+    }
     if (dta && dta.songs.length > 1) isPack = true
 
-    let upgrades: SongUpdatesDTA | undefined
-    if (stat.upgrades) upgrades = new SongUpdatesDTA(stat.upgrades)
+    if (stat.upgrades) {
+      const enc = detectBufferEncoding(stat.upgrades)
+      upgrades = DTAParser.fromBuffer(Buffer.from(stat.upgrades, enc))
+    }
 
     return { ...stat, dta, upgrades, isPack, hasUpgrades }
   }

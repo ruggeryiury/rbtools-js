@@ -1,6 +1,6 @@
 import { BinaryWriterError } from '../errors.js'
 
-/** A class to create simple binary files. */
+/** A class to create binary files. */
 export class BinaryWriter {
   /** An array with `Buffer` objects that will be the content of the new binary file. */
   contents: Buffer[]

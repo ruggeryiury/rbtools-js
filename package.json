@@ -4,9 +4,9 @@
   "private": true,
   "description": "A module package to manipulate several Rock Band game files.",
   "type": "module",
-  "main": "module/index.js",
-  "module": "module/index.js",
-  "types": "module/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Ruggery Iury Corrêa <ruggeryiury@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -41,7 +41,7 @@
     "typescript-eslint": "^7.9.0"
   },
   "scripts": {
-    "build": "pnpm run clear && tsc --project ./prod.tsconfig.json && copyfiles -u 1 src/bin/**/* dist && copyfiles -u 1 src/python/**/* dist",
+    "build": "pnpm run clear && tsc --project ./prod.tsconfig.json && copyfiles -u 1 src/bin/**/* dist",
     "clear": "rimraf dist",
     "dev": "tsx watch tests/test.ts",
     "format": "prettier --write src",

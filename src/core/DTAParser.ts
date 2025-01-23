@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosResponse } from 'axios'
 import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { DTAParserError, WrongDTATypeError } from '../errors.js'
-import { depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongSortingTypes } from '../lib.js'
+import { depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -105,10 +105,24 @@ export class DTAParser {
     return DTAParser.fromBuffer(dtaBuffer, type)
   }
 
+  static formatDTABufferToCalculateHash(dtaFileBuffer: Buffer): Buffer {
+    let parsed: DTAParser
+    try {
+      parsed = DTAParser.fromBuffer(dtaFileBuffer)
+    } catch (err) {
+      if (err instanceof WrongDTATypeError) {
+        parsed = DTAParser.fromBuffer(dtaFileBuffer, 'partial')
+      } else throw err
+    }
+
+    parsed.sort('ID')
+    return Buffer.from(parsed.toString())
+  }
+
   /** An array with object that represents the contents of a DTA song entry. */
   songs: PartialDTAFile[] = []
   /** The type of the DTA file contents. */
-  type: DTAContentParserFormatTypes
+  private type: DTAContentParserFormatTypes
 
   // #region Constructor
 
@@ -138,6 +152,15 @@ export class DTAParser {
    */
   length(): number {
     return this.songs.length
+  }
+
+  /**
+   * Returns the type used for this DTA file to be parsed.
+   * - - - -
+   * @returns {DTAContentParserFormatTypes}
+   */
+  getType(): DTAContentParserFormatTypes {
+    return this.type
   }
 
   /**
@@ -255,5 +278,19 @@ export class DTAParser {
    */
   sort(sortBy: SongSortingTypes): void {
     this.songs = sortDTA(this.songs, sortBy)
+  }
+
+  /**
+   * Saves all songs from the instantiated class collection to a DTA file.
+   * - - - -
+   * @param {PathLikeTypes} destPath The destination path of the new DTA file.
+   * @param {DTAStringifyOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the stringify process.
+   * @param {SongEncoding | undefined} encoding The encoding of the DTA file. Default is `utf8`.
+   * @returns {Promise<Path>}
+   */
+  async saveToFile(destPath: PathLikeTypes, options?: DTAStringifyOptions, encoding: SongEncoding = 'utf8'): Promise<Path> {
+    const dest = Path.stringToPath(destPath)
+    const content = this.toString(options)
+    return new Path(await dest.writeFile(content, encoding))
   }
 }

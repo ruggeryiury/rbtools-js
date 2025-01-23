@@ -1,6 +1,6 @@
 import setDefaultOptions from 'set-default-options'
 import { WrongDTATypeError } from '../../errors.js'
-import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFile, type DTAFileKeys, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib.js'
+import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFileKeys, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib.js'
 
 export type DTAContentParserFormatTypes = 'complete' | 'partial'
 

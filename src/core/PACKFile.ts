@@ -1,19 +1,19 @@
 import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { temporaryFile } from 'tempy'
-import { SongsDTA } from '../core.js'
-import { PACKFileError, UnknownFileFormatError, UnknownMapValueError, WrongDTATypeError } from '../errors.js'
+import { DTAParser } from '../core.js'
+import { PACKFileError, UnknownFileFormatError, UnknownMapValueError } from '../errors.js'
 import { BinaryReader, BinaryWriter, bufferConverter, bufferSHA256Hash, detectBufferEncoding, getKeyFromMapValue, imageConverter, type ImageConverterOptions } from '../lib.js'
 
 // #region Maps
 
 export const packfileTypeMap = {
   /** This pack is a customs pack, created by any DLC processor program. */
-  0: 'customsPack',
+  0: 'customs_pack',
   /** This pack is an official song pack, installed on the Rock Band 3 DLC folder. */
-  1: 'officialRB3',
+  1: 'official_rb3',
   /** This pack is an official song pack, installed on the Rock Band 2 DLC folder. */
-  2: 'officialRB2',
+  2: 'official_rb2',
 } as const
 
 export const dtaFileEncodingMap = {
@@ -33,23 +33,23 @@ export const patchesMap = {
   /**
    * All custom songs had their `game_origin` value to `custom`.
    */
-  1: 'gameOriginPatch',
+  1: 'game_origin_patch',
   /**
    * Ssongs without a numberic song ID were fixed.
    */
-  2: 'numericSongIDPatch',
+  2: 'numeric_song_id_patch',
   /**
    * Songs with wrong encoding information were fixed.
    */
-  3: 'encodingPatch',
+  3: 'encoding_patch',
   /**
    * Songs with artworks discrepancies were fixed.
    */
-  4: 'artworkPatch',
+  4: 'artwork_patch',
   /**
    * Songs with missing/wrong metadata were fixed.
    */
-  5: 'metadataPatch',
+  5: 'metadata_patch',
 } as const
 
 // #region Map Types
@@ -60,10 +60,17 @@ export type PACKFilePatchesTypeOptions = (typeof patchesMap)[keyof typeof patche
 
 // #region Interfaces
 export interface PACKFileCreationOptions {
-  /** The version of the PACK file. */
+  /**
+   * The version of the PACK file.
+   */
   fileVersion: number
-  /** The PACK file type. */
+  /**
+   * The PACK file type.
+   */
   packFileType: PACKFileTypeOptions
+  /**
+   * An array with patches that was implemented on the pack.
+   */
   patches: PACKFilePatchesTypeOptions[]
   /**
    * The DTA file to be appended to the PACK file.
@@ -71,7 +78,6 @@ export interface PACKFileCreationOptions {
    * - A `Path` class JSON representation object.
    * - A `Buffer`, empty or not (empty buffers will return a default empty values to write).
    * - A path to a DTA file as `string`.
-   * - The contents of a DTA file as decoded `string`.
    */
   dta: PathLikeTypes | Buffer
   /**
@@ -82,9 +88,13 @@ export interface PACKFileCreationOptions {
    * - A path to an image file as `string`.
    */
   thumbnail: PathLikeTypes | Buffer
-  /** The name of the pack. */
+  /**
+   * The name of the pack.
+   */
   packName: string
-  /** The original folder name of pack. */
+  /**
+   * The original folder name of pack.
+   */
   folderName: string
 }
 
@@ -123,20 +133,6 @@ export interface ThumbnailFileContentsData {
   bufferSize: number
 }
 
-export const formatDTAToCalculateHash = (originalDTABuffer: Buffer): Buffer => {
-  try {
-    const parsed = new SongsDTA(originalDTABuffer)
-    parsed.sort('ID')
-    return Buffer.from(parsed.stringify())
-  } catch (err) {
-    if (err instanceof WrongDTATypeError) {
-      const parsed = new SongUpdatesDTA(originalDTABuffer)
-      parsed.sort('ID')
-      return Buffer.from(parsed.stringify())
-    } else throw err
-  }
-}
-
 // #region PACKFile
 
 /** Class with static methods to deal with Songshelf PACK files. */
@@ -149,10 +145,9 @@ export class PACKFile {
    * - A `Path` class JSON representation object.
    * - A `Buffer`, empty or not (empty buffers will return a default empty values to write).
    * - A path to a DTA file as `string`.
-   * - The contents of a DTA file as decoded `string`.
    * @returns {Promise<DTAFileContentsData>}
    */
-  static async getDTAContentsData(content: PathLikeTypes | Buffer): Promise<DTAFileContentsData> {
+  static async getDTAContentsDataFromPACKFile(content: PathLikeTypes | Buffer): Promise<DTAFileContentsData> {
     let buffer: Buffer
     let enc: PACKFileDTAEncodingOptions
     let bufferSize: number
@@ -170,7 +165,7 @@ export class PACKFile {
         buffer = content
         enc = detectBufferEncoding(buffer)
         bufferSize = buffer.length
-        hash = bufferSHA256Hash(formatDTAToCalculateHash(buffer))
+        hash = bufferSHA256Hash(DTAParser.formatDTABufferToCalculateHash(buffer))
       }
     } else {
       if (content instanceof Path) {
@@ -178,27 +173,21 @@ export class PACKFile {
         buffer = await content.readFile()
         enc = detectBufferEncoding(buffer)
         bufferSize = buffer.length
-        hash = bufferSHA256Hash(formatDTAToCalculateHash(buffer))
+        hash = bufferSHA256Hash(DTAParser.formatDTABufferToCalculateHash(buffer))
       } else if (typeof content === 'object' && 'path' in content) {
         // Path class JSON representation
         buffer = await new Path(content.path).readFile()
         enc = detectBufferEncoding(buffer)
         bufferSize = buffer.length
-        hash = bufferSHA256Hash(formatDTAToCalculateHash(buffer))
+        hash = bufferSHA256Hash(DTAParser.formatDTABufferToCalculateHash(buffer))
       } else {
-        // String (can be a valid path or decoded content)
+        // String (can be only a valid path, decoded string are not recommended)
         if (Path.isValidPath(content)) {
           buffer = await new Path(content).readFile()
           enc = detectBufferEncoding(buffer)
           bufferSize = buffer.length
-          hash = bufferSHA256Hash(formatDTAToCalculateHash(buffer))
-        } else {
-          // Decoded DTA file content
-          buffer = Buffer.from(content)
-          enc = detectBufferEncoding(buffer)
-          bufferSize = buffer.length
-          hash = bufferSHA256Hash(formatDTAToCalculateHash(buffer))
-        }
+          hash = bufferSHA256Hash(DTAParser.formatDTABufferToCalculateHash(buffer))
+        } else throw new PACKFileError(`DTA file on path "${content}" does not exists`)
       }
     }
 
@@ -220,7 +209,7 @@ export class PACKFile {
    * - A path to an image file as `string`.
    * @returns {Promise<ThumbnailFileContentsData>}
    */
-  static async getThumbnailContentsData(content: PathLikeTypes | Buffer): Promise<ThumbnailFileContentsData> {
+  static async getThumbnailContentsDataFromPACKFile(content: PathLikeTypes | Buffer): Promise<ThumbnailFileContentsData> {
     const tempWebp = new Path(temporaryFile({ extension: '.webp' }))
     const webpImgOpts: ImageConverterOptions = { quality: 100, width: 256, height: 256, interpolation: 'lanczos' }
     let buffer: Buffer
@@ -254,7 +243,7 @@ export class PACKFile {
           await imageConverter(Path.stringToPath(content), tempWebp, 'webp', webpImgOpts)
           buffer = await tempWebp.readFile()
           bufferSize = buffer.length
-        } else throw new PACKFileError("Thumbnail can't be a decoded string")
+        } else throw new PACKFileError(`Thumbnail image on path "${content}" does not exists`)
       }
     }
 
@@ -263,6 +252,25 @@ export class PACKFile {
       buffer,
       bufferSize,
     }
+  }
+
+  /**
+   * Parses the patches bytes and returns an array with the enabled patches.
+   * - - - -
+   * @param {Buffer} patchesBytes The patches bytes portion of a PACK file
+   * @returns {PACKFilePatchesTypeOptions[]}
+   */
+  static parsePatchesBytes(patchesBytes: Buffer): PACKFilePatchesTypeOptions[] {
+    const patches: PACKFilePatchesTypeOptions[] = []
+    let i = 0
+    for (const byte of patchesBytes) {
+      const value = Boolean(byte)
+      if (value) {
+        patches.push(patchesMap[i++ as keyof typeof patchesMap])
+      }
+    }
+
+    return patches
   }
 
   /**
@@ -276,7 +284,7 @@ export class PACKFile {
     const data = setDefaultOptions<PACKFileCreationOptions>(
       {
         fileVersion: 1,
-        packFileType: 'customsPack',
+        packFileType: 'customs_pack',
         patches: [],
         dta: Buffer.alloc(0),
         thumbnail: Buffer.alloc(0),
@@ -290,10 +298,10 @@ export class PACKFile {
 
     const packFileType = getKeyFromMapValue(packfileTypeMap, data.packFileType)
     if (!packFileType) throw new UnknownMapValueError(`'${data.packFileType}' is an invalid value for PACK file type.`)
-    const dta = await PACKFile.getDTAContentsData(data.dta)
+    const dta = await PACKFile.getDTAContentsDataFromPACKFile(data.dta)
     const packFileDTAEnc = getKeyFromMapValue(dtaFileEncodingMap, dta.enc)
     if (!packFileDTAEnc) throw new UnknownMapValueError(`'${dta.enc}' is an invalid value for DTA file encoding.`)
-    const thumbnail = await PACKFile.getThumbnailContentsData(data.thumbnail)
+    const thumbnail = await PACKFile.getThumbnailContentsDataFromPACKFile(data.thumbnail)
     const patchesCount = Object.keys(patchesMap).length
 
     // Write magic
@@ -356,19 +364,12 @@ export class PACKFile {
     return packBuffer
   }
 
-  protected static parsePatchesBytes(patchesBytes: Buffer): PACKFilePatchesTypeOptions[] {
-    const patches: PACKFilePatchesTypeOptions[] = []
-    let i = 0
-    for (const byte of patchesBytes) {
-      const value = Boolean(byte)
-      if (value) {
-        patches.push(patchesMap[i++ as keyof typeof patchesMap])
-      }
-    }
-
-    return patches
-  }
-
+  /**
+   * Asynchronously reads and parses a PACK file.
+   * - - - -
+   * @param {PathLikeTypes} packFilePath The path to be PACK file to be read.
+   * @returns {Promise<PACKFileContentsObject>}
+   */
   static async readFile(packFilePath: PathLikeTypes): Promise<PACKFileContentsObject> {
     const path = Path.stringToPath(packFilePath)
     const reader = await BinaryReader.loadFile(path)
@@ -403,6 +404,12 @@ export class PACKFile {
     }
   }
 
+  /**
+   * Asynchronously reads and parses a PACK file `Buffer` object.
+   * - - - -
+   * @param {Buffer} packFileBuffer The buffer of the PACK file.
+   * @returns {Promise<PACKFileContentsObject>}
+   */
   static async readBuffer(packFileBuffer: Buffer): Promise<PACKFileContentsObject> {
     const reader = BinaryReader.loadBuffer(packFileBuffer)
     const magic = await reader.readASCII(0x04)
