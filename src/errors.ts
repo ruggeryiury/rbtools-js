@@ -356,3 +356,35 @@ export class DTAParserError extends Error {
     Object.setPrototypeOf(this, DTAParserError.prototype)
   }
 }
+
+/**
+ * A generic error that's thrown by the `RB3SaveFile` class.
+ * - - - -
+ */
+export class RB3SaveFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'RB3SaveFileError'
+    Error.captureStackTrace(this, RB3SaveFileError)
+    Object.setPrototypeOf(this, RB3SaveFileError.prototype)
+  }
+}
+
+/**
+ * A generic error to flag not implemented code paths.
+ * - - - -
+ */
+export class NotImplementedError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'NotImplementedError'
+    Error.captureStackTrace(this, NotImplementedError)
+    Object.setPrototypeOf(this, NotImplementedError.prototype)
+  }
+}

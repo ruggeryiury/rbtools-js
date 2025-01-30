@@ -1,9 +1,12 @@
+/**
+ * Initializes a CRC32 table for the class instance.
+ */
 export class RB3ESongID {
+  /**
+   * The CRC32 table initialized for this class.
+   */
   private crc32Table: Uint32Array
 
-  /**
-   * Initializes the CRC32 table for the class instance.
-   */
   constructor() {
     this.crc32Table = new Uint32Array(256)
     for (let i = 0; i < 256; i++) {
@@ -15,6 +18,7 @@ export class RB3ESongID {
 
   /**
    * Generates a CRC32 value for a single byte.
+   * - - - -
    * @param {number} r The input byte as an unsigned 32-bit integer.
    * @returns {number} The CRC32 value for the byte.
    */
@@ -27,6 +31,7 @@ export class RB3ESongID {
 
   /**
    * Computes the CRC32 checksum for the given data.
+   * - - - -
    * @param {Uint8Array<ArrayBufferLike>} data A Uint8Array representing the input data.
    * @returns {number} The CRC32 checksum as an unsigned 32-bit integer.
    */
@@ -40,6 +45,7 @@ export class RB3ESongID {
 
   /**
    * Converts a shortname to a song ID using a CRC32 checksum and additional transformations.
+   * - - - -
    * @param {string} shortname The input shortname as a string.
    * @returns {number} The computed song ID as an unsigned 32-bit integer.
    */

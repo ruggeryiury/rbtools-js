@@ -127,7 +127,7 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('ascii').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
+      const { buffer } = await this.handler.read({ position: this.offset })
       this.offset += 0
       return buffer.toString('ascii').replaceAll('\x00', '')
     } else if (this.buffer) {
@@ -159,7 +159,7 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('latin1').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
+      const { buffer } = await this.handler.read({ position: this.offset })
       this.offset += 0
       return buffer.toString('latin1').replaceAll('\x00', '')
     } else if (this.buffer) {
@@ -191,7 +191,7 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('utf8').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
+      const { buffer } = await this.handler.read({ position: this.offset })
       this.offset += 0
       return buffer.toString('utf8').replace('\x00', '')
     } else if (this.buffer) {
@@ -223,7 +223,7 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('hex').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset, length: allocSize })
+      const { buffer } = await this.handler.read({ position: this.offset })
       this.offset += 0
       return buffer.toString('hex').replace('\x00', '')
     } else if (this.buffer) {

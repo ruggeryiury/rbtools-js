@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosResponse } from 'axios'
 import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { DTAParserError, WrongDTATypeError } from '../errors.js'
-import { depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
+import { bufferSHA256Hash, depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -105,7 +105,13 @@ export class DTAParser {
     return DTAParser.fromBuffer(dtaBuffer, type)
   }
 
-  static formatDTABufferToCalculateHash(dtaFileBuffer: Buffer): Buffer {
+  /**
+   * Returns a SHA256 hash from a DTA file `Buffer`.
+   * - - - -
+   * @param {Buffer} dtaFileBuffer A `Buffer` object from a DTA file.
+   * @returns {string}
+   */
+  static calculateHashFromBuffer(dtaFileBuffer: Buffer): string {
     let parsed: DTAParser
     try {
       parsed = DTAParser.fromBuffer(dtaFileBuffer)
@@ -116,7 +122,19 @@ export class DTAParser {
     }
 
     parsed.sort('ID')
-    return Buffer.from(parsed.toString())
+    return bufferSHA256Hash(Buffer.from(parsed.toString()))
+  }
+
+  /**
+   * Asynchronously reads and parses a DTA file and returns a SHA256 hash from it.
+   * - - - -
+   * @param {PathLikeTypes} dtaFilePath The path to a DTA file.
+   * @returns {Promise<string>}
+   */
+  static async calculateHashFromFile(dtaFilePath: PathLikeTypes): Promise<string> {
+    const dtaPath = Path.stringToPath(dtaFilePath)
+    const dtaBuffer = await dtaPath.readFile()
+    return DTAParser.calculateHashFromBuffer(dtaBuffer)
   }
 
   /** An array with object that represents the contents of a DTA song entry. */
@@ -292,5 +310,15 @@ export class DTAParser {
     const dest = Path.stringToPath(destPath)
     const content = this.toString(options)
     return new Path(await dest.writeFile(content, encoding))
+  }
+
+  /**
+   * Calculates a SHA256 hash of the songs included on this class instance.
+   * - - - -
+   * @returns {string}
+   */
+  calculateHash(): string {
+    const dtaBuffer = Buffer.from(stringifyDTA(sortDTA(this.songs, 'ID'), this.type, this.type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions))
+    return bufferSHA256Hash(dtaBuffer)
   }
 }

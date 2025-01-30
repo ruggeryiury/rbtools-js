@@ -257,16 +257,17 @@ export class BinaryWriter {
    * @returns {Buffer}
    */
   toBuffer(): Buffer {
-    const bufferLength = this.length()
-    const buffer = Buffer.alloc(bufferLength)
-    let offset = 0
-    for (const content of this.contents) {
-      for (const contentByte of content) {
-        buffer.writeUInt8(contentByte, offset++)
-      }
-    }
+    // const bufferLength = this.length()
+    // const buffer = Buffer.alloc(bufferLength)
+    // let offset = 0
+    // for (const content of this.contents) {
+    //   for (const contentByte of content) {
+    //     buffer.writeUInt8(contentByte, offset++)
+    //   }
+    // }
 
-    return buffer
+    // return buffer
+    return Buffer.concat(this.contents)
   }
 
   /**
