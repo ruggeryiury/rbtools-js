@@ -173,6 +173,8 @@ export class DTAStringIO {
           content += addTabToAllLines(renderArray('cores', this.opts.guitarCores ? coresArrayGtr : coresArray, format), 2)
         }
 
+        if (tracks?.crowd !== undefined) content += addTabToAllLines(renderArray('crowd_channels', tracks.crowd, format, true, false), 2)
+
         if (song.vocal_parts !== undefined) content += addTabToAllLines(renderNumberOrStringValue('vocal_parts', song.vocal_parts, format), 2)
         if (this.type === 'complete') content += addTabToAllLines(renderDrumsCue(format), 2)
 

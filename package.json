@@ -59,6 +59,10 @@
     "./lib": {
       "import": "./dist/lib.js",
       "types": "./dist/lib.d.ts"
+    },
+    "./rockshelf": {
+      "import": "./dist/rockshelf.js",
+      "types": "./dist/rockshelf.d.ts"
     }
   }
 }

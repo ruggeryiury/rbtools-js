@@ -1,12 +1,11 @@
 import type { PathLikeTypes } from 'path-js'
 import Path from 'path-js'
 import { RB3SaveFileError, UnknownFileFormatError } from '../errors.js'
+import type { RockshelfMainInstrumentsType } from '../rockshelf.js'
 
 export type RB3SaveFilePlatformTypes = 'xbox' | 'ps3' | 'wii'
 
-export type RB3ScoresObjectKeys = 'songID' | 'lighterRating' | 'playCount'
-
-export interface RB3ScoresInstrumentScores {
+export interface RB3InstrumentScores {
   /**
    * The top score of the song on the instrument.
    */
@@ -51,9 +50,17 @@ export interface RB3ScoresInstrumentScores {
 
 export interface RB3ScoresObject {
   /**
+   * The title of the song.
+   */
+  name?: string
+  /**
+   * The artist of the song.
+   */
+  artist?: string
+  /**
    * A numerical, unique number ID of the song.
    */
-  songID: number
+  song_id: number
   /**
    * The lighter rating given to this song.
    */
@@ -65,50 +72,50 @@ export interface RB3ScoresObject {
   /**
    * An object with scores for Drums.
    */
-  drums: RB3ScoresInstrumentScores
+  drums: RB3InstrumentScores
   /**
    * An object with scores for Bass.
    */
-  bass: RB3ScoresInstrumentScores
+  bass: RB3InstrumentScores
   /**
    * An object with scores for Guitar.
    */
-  guitar: RB3ScoresInstrumentScores
+  guitar: RB3InstrumentScores
   /**
    * An object with scores for Solo Vocals.
    */
-  vocals: RB3ScoresInstrumentScores
+  vocals: RB3InstrumentScores
   /**
    * An object with scores for Harmonies.
    */
-  harms: RB3ScoresInstrumentScores
+  harmonies: RB3InstrumentScores
   /**
    * An object with scores for Keys.
    */
-  keys: RB3ScoresInstrumentScores
+  keys: RB3InstrumentScores
   /**
    * An object with scores for PRO Drums.
    */
-  proDrums: RB3ScoresInstrumentScores
+  proDrums: RB3InstrumentScores
   /**
    * An object with scores for PRO Guitar.
    */
-  proGuitar: RB3ScoresInstrumentScores
+  proGuitar: RB3InstrumentScores
   /**
    * An object with scores for PRO Bass.
    */
-  proBass: RB3ScoresInstrumentScores
+  proBass: RB3InstrumentScores
   /**
    * An object with scores for PRO Keys.
    */
-  proKeys: RB3ScoresInstrumentScores
+  proKeys: RB3InstrumentScores
   /**
    * An object with scores for Band.
    */
-  band: RB3ScoresInstrumentScores
+  band: RB3InstrumentScores
 }
 
-export interface RB3ScoresContents {
+export interface ParsedRB3SaveData {
   /**
    * The profile name.
    */
@@ -272,18 +279,18 @@ export class RB3SaveFilePS3 {
     score.set('vocals', Object.fromEntries(vocals))
 
     // Harmonies
-    const harms = new Map()
-    harms.set('topScore', input.readInt32LE(0xd3))
-    harms.set('topScoreDifficulty', input[0xd7])
-    harms.set('starsEasy', input[0xd8])
-    harms.set('percentEasy', input[0xd9])
-    harms.set('starsMedium', input[0xe0])
-    harms.set('percentMedium', input[0xe1])
-    harms.set('starsHard', input[0xe8])
-    harms.set('percentHard', input[0xe9])
-    harms.set('starsExpert', input[0xf0])
-    harms.set('percentExpert', input[0xf1])
-    score.set('harms', Object.fromEntries(harms))
+    const harmonies = new Map()
+    harmonies.set('topScore', input.readInt32LE(0xd3))
+    harmonies.set('topScoreDifficulty', input[0xd7])
+    harmonies.set('starsEasy', input[0xd8])
+    harmonies.set('percentEasy', input[0xd9])
+    harmonies.set('starsMedium', input[0xe0])
+    harmonies.set('percentMedium', input[0xe1])
+    harmonies.set('starsHard', input[0xe8])
+    harmonies.set('percentHard', input[0xe9])
+    harmonies.set('starsExpert', input[0xf0])
+    harmonies.set('percentExpert', input[0xf1])
+    score.set('harmonies', Object.fromEntries(harmonies))
 
     // Keys
     const keys = new Map()
@@ -402,6 +409,7 @@ export class RB3SaveFilePS3 {
    * The platform of the Rock Band 3 save file.
    */
   platform: RB3SaveFilePlatformTypes
+  parsed?: ParsedRB3SaveData
 
   /**
    * @param {PathLikeTypes} saveFilePath The path to the Rock Band 3 save file.
@@ -428,6 +436,7 @@ export class RB3SaveFilePS3 {
    * @returns {string}
    */
   getXboxPS3BandName(): string {
+    if (this.parsed) return this.parsed.profileName
     const startOffset = this.platform === 'ps3' ? 0x43a7e7 : 0x43a773
     let output = ''
     for (let i = 0; i < 0x2e; i++) {
@@ -442,11 +451,38 @@ export class RB3SaveFilePS3 {
   }
 
   /**
+   * Calculates all scores and returns the most playable instrument based on each instrument scores count.
+   * - - - -
+   * @returns {RockshelfMainInstrumentsType}
+   */
+  getMostPlayedInstrument(): RockshelfMainInstrumentsType {
+    const { scores } = this.parsed ? this.parsed : this.parseSaveFile()
+    const results: RockshelfMainInstrumentsType[] = []
+    for (const score of scores) {
+      if (score.bass.topScore > 0) results.push('bass')
+      if (score.drums.topScore > 0) results.push('drums')
+      if (score.guitar.topScore > 0) results.push('guitar')
+      if (score.vocals.topScore > 0) results.push('vocals')
+      if (score.keys.topScore > 0) results.push('keys')
+      if (score.proBass.topScore > 0) results.push('real_bass')
+      if (score.proDrums.topScore > 0) results.push('real_drums')
+      if (score.proGuitar.topScore > 0) results.push('real_guitar')
+      if (score.proKeys.topScore > 0) results.push('real_keys')
+      if (score.harmonies.topScore > 0) results.push('harmonies')
+    }
+
+    const mostFrequent = Array.from(new Set(results)).reduce((prev, curr) => (results.filter((el) => el === curr).length > results.filter((el) => el === prev).length ? curr : prev))
+
+    return mostFrequent
+  }
+
+  /**
    * Parses the Rock Band 3 save file data, returning an object will all scores.
    * - - - -
-   * @returns {RB3ScoresContents}
+   * @returns {ParsedRB3SaveData}
    */
-  parseSaveFile(): RB3ScoresContents {
+  parseSaveFile(): ParsedRB3SaveData {
+    if (this.parsed) return this.parsed
     // Get the decrypted bytes of all scores
     const scoresListBytes = this.getScoresListBytes()
 
@@ -454,12 +490,12 @@ export class RB3SaveFilePS3 {
     const scoresList = this.getScoresList(scoresListBytes)
 
     // Get profile name
-    let profileName = ''
-    if (this.platform !== 'wii') profileName = this.getXboxPS3BandName()
-    else profileName = ''
-    return {
+    const profileName = this.getXboxPS3BandName()
+    const parsed = {
       profileName,
       scores: scoresList,
-    }
+    } as ParsedRB3SaveData
+    this.parsed = parsed
+    return parsed
   }
 }

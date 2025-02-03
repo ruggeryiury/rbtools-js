@@ -8,7 +8,7 @@ import type { DTAFile, DTAFileKeys, PartialDTAFile } from './dtaMethods.js'
  * @returns {boolean} A boolean value that tells the provided parsed song is a `DTAFile` object.
  */
 export const isDTAFile = (song: unknown): song is DTAFile => {
-  return !Array.isArray(song) && typeof song === 'object' && song !== null && 'name' in song && 'artist' in song && 'id' in song && 'tracks_count' in song && 'song_id' in song && 'preview' in song && 'vocal_parts' in song && 'bank' in song && 'anim_tempo' in song && 'rank_band' in song && 'game_origin' in song && 'rating' in song && 'genre' in song && 'vocal_gender' in song && 'year_released' in song && 'format' in song && 'version' in song && 'encoding' in song
+  return !Array.isArray(song) && typeof song === 'object' && song !== null && 'name' in song && 'artist' in song && 'id' in song && 'tracks_count' in song && 'song_id' in song && 'preview' in song && 'vocal_parts' in song && 'bank' in song && 'anim_tempo' in song && 'rank_band' in song && 'game_origin' in song && 'rating' in song && 'genre' in song && 'vocal_gender' in song && 'year_released' in song && 'format' in song && 'version' in song
 }
 
 /**
@@ -35,8 +35,8 @@ export const getCompleteDTAMissingValues = (song: PartialDTAFile): DTAFileKeys[]
     hasVocalGender = false,
     hasYearReleased = false,
     hasFormat = false,
-    hasVersion = false,
-    hasEncoding = false
+    hasVersion = false
+  // hasEncoding = false
 
   const allKeys = Object.keys(song) as DTAFileKeys[]
 
@@ -58,7 +58,7 @@ export const getCompleteDTAMissingValues = (song: PartialDTAFile): DTAFileKeys[]
     if (key === 'year_released') hasYearReleased = true
     if (key === 'format') hasFormat = true
     if (key === 'version') hasVersion = true
-    if (key === 'encoding') hasEncoding = true
+    // if (key === 'encoding') hasEncoding = true
   }
 
   if (!hasName) missingValues.push('name')
@@ -78,7 +78,7 @@ export const getCompleteDTAMissingValues = (song: PartialDTAFile): DTAFileKeys[]
   if (!hasYearReleased) missingValues.push('year_released')
   if (!hasFormat) missingValues.push('format')
   if (!hasVersion) missingValues.push('version')
-  if (!hasEncoding) missingValues.push('encoding')
+  // if (!hasEncoding) missingValues.push('encoding')
 
   return missingValues
 }
