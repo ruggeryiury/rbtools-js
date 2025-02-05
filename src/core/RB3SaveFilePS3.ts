@@ -158,10 +158,8 @@ export class RB3SaveFilePS3 {
    * @returns {Buffer[]}
    */
   private getScoresListBytes(): Buffer[] {
-    let start = 0
-    if (this.platform === 'xbox') start = 0x2c7123
-    else if (this.platform === 'ps3') start = 0x2c7197
-    const encryptedScoresBlock = this.buffer.subarray(start, start + 0x15b33c)
+    const ps3Start = 0x2c7197
+    const encryptedScoresBlock = this.buffer.subarray(ps3Start, ps3Start + 0x15b33c)
     let decryptedScoresBlock = this.newDTBCrypt(encryptedScoresBlock)
 
     const xboxPS3UnknownBytes = Buffer.alloc(0x84)
@@ -187,7 +185,7 @@ export class RB3SaveFilePS3 {
   }
 
   /**
-   * Removes the duplicated ID bytes from a decrypted score list bytes and returns
+   * Removes the duplicated ID bytes from a decrypted score list bytes and returns it.
    * - - - -
    * @param {Buffer} input The score list bytes to remove the duplicated ID from.
    * @returns {Buffer}

@@ -7,7 +7,7 @@ import type { PartialDTAFile } from '../lib.js'
  */
 export class RockBandDB {
   /**
-   * Asynchronously creates a minified `updates.json` file inside `src/bin/dta` folder. This JSON file
+   * Asynchronously creates a minified `dx_updates.json` file inside `src/bin/dta` folder. This JSON file
    * holds the data about the Rock Band 3 Deluxe official songs updates for quick data
    * fetching without having to parse all the updates DTA files all over again.
    * - - - -
@@ -17,7 +17,7 @@ export class RockBandDB {
    */
   static async createUpdatesJSONFile(dxSongUpdatesFolder?: PathLikeTypes): Promise<void> {
     const dtaPath = dxSongUpdatesFolder ? Path.stringToPath(dxSongUpdatesFolder) : RBTools.getDTAPath()
-    const updates = new Path(Path.resolve(dtaPath.path, 'updates.json'))
+    const updates = new Path(Path.resolve(dtaPath.path, 'dx_updates.json'))
 
     const vanillaStrings = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'vanilla_strings.dta'), 'partial')
     const officialAdditionalMetadata = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'official_additional_metadata.dta'), 'partial')
@@ -56,7 +56,7 @@ export class RockBandDB {
    * updates on all available songs. Default is `true`.
    * @returns {Promise<PartialDTAFile[]>}
    */
-  async loadRB3(withUpdates = true): Promise<PartialDTAFile[]> {
+  static async loadRB3(withUpdates = true): Promise<PartialDTAFile[]> {
     const dtaPath = RBTools.getDTAPath()
     const rb3 = new DTAParser(await new Path(Path.resolve(dtaPath.path, 'rb3.json')).readJSONFile<PartialDTAFile[]>())
 
@@ -65,7 +65,7 @@ export class RockBandDB {
 
     const parsedSongs: PartialDTAFile[] = []
     if (withUpdates) {
-      const updates = await new Path(Path.resolve(dtaPath.path, 'updates.json')).readJSONFile<PartialDTAFile[]>()
+      const updates = await new Path(Path.resolve(dtaPath.path, 'dx_updates.json')).readJSONFile<PartialDTAFile[]>()
       for (const song of songs) {
         song.applyUpdates(updates)
         parsedSongs.push(...song.songs)

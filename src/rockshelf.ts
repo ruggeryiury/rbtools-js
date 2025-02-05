@@ -1,6 +1,0 @@
-export * from './rockshelf/DevHDD0.js'
-export * from './rockshelf/RB3SaveFilePS3.js'
-export * from './rockshelf/RockBandDB.js'
-export * from './rockshelf/RockshelfConfigFile.js'
-export * from './rockshelf/RockshelfErrors.js'
-export * from './rockshelf/RockshelfTypes.js'
