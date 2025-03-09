@@ -35,10 +35,10 @@ Follow the steps below to install and set up the project on your local machine:
 
 - Install Python v3 with PIP.
 
-- Execute the `/install_python_packages.py` script to install necessary Python packages:
+- Execute the `scripts/install_python_packages.py` script to install necessary Python packages:
 
 ```bash
-python install_python_packages.py
+python scripts/install_python_packages.py
 ```
 
 - Clone the repository: If you have `git` installed, se the following command to clone the repository to your local machine:
@@ -76,7 +76,7 @@ Also, **_RBToolsJS_** uses modified Python scripts from:
 - [MOGG Module (from moggulator)](https://github.com/LocalH/moggulator/tree/master)
 - [Swap RB Art Bytes (from RB3DX Dependencies)]()
 
-At last, **_RBToolsJS_** comes with a few special Node packages, such as:
+At last, **_RBToolsJS_** comes with a few special Node packages made by myself, such as:
 
 - [Path-JS](https://github.com/ruggeryiury/path-js): A path utility suite that gathers several functions related to a specific path.
 - [Set Default Options](https://github.com/ruggeryiury/set-default-options): Utility function to merge default options with user-defined ones.
@@ -85,7 +85,7 @@ At last, **_RBToolsJS_** comes with a few special Node packages, such as:
 
 The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`.
 
-API DOCUMENTATION COMING SOON
+_API DOCUMENTATION COMING SOON_
 
 # Special thanks
 

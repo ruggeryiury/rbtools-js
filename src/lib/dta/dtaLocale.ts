@@ -201,13 +201,15 @@ export const dtaLocale = {
   instruments: {
     band: 'Band',
     bass: 'Bass',
-    drum: 'Drums',
+    drums: 'Drums',
     guitar: 'Guitar',
     keys: 'Keys',
+    real_drums: 'PRO Drums',
     real_bass: 'PRO Bass',
     real_guitar: 'PRO Guitar',
     real_keys: 'PRO Keys',
-    vocals: 'Vocals',
+    vocals: 'Solo Vocals',
+    harmonies: 'Harmonies',
   },
   rating: {
     1: 'Family Friendly',

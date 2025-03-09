@@ -1,7 +1,7 @@
 import type { PathLikeTypes } from 'path-js'
 import Path from 'path-js'
 import { RB3SaveFileError, UnknownFileFormatError } from '../errors.js'
-import type { RockshelfMainInstrumentsType } from '../rockshelf.js'
+import type { InstrumentTypes } from '../lib.js'
 
 export type RB3SaveFilePlatformTypes = 'xbox' | 'ps3' | 'wii'
 
@@ -451,11 +451,11 @@ export class RB3SaveFilePS3 {
   /**
    * Calculates all scores and returns the most playable instrument based on each instrument scores count.
    * - - - -
-   * @returns {RockshelfMainInstrumentsType}
+   * @returns {InstrumentTypes}
    */
-  getMostPlayedInstrument(): RockshelfMainInstrumentsType {
+  getMostPlayedInstrument(): InstrumentTypes {
     const { scores } = this.parsed ? this.parsed : this.parseSaveFile()
-    const results: RockshelfMainInstrumentsType[] = []
+    const results: InstrumentTypes[] = []
     for (const score of scores) {
       if (score.bass.topScore > 0) results.push('bass')
       if (score.drums.topScore > 0) results.push('drums')
