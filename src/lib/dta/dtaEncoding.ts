@@ -46,17 +46,39 @@ export const containsLatin1SpecificChars = (input: string): boolean => {
  * characters compared to ASCII and returns the correct encoding to use.
  * - - - -
  * @param {PartialDTAFile} song The song you want to know the encoding type.
- * @returns {SongEncoding} The correct encoding for the song.
+ * @returns {SongEncoding | undefined} The correct encoding for the song.
  */
-export const patchDTAEncodingFromDTAFileObject = (song: PartialDTAFile): SongEncoding => {
-  const { name, artist, album_name, pack_name, author, loading_phrase } = song
-  let proof = false
+export const patchDTAEncodingFromDTAFileObject = (song: PartialDTAFile): SongEncoding | undefined => {
+  const { name, artist, album_name, pack_name, author, loading_phrase, encoding } = song
+  let hasNonASCIIChars = false
+  let hasAnyStringValue = false
 
-  if (name && containsLatin1SpecificChars(name)) proof = true
-  if (artist && containsLatin1SpecificChars(artist)) proof = true
-  if (album_name && containsLatin1SpecificChars(album_name)) proof = true
-  if (pack_name && containsLatin1SpecificChars(pack_name)) proof = true
-  if (author && containsLatin1SpecificChars(author)) proof = true
-  if (loading_phrase && containsLatin1SpecificChars(loading_phrase)) proof = true
-  return proof ? 'utf8' : 'latin1'
+  if (name && containsLatin1SpecificChars(name)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (artist && containsLatin1SpecificChars(artist)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (album_name && containsLatin1SpecificChars(album_name)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (pack_name && containsLatin1SpecificChars(pack_name)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (author && containsLatin1SpecificChars(author)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (loading_phrase && containsLatin1SpecificChars(loading_phrase)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+
+  if (!hasAnyStringValue && !encoding) return
+  else if (!hasAnyStringValue && encoding) return encoding
+  return hasNonASCIIChars ? 'utf8' : 'latin1'
 }

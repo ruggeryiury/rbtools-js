@@ -19,7 +19,7 @@ const tseslintConfig = {
       ...globals.es2021,
     },
   },
-  files: ['**/*.ts'],
+  files: ['src/**/*.ts'],
   plugins: {
     '@typescript-eslint': tseslint.plugin,
     import: importPlugin,

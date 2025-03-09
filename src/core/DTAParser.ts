@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosResponse } from 'axios'
 import Path, { type PathLikeTypes } from 'path-js'
 import setDefaultOptions from 'set-default-options'
 import { DTAParserError, WrongDTATypeError } from '../errors.js'
-import { bufferSHA256Hash, depackDTA, detectBufferEncoding, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
+import { bufferSHA256Hash, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -235,17 +235,25 @@ export class DTAParser {
    * @param {AllParsedDTATypes} updates A parsed song object of an array of parsed song objects with unique
    * text IDs that will update a song from the collection if the ID (shortname) of the update object matches
    * a song ID (shortname) from the collection.
+   * @param {boolean} allowNewSongEntriesInjection If `true`, updates for songs that don't have an entry
+   * created when the class is first instantiated will be placed. Default if `false`.
+   *
+   * Set this to `false` if you want to apply updates on any `DTAParser` class instantiated as `'partial'`
+   * without adding new songs to it.
    * @returns {void}
    */
-  applyUpdates(updates: AllParsedDTATypes): void {
+  applyUpdates(updates: AllParsedDTATypes, allowNewSongEntriesInjection = false): void {
     if (Array.isArray(updates)) {
       for (const update of updates) {
         const { id } = update
         const index = this.songs.findIndex((song) => String(song.id) === String(id))
         if (index === -1 && this.type === 'complete') continue
         else if (index === -1 && this.type === 'partial') {
-          this.songs.push(update)
-          continue
+          if (!allowNewSongEntriesInjection) continue
+          else {
+            this.songs.push(update)
+            continue
+          }
         } else {
           const newSongObject = { ...this.songs[index], ...update }
           this.songs[index] = newSongObject
@@ -256,8 +264,11 @@ export class DTAParser {
       const index = this.songs.findIndex((song) => String(song.id) === String(id))
       if (index === -1 && this.type === 'complete') return
       else if (index === -1 && this.type === 'partial') {
-        this.songs.push(updates)
-        return
+        if (!allowNewSongEntriesInjection) return
+        else {
+          this.songs.push(updates)
+          return
+        }
       } else {
         const newSongObject = { ...this.songs[index], ...updates }
         this.songs[index] = newSongObject
@@ -320,5 +331,37 @@ export class DTAParser {
   calculateHash(): string {
     const dtaBuffer = Buffer.from(stringifyDTA(sortDTA(this.songs, 'ID'), this.type, this.type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions))
     return bufferSHA256Hash(dtaBuffer)
+  }
+
+  /**
+   * Patches non-numerical song IDs to numerical ones, using specific CRC32 hashing method.
+   *
+   * [_See the original C# function on **GitHub Gist**_](https://gist.github.com/InvoxiPlayGames/f0de3ad707b1d42055c53f0fd1428f7f), coded by [Emma (InvoxiPlayGames)](https://gist.github.com/InvoxiPlayGames).
+   */
+  patchIDs(): void {
+    this.songs = this.songs.map((song) => {
+      if (song.song_id) {
+        return { ...song, song_id: Math.abs(genNumericSongID(song.song_id)) }
+      }
+      return song
+    })
+  }
+
+  /**
+   * Patches the encoding values of each song. This method checks all string values
+   * for non-ASCII compatible characters and sets each song's encoding correctly.
+   */
+  patchEncodings(): void {
+    if (this.type === 'complete') {
+      this.songs = this.songs.map((song) => {
+        song.encoding = patchDTAEncodingFromDTAFileObject(song)
+        return song
+      })
+    } else {
+      this.songs = this.songs.map((song) => {
+        song.encoding = patchDTAEncodingFromDTAFileObject(song)
+        return song
+      })
+    }
   }
 }

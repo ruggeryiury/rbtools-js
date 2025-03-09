@@ -14,8 +14,9 @@ export class RockBandDB {
    * @param {PathLikeTypes} dxSongUpdatesFolder `OPTIONAL` The folder of the Rock Band 3 Deluxe
    * patch that has all the updates DTA to be read. If not provided, the function will try
    * to find these files on `src/bin/dta` folder.
+   * @returns {PartialDTAFile[]}
    */
-  static async createUpdatesJSONFile(dxSongUpdatesFolder?: PathLikeTypes): Promise<void> {
+  static async createUpdatesJSONFile(dxSongUpdatesFolder?: PathLikeTypes): Promise<PartialDTAFile[]> {
     const dtaPath = dxSongUpdatesFolder ? Path.stringToPath(dxSongUpdatesFolder) : RBTools.getDTAPath()
     const updates = new Path(Path.resolve(dtaPath.path, 'dx_updates.json'))
 
@@ -47,6 +48,18 @@ export class RockBandDB {
     vanillaStrings.applyUpdates(loadingPhrases.songs)
 
     await updates.writeFile(JSON.stringify(vanillaStrings.songs))
+    return vanillaStrings.songs
+  }
+
+  /**
+   * Asynchronously loads all Rock Band 3 Deluxe updates data from the database.
+   * - - - -
+   * @returns {Promise<PartialDTAFile[]>}
+   */
+  static async loadDXUpdates(): Promise<PartialDTAFile[]> {
+    const dtaPath = RBTools.getDTAPath()
+    const updates = new Path(Path.resolve(dtaPath.path, 'dx_updates.json'))
+    return await updates.readJSONFile<PartialDTAFile[]>()
   }
 
   /**
@@ -78,6 +91,4 @@ export class RockBandDB {
 
     return parsedSongs
   }
-
-  // static async loadDLCSongs(devhdd0Path: PathLikeTypes, withUpdates = true) {}
 }
