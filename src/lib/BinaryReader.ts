@@ -1,6 +1,6 @@
 import type { FileHandle } from 'fs/promises'
-import Path, { type PathLikeTypes } from 'path-js'
-import { FileNotFoundError, BinaryReaderError } from '../errors.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { FileNotFoundError, BinaryReaderError } from '../errors'
 
 /**
  * A class to read binary files.

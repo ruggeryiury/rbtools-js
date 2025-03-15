@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "ESNext",
+    "target": "ES2021",
     "allowJs": true,
     "resolveJsonModule": true,
-    "moduleDetection": "force",
     "noImplicitOverride": true,
-    "strict": true,
-    "module": "NodeNext",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true,
-    "lib": ["ES2023"],
+    "lib": ["ES2021"],
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true
   },

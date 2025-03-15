@@ -1,8 +1,9 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { DTAParserError, WrongDTATypeError } from '../errors.js'
-import { bufferSHA256Hash, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import type { RequiredDeep } from 'type-fest'
+import { DTAParserError, WrongDTATypeError } from '../errors'
+import { bufferSHA256Hash, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -31,7 +32,7 @@ export class DTAParser {
     allSongsInline: false,
     customSource: null,
     autoGeneratePansAndVols: true,
-  } as Required<DTAStringifyOptions>
+  } as RequiredDeep<DTAStringifyOptions>
 
   /**
    * Default options to stringify DTA file contents for partial DTAParser types (with incomplete metadata).
@@ -47,7 +48,7 @@ export class DTAParser {
     allSongsInline: false,
     customSource: null,
     autoGeneratePansAndVols: false,
-  } as Required<DTAStringifyOptions>
+  } as RequiredDeep<DTAStringifyOptions>
 
   // #region Static Constructors
 

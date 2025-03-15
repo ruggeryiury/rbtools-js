@@ -1,7 +1,7 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { ExecutableError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../execPromise.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { ExecutableError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../execPromise'
 
 /**
  * Asynchronously executes the NVIDIA Texture Tools.

@@ -1,8 +1,8 @@
-import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { FileNotFoundError, ImgFileError } from '../errors.js'
-import type { TextureFile } from '../index.js'
-import { imgFileStat, imgFileStatSync, imgToImg, imgToTexWii, imgToTexXboxPs3, webpDataURL, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.js'
+import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import { FileNotFoundError, ImgFileError } from '../errors'
+import type { TextureFile } from '../index'
+import { imgFileStat, imgFileStatSync, imgToImg, imgToTexWii, imgToTexXboxPs3, webpDataURL, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib'
 
 export interface ImgFileStatReturnObject {
   /** The format of the image file. */

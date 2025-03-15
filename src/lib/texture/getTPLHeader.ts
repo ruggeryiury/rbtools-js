@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { FileNotFoundError, UnknownFileFormatError } from '../../errors.js'
-import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes, imageHeaders } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { FileNotFoundError, UnknownFileFormatError } from '../../errors'
+import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes, imageHeaders } from '../../lib'
 
 export type TPLFormatTypes = 'RGBA32' | 'NORMAL'
 export interface TPLHeaderParserObject {

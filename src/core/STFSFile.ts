@@ -1,7 +1,7 @@
-import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { STFSFileError, WrongDTATypeError } from '../errors.js'
-import { DTAParser } from '../index.js'
-import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.js'
+import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { STFSFileError, WrongDTATypeError } from '../errors'
+import { DTAParser } from '../index'
+import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib'
 
 export interface STFSFileStatRawObject {
   /** The name of the package. */

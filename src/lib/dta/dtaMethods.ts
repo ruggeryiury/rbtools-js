@@ -1,5 +1,5 @@
 import type { LiteralUnion } from 'type-fest'
-import { dtaLocale, type AnimTempoNumbers, type BandFailCue, type DrumBank, type ExtraAuthoringFlags, type PercussionBank, type SoloFlags, type SongEncoding, type SongGameOrigin, type SongGenre, type SongKey, type SongRating, type SongScrollSpeed, type SongSubGenre, type SongTonality, type VocalGender, type VocalParts } from '../../lib.js'
+import { dtaLocale, type AnimTempoNumbers, type BandFailCue, type DrumBank, type ExtraAuthoringFlags, type PercussionBank, type SoloFlags, type SongEncoding, type SongGameOrigin, type SongGenre, type SongKey, type SongRating, type SongScrollSpeed, type SongSubGenre, type SongTonality, type VocalGender, type VocalParts } from '../../lib'
 
 export type DTATracksCountArray = [number, number, number, number, number, number, number?]
 

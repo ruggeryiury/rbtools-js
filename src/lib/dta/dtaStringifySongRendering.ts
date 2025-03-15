@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter, quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAStringifyFormats, type PartialDTAFile } from '../../lib.js'
+import { capitalizeFirstLetter, quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAStringifyFormats, type PartialDTAFile } from '../../lib'
 
 /**
  * Adds tabs at the beginning of each line on a string.

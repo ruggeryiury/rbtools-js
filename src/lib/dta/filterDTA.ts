@@ -1,5 +1,5 @@
-import setDefaultOptions from 'set-default-options'
-import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileKeys, type DTAFileWithIndex, type InstrRankingNumbers, type RankTypes } from '../../lib.js'
+import { setDefaultOptions } from 'set-default-options'
+import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileKeys, type DTAFileWithIndex, type InstrRankingNumbers, type RankTypes } from '../../lib'
 
 /**
  * Adds literal indexes as values to each song from a collection.

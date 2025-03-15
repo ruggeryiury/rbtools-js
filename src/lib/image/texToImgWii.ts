@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { ImgFile } from '../../index.js'
-import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { ImgFile } from '../../index'
+import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib'
 
 /**
  * Asynchronously converts a PNG_WII texture file to any image format.

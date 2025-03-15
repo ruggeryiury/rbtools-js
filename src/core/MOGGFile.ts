@@ -1,6 +1,6 @@
-import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { MOGGFileError } from '../errors.js'
-import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib.js'
+import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { MOGGFileError } from '../errors'
+import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib'
 
 export interface MOGGFileStatRawObject {
   /** The version of the MOGG encryption. */

@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { OnyxCLIError } from '../errors.js'
-import { execPromise } from '../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { OnyxCLIError } from '../errors'
+import { execPromise } from '../lib'
 
 export type OnyxCLIOperators = 'import' | 'build' | 'web-player' | 'reaper' | 'pro-keys-hanging' | 'stfs' | 'mogg' | 'encrypt-mogg-rb1' | 'u8' | 'milo' | 'encrypt-gh-fsb' | 'fsb' | 'pak' | 'pkg' | 'edat' | 'port-gh-ps3' | 'extract' | 'unwrap' | 'midi-text' | 'midi-merge' | 'bin-to-dta' | 'dta-to-bin'
 export type STFSGameTypes = 'rb3' | 'rb2' | 'gh2'

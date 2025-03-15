@@ -1,4 +1,4 @@
-import type { PartialDTAFile } from '../lib.js'
+import type { PartialDTAFile } from '../lib'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const rhythmverseAPISourceURL = {

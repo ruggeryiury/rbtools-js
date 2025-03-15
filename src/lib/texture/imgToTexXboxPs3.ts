@@ -1,8 +1,8 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { TextureFile, type ConvertToTextureOptions } from '../../core.js'
-import { FileConvertionError, UnknownFileFormatError } from '../../errors.js'
-import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeaders } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import { TextureFile, type ConvertToTextureOptions } from '../../core'
+import { FileConvertionError, UnknownFileFormatError } from '../../errors'
+import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeaders } from '../../lib'
 
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.

@@ -1,7 +1,7 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { type TextureFileStatReturnObject } from '../../core.js'
-import { UnknownFileFormatError } from '../../errors.js'
-import { imageHeaders } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { type TextureFileStatReturnObject } from '../../core'
+import { UnknownFileFormatError } from '../../errors'
+import { imageHeaders } from '../../lib'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.

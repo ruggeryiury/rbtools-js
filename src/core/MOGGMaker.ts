@@ -1,10 +1,10 @@
 import { ExifTool } from 'exiftool-vendored'
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
-import { MOGGFile } from '../core.js'
-import { MOGGFileError } from '../errors.js'
-import { audioToMOGG, MakeMogg } from '../lib.js'
+import { MOGGFile } from '../core'
+import { MOGGFileError } from '../errors'
+import { audioToMOGG, MakeMogg } from '../lib'
 
 export type MOGGFileQualityLevels = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 

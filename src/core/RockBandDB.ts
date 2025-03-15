@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { DTAParser, RBTools } from '../index.js'
-import type { PartialDTAFile } from '../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { DTAParser, RBTools } from '../index'
+import type { PartialDTAFile } from '../lib'
 
 /**
  * A class with static methods that fetches information about official and unofficial Rock Band songs.

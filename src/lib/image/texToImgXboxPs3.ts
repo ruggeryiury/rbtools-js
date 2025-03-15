@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { ImgFile } from '../../index.js'
-import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { ImgFile } from '../../index'
+import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib'
 
 /**
  * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.

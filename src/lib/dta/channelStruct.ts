@@ -1,5 +1,5 @@
-import { RBDTAJSError } from '../../errors.js'
-import type { DTAFile, DTATracksCountArray } from '../../lib.js'
+import { RBDTAJSError } from '../../errors'
+import type { DTAFile, DTATracksCountArray } from '../../lib'
 
 export interface AudioTracksCountObject {
   /**
@@ -155,6 +155,10 @@ export interface AudioFileTracksStructureDocument {
      * Quantity of channels of all drum tracks.
      */
     channels: number
+    /**
+     * The layout of the drum channels.
+     */
+    drum_layout: 'drum_layout_kit' | 'drum_layout_kit_kick' | 'drum_layout_kit_kick_snare'
     /**
      * An array with the channels count from start channel to the last one.
      */
@@ -401,6 +405,7 @@ export const genAudioFileStructure = (song: DTAFile): AudioFileTracksStructureDo
   const drumkick = allDrum >= 3 ? (allDrum === 6 ? 2 : 1) : 0
   const drumsnare = allDrum >= 4 ? (allDrum >= 5 ? 2 : 1) : 0
   const drumkit = allDrum > 0 ? 2 : 0
+  const drumLayout = allDrum === 0 || allDrum === 2 ? 'drum_layout_kit' : allDrum === 3 ? 'drum_layout_kit_kick' : 'drum_layout_kit_kick_snare'
   const allTracksCount = allDrum + bass + guitar + vocals + keys + backing + (crowd !== undefined ? 2 : 0)
 
   const pans = dtaPans ?? defaultPans
@@ -412,6 +417,7 @@ export const genAudioFileStructure = (song: DTAFile): AudioFileTracksStructureDo
       // All drums stems
       enabled: allDrum !== 0,
       channels: allDrum,
+      drum_layout: drumLayout,
       array: drumsArray,
       pan: allDrum === 0 ? [] : pans.slice(0, allDrum),
       vol: allDrum === 0 ? [] : vols.slice(0, allDrum),

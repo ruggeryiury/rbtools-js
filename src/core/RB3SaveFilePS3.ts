@@ -1,7 +1,7 @@
 import type { PathLikeTypes } from 'path-js'
-import Path from 'path-js'
-import { RB3SaveFileError, UnknownFileFormatError } from '../errors.js'
-import type { InstrumentTypes } from '../lib.js'
+import { Path } from 'path-js'
+import { RB3SaveFileError, UnknownFileFormatError } from '../errors'
+import type { InstrumentTypes } from '../lib'
 
 export type RB3SaveFilePlatformTypes = 'xbox' | 'ps3' | 'wii'
 

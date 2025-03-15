@@ -1,9 +1,9 @@
 import { execSync } from 'child_process'
-import Path, { type PathLikeTypes } from 'path-js'
-import type { MIDIFileStatObject } from '../../core.js'
-import { PythonExecutionError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../execPromise.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import type { MIDIFileStatObject } from '../../core'
+import { PythonExecutionError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../execPromise'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.

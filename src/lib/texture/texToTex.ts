@@ -1,8 +1,8 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import type { ConvertTextureToTextureOptions } from '../../core.js'
-import { TextureFile } from '../../index.js'
-import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swapRBArtBytes } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import type { ConvertTextureToTextureOptions } from '../../core'
+import { TextureFile } from '../../index'
+import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swapRBArtBytes } from '../../lib'
 
 /**
  * Asynchronously converts a texture file to any other texture file format.

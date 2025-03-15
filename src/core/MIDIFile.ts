@@ -1,6 +1,6 @@
-import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { MIDIFileError } from '../errors.js'
-import { midiFileStat, midiFileStatSync } from '../lib.js'
+import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { MIDIFileError } from '../errors'
+import { midiFileStat, midiFileStatSync } from '../lib'
 
 export interface MIDIFileStatObject {
   /** The charset of the MIDI file. */

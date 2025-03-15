@@ -1,4 +1,4 @@
-import type { DTAMap, UnformattedPartialDTAFile } from '../../lib.js'
+import type { DTAMap, UnformattedPartialDTAFile } from '../../lib'
 
 /**
  * Removes if statements from common values that generally uses if statements (Game Origin, Genre, and Sub-Genre).

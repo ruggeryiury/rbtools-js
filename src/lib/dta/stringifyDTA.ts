@@ -1,7 +1,7 @@
-import setDefaultOptions from 'set-default-options'
-import type { AllParsedDTATypes } from '../../core.js'
-import { DTAParser } from '../../index.js'
-import { dtaLocale, DTAStringIO, type DTAContentParserFormatTypes, type SongSortingTypes, type UnformattedPartialDTAFile } from '../../lib.js'
+import { setDefaultOptions } from 'set-default-options'
+import type { AllParsedDTATypes } from '../../core'
+import { DTAParser } from '../../index'
+import { dtaLocale, DTASongContentIO, type DTAContentParserFormatTypes, type SongSortingTypes, type UnformattedPartialDTAFile } from '../../lib'
 
 export type DTAStringifyFormats = 'rbn' | 'rb3_dlc' | 'rb2'
 
@@ -78,7 +78,7 @@ export interface DTAStringifyOptions {
 export const stringifyDTA = (songs: AllParsedDTATypes, type: DTAContentParserFormatTypes = 'complete', options?: DTAStringifyOptions): string => {
   const opts = setDefaultOptions<DTAStringifyOptions>(type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions, options)
 
-  const io = new DTAStringIO(type, opts)
+  const io = new DTASongContentIO(type, opts)
   if (Array.isArray(songs)) {
     songs.forEach((song) => {
       if (opts.ignoreFakeSongs && song.fake === true) return

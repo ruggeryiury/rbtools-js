@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto'
-import Path, { type PathLikeTypes } from 'path-js'
-import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors.js'
-import { RBTools } from '../index.js'
-import { execPromise } from '../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors'
+import { RBTools } from '../index'
+import { execPromise } from '../lib'
 
 /**
  * Class with static methods to deal with PS3 EDAT files.

@@ -4,7 +4,7 @@
   "private": true,
   "description": "A module package to manipulate several Rock Band game files.",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Ruggery Iury Corrêa <ruggeryiury@gmail.com>",
@@ -19,13 +19,15 @@
   "dependencies": {
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
+    "esbuild-fix-imports-plugin": "^1.0.19",
     "exiftool-vendored": "^29.0.0",
     "jschardet": "^3.1.2",
-    "path-js": "file:./packages/path-js-2.0.0.tgz",
-    "set-default-options": "file:./packages/set-default-options-1.0.0.tgz",
+    "path-js": "file:./packages/path-js-3.0.0.tgz",
+    "set-default-options": "file:./packages/set-default-options-1.2.0.tgz",
     "tempy": "^3.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@types/node": "^20.12.12",
     "copyfiles": "^2.4.1",
     "eslint": "^9.3.0",
@@ -35,6 +37,7 @@
     "eslint-plugin-n": "^17.7.0",
     "globals": "^15.3.0",
     "prettier": "^3.2.5",
+    "tsup": "^8.4.0",
     "tsx": "^4.10.5",
     "type-fest": "^4.32.0",
     "typescript": "^5.4.5",
@@ -49,16 +52,19 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./core": {
+      "types": "./dist/core.d.ts",
       "import": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "require": "./dist/core.cjs"
     },
     "./lib": {
+      "types": "./dist/lib.d.ts",
       "import": "./dist/lib.js",
-      "types": "./dist/lib.d.ts"
+      "require": "./dist/lib.cjs"
     }
   }
 }

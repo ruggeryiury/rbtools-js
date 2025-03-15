@@ -1,8 +1,8 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { type ConvertToImageOptions, ImgFile } from '../../core.js'
-import { ValueError, FileConvertionError } from '../../errors.js'
-import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import { type ConvertToImageOptions, ImgFile } from '../../core'
+import { ValueError, FileConvertionError } from '../../errors'
+import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../../lib'
 
 /**
  * Asynchronously converts an image file to any other image file format.

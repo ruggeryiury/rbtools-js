@@ -1,7 +1,7 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { PythonExecutionError, ValueError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../execPromise.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { PythonExecutionError, ValueError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../execPromise'
 
 export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLikeTypes, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'

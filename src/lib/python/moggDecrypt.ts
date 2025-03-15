@@ -1,7 +1,7 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { PythonExecutionError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { PythonExecutionError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously decrypts a MOGG file and returns the new decrypted MOGG file path.

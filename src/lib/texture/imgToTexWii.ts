@@ -1,9 +1,9 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
-import { TextureFile, type ConvertToTextureOptions } from '../../core.js'
-import { FileConvertionError } from '../../errors.js'
-import { WimgtEnc, imageConverter, imageHeaders } from '../../lib.js'
+import { TextureFile, type ConvertToTextureOptions } from '../../core'
+import { FileConvertionError } from '../../errors'
+import { WimgtEnc, imageConverter, imageHeaders } from '../../lib'
 /**
  * Asynchronously converts an image file to PNG_WII texture file format.
  * - - - -

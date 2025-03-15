@@ -1,8 +1,8 @@
-import Path, { type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { TextureFileError } from '../errors.js'
-import { ImgFile } from '../index.js'
-import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib.js'
+import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import { TextureFileError } from '../errors'
+import { ImgFile } from '../index'
+import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib'
 
 export interface TextureFileStatReturnObject {
   /** The format of the texture file. */

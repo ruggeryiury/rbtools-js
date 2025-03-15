@@ -1,6 +1,6 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import type { TextureFileStatReturnObject } from '../../core.js'
-import { getDDSHeader, getDDSHeaderSync } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import type { TextureFileStatReturnObject } from '../../core'
+import { getDDSHeader, getDDSHeaderSync } from '../../lib'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.

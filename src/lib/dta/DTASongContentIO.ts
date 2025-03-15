@@ -1,9 +1,9 @@
-import { RBDTAJSError } from '../../index.js'
-import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib.js'
+import { RBDTAJSError } from '../../index'
+import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib'
 
-export class DTAStringIO {
+export class DTASongContentIO {
   /**
-   * An object containing all songs that will be stringified when calling the `DTAStringIO.finish()` method.
+   * An object containing all songs that will be stringified when calling the `DTASongContentIO.finish()` method.
    */
   content: Record<string, DTAMap | undefined>
   /**

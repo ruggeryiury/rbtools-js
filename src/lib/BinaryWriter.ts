@@ -1,4 +1,6 @@
-import { BinaryWriterError } from '../errors.js'
+import { BinaryWriterError } from '../errors'
+
+export type BinaryWriteEncodings = 'ascii' | 'latin1' | 'latin-1' | 'utf-8' | 'utf8' | 'hex'
 
 /** A class to create binary files. */
 export class BinaryWriter {
@@ -25,13 +27,35 @@ export class BinaryWriter {
   }
 
   /**
-   * Writes raw `Buffer` values on the binary file.
+   * Writes raw `Buffer` or 'string' values on the binary file.
    * - - - -
    * @param {Buffer} value The `Buffer` object to be added to the binary file.
+   * @param {BinaryWriteEncodings} encoding `OPTIONAL` Used on string values. Default is `utf8`.
    * @returns {void}
    */
-  write(value: Buffer): void {
-    this.contents.push(value)
+  write(value: Buffer | string, encoding: BinaryWriteEncodings = 'utf8'): void {
+    if (value instanceof Buffer) {
+      this.contents.push(value)
+      return
+    }
+
+    switch (encoding) {
+      case 'ascii':
+        this.writeASCII(value)
+        break
+      case 'hex':
+        this.writeHex(value)
+        break
+      case 'latin1':
+      case 'latin-1':
+        this.writeLatin1(value)
+        break
+      case 'utf-8':
+      case 'utf8':
+      default:
+        this.writeUTF8(value)
+        break
+    }
   }
 
   /**

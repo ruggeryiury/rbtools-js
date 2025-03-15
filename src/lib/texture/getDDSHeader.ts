@@ -1,5 +1,5 @@
-import Path from 'path-js'
-import { RBTools } from '../../index.js'
+import { Path } from 'path-js'
+import { RBTools } from '../../index'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
 export type DDSHeaderTypes = 'UNKNOWN' | DDSFormatTypes

@@ -1,5 +1,5 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib'
 
 /**
  * Returns a Base64-encoded Data URL `string` of a texture file.

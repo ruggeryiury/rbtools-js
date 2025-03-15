@@ -1,4 +1,4 @@
-import { ValueError } from '../errors.js'
+import { ValueError } from '../errors'
 
 /**
  * Converts milliseconds to formatted `HH:MM:SS` time string.

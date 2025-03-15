@@ -1,10 +1,10 @@
 import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import { ImgFile } from '../core.js'
-import { ImageFetchingError } from '../errors.js'
-import { bufferConverter, isURL, type ArtworkImageFormatTypes, type ImageConverterOptions } from '../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import { ImgFile } from '../core'
+import { ImageFetchingError } from '../errors'
+import { bufferConverter, isURL, type ArtworkImageFormatTypes, type ImageConverterOptions } from '../lib'
 
 /**
  * ImageURL is a class that represents an image file URL. It is initalized passing an image URL as an argument.

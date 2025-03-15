@@ -1,9 +1,9 @@
 import { execSync } from 'child_process'
-import Path, { type PathLikeTypes } from 'path-js'
-import type { MOGGFileStatRawObject } from '../../core.js'
-import { PythonExecutionError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import type { MOGGFileStatRawObject } from '../../core'
+import { PythonExecutionError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MOGG file.

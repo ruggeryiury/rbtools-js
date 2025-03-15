@@ -1,10 +1,10 @@
 import { spawn } from 'child_process'
-import Path, { type PathLikeTypes } from 'path-js'
-import setDefaultOptions from 'set-default-options'
-import type { ConvertToWEBPDataURLOptions } from '../../core.js'
-import { PythonExecutionError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise, type ArtworkInterpolationTypes, type ArtworkImageFormatTypes, getTPLHeader, imgFileStat } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { setDefaultOptions } from 'set-default-options'
+import type { ConvertToWEBPDataURLOptions } from '../../core'
+import { PythonExecutionError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise, type ArtworkInterpolationTypes, type ArtworkImageFormatTypes, getTPLHeader, imgFileStat } from '../../lib'
 
 export interface ImageConverterOptions {
   /** The width of the converted image file. Default is `256`. */

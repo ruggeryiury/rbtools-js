@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
-import setDefaultOptions from 'set-default-options'
-import { RhythmverseAPIFetchingError } from '../errors.js'
-import { normalizeString, rhythmverseAPISourceSearchURL, rhythmverseAPISourceURL, rhythmverseOptsLocale, type PartialDTAFile, type ProcessedRhythmverseSongData, type ProcessRhythmverseObject, type RawRhythmverseResponse, type RhythmverseFetchingOptions } from '../lib.js'
+import { setDefaultOptions } from 'set-default-options'
+import { RhythmverseAPIFetchingError } from '../errors'
+import { normalizeString, rhythmverseAPISourceSearchURL, rhythmverseAPISourceURL, rhythmverseOptsLocale, type PartialDTAFile, type ProcessedRhythmverseSongData, type ProcessRhythmverseObject, type RawRhythmverseResponse, type RhythmverseFetchingOptions } from '../lib'
 
 /** A class with static methods to fetch songs from Rhythmverse database. */
 export class RhythmverseAPI {

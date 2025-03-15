@@ -1,5 +1,5 @@
-import setDefaultOptions from 'set-default-options'
-import type { DTAFile } from '../lib.js'
+import { setDefaultOptions } from 'set-default-options'
+import type { DTAFile } from '../lib'
 
 /**
  * Normalizes a string by removing diacritical marks (accents)

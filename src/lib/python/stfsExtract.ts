@@ -1,7 +1,7 @@
-import Path, { type PathLikeTypes } from 'path-js'
-import { PythonExecutionError } from '../../errors.js'
-import { RBTools } from '../../index.js'
-import { execPromise } from '../../lib.js'
+import { Path, type PathLikeTypes } from 'path-js'
+import { PythonExecutionError } from '../../errors'
+import { RBTools } from '../../index'
+import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
