@@ -158,20 +158,14 @@ export const formatStringFromDTA = (song: DTAFile | null, format: string, option
 
     for (const uniqueKeys of valuesThatAreUnique) {
       newText = newText.replace(new RegExp(`{{${uniqueKeys}}}`, 'g'), String(song[uniqueKeys as keyof typeof song]))
-
       newText = newText.replace(new RegExp(`{{${uniqueKeys}.emit}}`, 'g'), String(song[uniqueKeys as keyof typeof song]))
-
       newText = newText.replace(new RegExp(`{{${uniqueKeys}.omit}}`, 'g'), omitLeadingArticle(String(song[uniqueKeys as keyof typeof song])))
-
       newText = newText.replace(new RegExp(`{{${uniqueKeys}.trailing}}`, 'g'), leadingArticleToTrailing(String(song[uniqueKeys as keyof typeof song])))
     }
 
     newText.replace(new RegExp(`{{title}}`, 'g'), song.name)
-
     newText = newText.replace(new RegExp(`{{title.emit}}`, 'g'), song.name)
-
     newText = newText.replace(new RegExp(`{{title.omit}}`, 'g'), omitLeadingArticle(song.name))
-
     newText = newText.replace(new RegExp(`{{title.trailing}}`, 'g'), leadingArticleToTrailing(song.name))
   }
   if (normalizeNFD) newText = newText.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
