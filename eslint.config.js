@@ -27,11 +27,12 @@ export default tseslint.config({
   },
   extends: [eslint.configs.recommended, ...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked, jsdoc.configs['flat/recommended']],
   rules: {
+    'no-empty': 'off',
     'jsdoc/require-returns-description': 'off',
     'jsdoc/no-undefined-types': 'off',
     '@typescript-eslint/non-nullable-type-assertion-style': 'warn',
     '@typescript-eslint/no-dynamic-delete': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     'import/order': [
       'error',

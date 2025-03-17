@@ -56,7 +56,7 @@ export const leadingArticleToTrailing = (text: string): string => {
  * @param {string} text The text you want to be processed.
  * @returns {string} The text processed.
  */
-export const quoteToSlashQ = (text: string): string => text.replace(/"/g, '\\q')
+export const quoteToSlashQ = (text: string): string => text.replace(/\\/g, '\\\\').replace(/"/g, '\\q')
 
 /**
  * Replaces slash Q (`\q`) to quote character (`"`).
@@ -66,7 +66,7 @@ export const quoteToSlashQ = (text: string): string => text.replace(/"/g, '\\q')
  * @param {string} text The text you want to be processed.
  * @returns {string} The text processed.
  */
-export const slashQToQuote = (text: string): string => text.replace(/\\q/g, '"')
+export const slashQToQuote = (text: string): string => text.replace(/\\\\/g, '\\').replace(/\\q/g, '"')
 
 /**
  * Capitalizes the first letter of any string.
