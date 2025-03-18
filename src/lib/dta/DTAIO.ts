@@ -3,6 +3,8 @@ import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { BinaryWriter, dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib'
 
+export type DTADocumentInlineTypes = boolean | 'expanded'
+
 // #region Interfaces
 export interface StringFormattingOptions {
   /**
@@ -12,7 +14,7 @@ export interface StringFormattingOptions {
   /**
    * Default is `expanded`.
    */
-  keyAndValueInline?: 'true' | 'false' | 'expanded'
+  keyAndValueInline?: DTADocumentInlineTypes
 }
 
 export interface StringVariableFormattingOptions {
@@ -27,7 +29,7 @@ export interface StringVariableFormattingOptions {
   /**
    * Default is `true`.
    */
-  keyAndValueInline?: 'true' | 'false' | 'expanded'
+  keyAndValueInline?: DTADocumentInlineTypes
 }
 
 export interface NumberAndFloatFormattingOptions {
@@ -60,11 +62,11 @@ export interface ObjectFormattingOptions {
   /**
    * Default is `false`.
    */
-  keyAndValueInline?: 'true' | 'false' | 'expanded'
+  keyAndValueInline?: DTADocumentInlineTypes
   /**
    * Default is `false`.
    */
-  valuesInline?: 'true' | 'false' | 'expanded'
+  closeParenthesisInline?: boolean
 }
 
 export interface ArrayFormattingOptions {
@@ -75,15 +77,30 @@ export interface ArrayFormattingOptions {
   /**
    * Default is `true`.
    */
-  keyAndValueInline?: 'true' | 'false' | 'expanded'
+  keyAndValueInline?: DTADocumentInlineTypes
   /**
    * Default is `true`.
    */
-  valuesInline?: 'true' | 'false' | 'expanded'
+  valuesInline?: DTADocumentInlineTypes
   /**
    * Default is `true`.
    */
   parenthesisForValues?: boolean
+  /**
+   * Default is `false`.
+   */
+  openParenthesisInline?: boolean
+  /**
+   * Default is `false`.
+   */
+  closeParenthesisInline?: boolean
+}
+
+export interface DTADocumentFormattionOptions {
+  /**
+   * Default is `3`.
+   */
+  useSpaces: number | false
 }
 
 export type DTAFormattingTypes = 'string' | 'str_var' | 'number' | 'float' | 'boolean' | 'object' | 'array'
@@ -193,6 +210,21 @@ export interface ArrayValueObject {
   __options: RequiredDeep<DTAIOFormattingOptions>
 }
 
+export interface UndefinedValueObject {
+  /**
+   * The type of the value.
+   */
+  __type: 'undefined'
+  /**
+   * The value itself.
+   */
+  __value: string
+  /**
+   * An object that might override the options for specific rendering of this specific value.
+   */
+  __options: RequiredDeep<DTAIOFormattingOptions>
+}
+
 export interface DTAIOFormattingOptions {
   string?: StringFormattingOptions
   variable?: StringVariableFormattingOptions
@@ -200,11 +232,12 @@ export interface DTAIOFormattingOptions {
   boolean?: BooleanFormattingOptions
   object?: ObjectFormattingOptions
   array?: ArrayFormattingOptions
+  dta?: DTADocumentFormattionOptions
 }
 
-export type ValueObjectsTypes = StringValueObject | StringVariableValueObject | NumberValueObject | FloatValueObject | BooleanValueObject | ObjectValueObject | ArrayValueObject
+export type ValueObjectsTypes = StringValueObject | StringVariableValueObject | NumberValueObject | FloatValueObject | BooleanValueObject | ObjectValueObject | ArrayValueObject | UndefinedValueObject
 
-export type DTAIOAddValueTypes = string | number | boolean | Record<string, any> | DTAIOAddValueTypes[] | ValueObjectsTypes | null
+export type DTAIOAddValueTypes = string | number | boolean | Record<string, any> | DTAIOAddValueTypes[] | ValueObjectsTypes | null | undefined
 
 /**
  * A class that renders a DTA file content from JSON objects.
@@ -238,7 +271,7 @@ export class DTAIO {
       variable: {
         apostropheOnKey: true,
         apostropheOnVariable: true,
-        keyAndValueInline: 'true',
+        keyAndValueInline: true,
       },
       number: {
         apostropheOnKey: true,
@@ -251,24 +284,29 @@ export class DTAIO {
       object: {
         apostropheOnKey: true,
         keyAndValueInline: 'expanded',
-        valuesInline: 'false',
+        closeParenthesisInline: true,
       },
       array: {
         apostropheOnKey: true,
-        parenthesisForValues: true,
         keyAndValueInline: 'expanded',
-        valuesInline: 'true',
+        valuesInline: true,
+        parenthesisForValues: true,
+        openParenthesisInline: false,
+        closeParenthesisInline: false,
+      },
+      dta: {
+        useSpaces: 3,
       },
     } satisfies RequiredDeep<DTAIOFormattingOptions>,
     defaultRB3: {
       string: {
         apostropheOnKey: false,
-        keyAndValueInline: 'true',
+        keyAndValueInline: true,
       },
       variable: {
         apostropheOnKey: false,
         apostropheOnVariable: false,
-        keyAndValueInline: 'true',
+        keyAndValueInline: true,
       },
       number: {
         apostropheOnKey: false,
@@ -280,14 +318,19 @@ export class DTAIO {
       },
       object: {
         apostropheOnKey: false,
-        keyAndValueInline: 'false',
-        valuesInline: 'false',
+        keyAndValueInline: false,
+        closeParenthesisInline: true
       },
       array: {
         apostropheOnKey: false,
-        parenthesisForValues: false,
-        keyAndValueInline: 'true',
-        valuesInline: 'true',
+        keyAndValueInline: false,
+        valuesInline: true,
+        parenthesisForValues: true,
+        openParenthesisInline: true,
+        closeParenthesisInline: true
+      },
+      dta: {
+        useSpaces: false,
       },
     } satisfies RequiredDeep<DTAIOFormattingOptions>,
   }
@@ -318,7 +361,8 @@ export class DTAIO {
     const options = setDefaultOptions<RequiredDeep<DTAIOFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA, formatOptions)
     if (DTAIO.isValueObject(value)) return value
     else {
-      if (typeof value === 'object') {
+      if (typeof value === 'undefined') return DTAIO.useUndefined()
+      else if (typeof value === 'object') {
         if (Array.isArray(value)) return DTAIO.useArray(value, options)
         else if (value === null) return DTAIO.useNull()
         return DTAIO.useObject(value, options)
@@ -411,6 +455,12 @@ export class DTAIO {
     __options: setDefaultOptions<RequiredDeep<DTAIOFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA, formatOptions as RequiredDeep<DTAIOFormattingOptions>),
   })
 
+  static useUndefined = (): UndefinedValueObject => ({
+    __type: 'undefined',
+    __value: 'undefined',
+    __options: DTAIO.formatOptions.defaultMAGMA,
+  })
+
   // #region Class Methods
 
   /**
@@ -461,8 +511,14 @@ export class DTAIO {
         case 'array':
           dtaRenderArray(key, val, 0, io, val.__options)
           break
+        case 'undefined':
+          break
       }
     }
+
+    // Handle DTA document formatting
+    const { useSpaces } = this.options.dta
+    if (useSpaces !== false) return io.toBuffer().toString().replace(/\t/g, ' '.repeat(useSpaces))
     return io.toBuffer().toString()
   }
 }

@@ -13,7 +13,7 @@ export const dtaRenderKey = (key: string, apostropheOnKey: boolean): string => {
 export const dtaRenderString = (key: string | null, value: StringValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: Required<StringFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const { apostropheOnKey, keyAndValueInline } = formatOptions ?? DTAIO.formatOptions.defaultMAGMA.string
+  const { apostropheOnKey, keyAndValueInline } = setDefaultOptions<Required<StringFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA.string, formatOptions)
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
@@ -21,7 +21,7 @@ export const dtaRenderString = (key: string | null, value: StringValueObject, ta
       io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
     }
     io.write(dtaRenderKey(key, apostropheOnKey))
-    if (keyAndValueInline === 'true') io.write(' ')
+    if (keyAndValueInline === true) io.write(' ')
     else io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
   }
 
@@ -40,7 +40,7 @@ export const dtaRenderString = (key: string | null, value: StringValueObject, ta
 export const dtaRenderVariable = (key: string | null, value: StringVariableValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: Required<StringVariableFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const { apostropheOnKey, keyAndValueInline, apostropheOnVariable } = formatOptions ?? DTAIO.formatOptions.defaultMAGMA.variable
+  const { apostropheOnKey, keyAndValueInline, apostropheOnVariable } = setDefaultOptions<Required<StringVariableFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA.variable, formatOptions)
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
@@ -48,7 +48,7 @@ export const dtaRenderVariable = (key: string | null, value: StringVariableValue
       io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
     }
     io.write(dtaRenderKey(key, apostropheOnKey))
-    if (keyAndValueInline === 'true') io.write(' ')
+    if (keyAndValueInline === true) io.write(' ')
     else io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
   }
 
@@ -67,7 +67,7 @@ export const dtaRenderVariable = (key: string | null, value: StringVariableValue
 export const dtaRenderNumber = (key: string | null, value: NumberValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: Required<NumberAndFloatFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const { apostropheOnKey } = formatOptions ?? DTAIO.formatOptions.defaultMAGMA.number
+  const { apostropheOnKey } = setDefaultOptions<Required<NumberAndFloatFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA.number, formatOptions)
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
@@ -83,7 +83,7 @@ export const dtaRenderNumber = (key: string | null, value: NumberValueObject, ta
 export const dtaRenderFloat = (key: string | null, value: FloatValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: Required<NumberAndFloatFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const { apostropheOnKey, floatMaxDecimals } = formatOptions ?? DTAIO.formatOptions.defaultMAGMA.number
+  const { apostropheOnKey, floatMaxDecimals } = setDefaultOptions<Required<NumberAndFloatFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA.number, formatOptions)
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
@@ -99,7 +99,7 @@ export const dtaRenderFloat = (key: string | null, value: FloatValueObject, tabA
 export const dtaRenderBoolean = (key: string | null, value: BooleanValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: Required<BooleanFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const { apostropheOnKey, type } = formatOptions ?? DTAIO.formatOptions.defaultMAGMA.boolean
+  const { apostropheOnKey, type } = setDefaultOptions<Required<BooleanFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA.boolean, formatOptions)
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
@@ -112,109 +112,73 @@ export const dtaRenderBoolean = (key: string | null, value: BooleanValueObject, 
   if (!internalIO) return io.toBuffer().toString()
 }
 
-export const dtaRenderObject = (key: string | null, value: ObjectValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: RequiredDeep<DTAIOFormattingOptions>) => {
+export const dtaRenderObject = (key: string | null, value: ObjectValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: RequiredDeep<DTAIOFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
-  const options = formatOptions ?? DTAIO.formatOptions.defaultMAGMA
-  if (key) {
-    if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
-    io.write('(')
-    if (options.object.keyAndValueInline === 'expanded') io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
-    io.write(dtaRenderKey(key, options.object.apostropheOnKey))
-    io.write(tabNewLineFormatter(`{n}`))
-  }
-
-  for (const objKey of Object.keys(value.__value)) {
-    const val = DTAIO.valueToObject(value.__value[objKey] as DTAIOAddValueTypes, options)
-
-    switch (val.__type) {
-      case 'string':
-        dtaRenderString(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'str_var':
-        dtaRenderVariable(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'number':
-        dtaRenderNumber(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'float':
-        dtaRenderFloat(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'boolean':
-        dtaRenderBoolean(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'object':
-        dtaRenderObject(objKey, val, tabAmount + 1, io, val.__options)
-        break
-      case 'array':
-        dtaRenderArray(objKey, val, tabAmount + 1, io, val.__options)
+  const objValues = Object.keys(value.__value)
+  const isObjectPopulated = objValues.length > 0
+  const options = setDefaultOptions<RequiredDeep<DTAIOFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA, formatOptions)
+  if (isObjectPopulated) {
+    if (key) {
+      if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
+      io.write('(')
+      if (options.object.keyAndValueInline === 'expanded') io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
+      io.write(dtaRenderKey(key, options.object.apostropheOnKey))
+      if (options.object.keyAndValueInline !== true) io.write(tabNewLineFormatter(`{n}`))
     }
-  }
 
-  if (key) {
-    if (options.object.keyAndValueInline === 'expanded') io.write(tabNewLineFormatter('{t}'.repeat(tabAmount)))
-    io.write(tabNewLineFormatter(`){n}`))
-  }
+    for (const objKey of objValues) {
+      const val = DTAIO.valueToObject(value.__value[objKey] as DTAIOAddValueTypes, options)
 
-  if (!internalIO) return io.toBuffer().toString()
+      switch (val.__type) {
+        case 'string':
+          dtaRenderString(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'str_var':
+          dtaRenderVariable(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'number':
+          dtaRenderNumber(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'float':
+          dtaRenderFloat(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'boolean':
+          dtaRenderBoolean(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'object':
+          dtaRenderObject(objKey, val, tabAmount + 1, io, val.__options)
+          break
+        case 'array':
+          dtaRenderArray(objKey, val, tabAmount + 1, io, val.__options)
+      }
+    }
+
+    if (key) {
+      if (options.object.keyAndValueInline === 'expanded' && !options.object.closeParenthesisInline) io.write(tabNewLineFormatter('{t}'.repeat(tabAmount)))
+      else if (!options.object.closeParenthesisInline) io.write(tabNewLineFormatter(`{n}`))
+      io.write(tabNewLineFormatter(`){n}`))
+    }
+
+    if (!internalIO) return io.toBuffer().toString()
+  }
+  return ''
 }
 
-export const dtaRenderArray = (key: string | null, value: ArrayValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: RequiredDeep<DTAIOFormattingOptions>) => {
+export const dtaRenderArray = (key: string | null, value: ArrayValueObject, tabAmount: number, io?: BinaryWriter | null, formatOptions?: RequiredDeep<DTAIOFormattingOptions>): string | undefined => {
   const internalIO = io !== undefined && io !== null
   io = io ?? new BinaryWriter()
   const isArrayPopulated = value.__value.length > 0
   const options = setDefaultOptions<RequiredDeep<DTAIOFormattingOptions>>(DTAIO.formatOptions.defaultMAGMA, formatOptions)
+
   if (key) {
     if (tabAmount > 0) io.write('\t'.repeat(tabAmount))
     io.write('(')
-    if (options.array.keyAndValueInline === 'expanded' && isArrayPopulated) {
-      io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
-    }
     io.write(dtaRenderKey(key, options.array.apostropheOnKey))
-    if (options.array.keyAndValueInline === 'true' && isArrayPopulated) io.write(' ')
-    else if (!isArrayPopulated) io.write('')
-    else io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount + 1)}`))
-    if (isArrayPopulated && options.array.parenthesisForValues) io.write('(')
-  }
-
-  for (let listObjIndex = 0; listObjIndex < value.__value.length; listObjIndex++) {
-    const listObj = value.__value[listObjIndex]
-    const listObjVal = DTAIO.valueToObject(listObj, formatOptions)
-    if (listObjVal.__type === 'string') {
-      const val = dtaRenderString(null, listObjVal, 0, null, setDefaultOptions(options.string, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else if (listObjVal.__type === 'str_var') {
-      const val = dtaRenderVariable(null, listObjVal, 0, null, setDefaultOptions(options.variable, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else if (listObjVal.__type === 'number') {
-      const val = dtaRenderNumber(null, listObjVal, 0, null, setDefaultOptions(options.number, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else if (listObjVal.__type === 'float') {
-      const val = dtaRenderFloat(null, listObjVal, 0, null, setDefaultOptions(options.number, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else if (listObjVal.__type === 'boolean') {
-      const val = dtaRenderBoolean(null, listObjVal, 0, null, setDefaultOptions(options.boolean, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else if (listObjVal.__type === 'object') {
-      const val = dtaRenderObject(null, listObjVal, 0, null, setDefaultOptions(options, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    } else {
-      const val = dtaRenderArray(null, listObjVal, 0, null, setDefaultOptions(options, listObjVal.__options))
-      if (val) io.write(val)
-      if (value.__value.length !== listObjIndex + 1) io.write(' ')
-    }
   }
 
   if (key) {
-    if (isArrayPopulated && options.array.parenthesisForValues) io.write(')')
-    if (options.array.keyAndValueInline === 'expanded') io.write(tabNewLineFormatter(`{n}${'{t}'.repeat(tabAmount)}){n}`))
-    else io.write(tabNewLineFormatter(`){n}`))
+    io.write(tabNewLineFormatter(`){n}`))
   }
 
   if (!internalIO) return io.toBuffer().toString()
