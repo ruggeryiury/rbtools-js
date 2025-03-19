@@ -14,6 +14,20 @@ declare global {
        * set to 1) folder.
        */
       RBTOOLS_BIN_PATH?: string
+      /**
+       * The path where you extracted MAGMA. This variable can be used by `MAGMAProject`
+       * class.
+       */
+      MAGMA_PATH?: string
+      /**
+       * The path where you can find the project files for all your customs. This variable
+       * can be used by `MAGMAProject` class.
+       */
+      SONGS_PROJECT_ROOT_PATH?: string
+      /**
+       * `NodeJS Environment Variable` The path of the active user's data root folder.
+       */
+      USERPROFILE: string
     }
   }
 }

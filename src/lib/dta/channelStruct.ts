@@ -42,6 +42,10 @@ export interface AudioTracksCountObject {
    * An array with default values for vols.
    */
   defaultVols: number[]
+  /**
+   * An array with default values for cores.
+   */
+  defaultCores: number[]
 }
 
 /**
@@ -132,6 +136,12 @@ export const genTracksCountArray = (tracksCount: DTATracksCountArray): AudioTrac
     allTracksCount: arrayFillCount,
     defaultPans,
     defaultVols: Array<number>(arrayFillCount).fill(0),
+    defaultCores: Array<number>(arrayFillCount)
+      .fill(-1)
+      .map((core, coreI) => {
+        if (guitarArray.includes(coreI)) return 1
+        return -1
+      }),
   }
 }
 
@@ -143,6 +153,18 @@ export interface AudioFileTracksStructureDocument {
    * Quantity of channels of all tracks.
    */
   allTracksCount: number
+  /**
+   * An array with default values for pans.
+   */
+  defaultPans: number[]
+  /**
+   * An array with default values for vols.
+   */
+  defaultVols: number[]
+  /**
+   * An array with default values for cores.
+   */
+  defaultCores: number[]
   /**
    * Information about the drum tracks.
    */
@@ -399,9 +421,9 @@ export interface AudioFileTracksStructureDocument {
  * @returns {AudioFileTracksStructureDocument} An object with all panning and volume informations.
  */
 export const genAudioFileStructure = (song: DTAFile): AudioFileTracksStructureDocument => {
-  const { tracks_count, pans: dtaPans, vols: dtaVols, solo } = song
+  const { tracks_count, pans: dtaPans, vols: dtaVols, cores: dtaCores, solo } = song
   const [allDrum, bass, guitar, vocals, keys, backing, crowd] = tracks_count
-  const { backing: backingArray, bass: bassArray, crowd: crowdArray, drum: drumsArray, guitar: guitarArray, keys: keysArray, vocals: vocalsArray, defaultPans, defaultVols } = genTracksCountArray(tracks_count)
+  const { backing: backingArray, bass: bassArray, crowd: crowdArray, drum: drumsArray, guitar: guitarArray, keys: keysArray, vocals: vocalsArray, defaultPans, defaultVols, defaultCores } = genTracksCountArray(tracks_count)
   const drumkick = allDrum >= 3 ? (allDrum === 6 ? 2 : 1) : 0
   const drumsnare = allDrum >= 4 ? (allDrum >= 5 ? 2 : 1) : 0
   const drumkit = allDrum > 0 ? 2 : 0
@@ -410,9 +432,13 @@ export const genAudioFileStructure = (song: DTAFile): AudioFileTracksStructureDo
 
   const pans = dtaPans ?? defaultPans
   const vols = dtaVols ?? defaultVols
+  const cores = dtaCores ?? defaultCores
 
   return {
     allTracksCount,
+    defaultPans: defaultPans,
+    defaultVols: defaultVols,
+    defaultCores: defaultCores,
     drum: {
       // All drums stems
       enabled: allDrum !== 0,

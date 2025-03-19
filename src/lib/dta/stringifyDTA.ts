@@ -1,7 +1,7 @@
 import { setDefaultOptions } from 'set-default-options'
 import type { AllParsedDTATypes } from '../../core'
 import { DTAParser } from '../../index'
-import { dtaLocale, DTASongContentIO, type DTAContentParserFormatTypes, type SongSortingTypes, type UnformattedPartialDTAFile } from '../../lib'
+import { dtaLocale, DTASongContentIO, type DTAContentParserFormatTypes, type SongSortingTypes } from '../../lib'
 
 export type DTAStringifyFormats = 'rbn' | 'rb3_dlc' | 'rb2'
 
@@ -38,11 +38,11 @@ export interface DTAStringifyOptions {
    */
   sortBy?: SongSortingTypes
   /**
-   * An array with "songs updates" values to be placed as if statement for CUSTOMSOURCE.
+   * If `true`, values inside `customsource` will be rendered as if statements. Default is `true`.
    *
    * _This value only works on Rock Band 3 Deluxe and the default value will be used on the vanilla version of the game_.
    */
-  customSource?: UnformattedPartialDTAFile[] | null
+  useCustomSourceValues?: boolean
   /**
    * Generates `pans` and `vols` arrays for songs without these informations. Default is `true`.
    *

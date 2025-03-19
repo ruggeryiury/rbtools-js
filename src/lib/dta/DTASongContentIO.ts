@@ -95,7 +95,7 @@ export class DTASongContentIO {
 
       content += renderSongEntryOpen(song.id, this.opts.format)
 
-      const customSource = this.opts.customSource?.find((csSong) => csSong.id === song.id)
+      const customSource = this.opts.useCustomSourceValues && song.customsource ? song.customsource : null
 
       let hasSongSpecific = false
       let hasAnyRank = false

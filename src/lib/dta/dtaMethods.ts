@@ -298,6 +298,12 @@ export interface DTAFile {
    * Tells if the song only has Expert difficulty charted.
    */
   expert_only?: boolean
+  /**
+   * An object with values that will be inserted on the DTA file contents if the
+   * `useCustomSource` parameters on the `DTAParser.toString()` method is set to `true`.
+   */
+  customsource?: CustomSourceValuesObject
+  magma?: MAGMAProjectData
 }
 
 export type PartialDTAFile = Partial<DTAFile> & {
@@ -314,26 +320,7 @@ export type DTAFileWithIndex = DTAFile & {
   index: number
 }
 
-export type AcceptedUnformattedDTAKeys = 'game_origin' | 'genre' | 'sub_genre'
-
-export type UnformattedDTAFile = Omit<DTAFile, AcceptedUnformattedDTAKeys> & {
-  /**
-   * The game origin of the song.
-   *
-   * All customs are compiled on MAGMA using `ugc_plus`.
-   */
-  game_origin: LiteralUnion<SongGameOrigin, string>
-  /**
-   * The song's genre.
-   */
-  genre: LiteralUnion<SongGenre, string>
-  /**
-   * The song's sub-genre.
-   */
-  sub_genre?: LiteralUnion<SongSubGenre, string>
-}
-
-export type UnformattedPartialDTAFile = Omit<PartialDTAFile, AcceptedUnformattedDTAKeys> & {
+export interface CustomSourceValuesObject {
   /**
    * The game origin of the song.
    *
@@ -348,6 +335,17 @@ export type UnformattedPartialDTAFile = Omit<PartialDTAFile, AcceptedUnformatted
    * The song's sub-genre.
    */
   sub_genre?: LiteralUnion<SongSubGenre, string>
+}
+
+export interface MAGMAProjectData {
+  /**
+   *
+   */
+  autogen_theme?: 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop' | false
+  release_ver?: number
+  released_date?: string
+  update_date?: string
+  lipsync?: boolean
 }
 
 /**

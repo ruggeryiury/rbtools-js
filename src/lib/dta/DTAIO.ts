@@ -284,15 +284,15 @@ export class DTAIO {
       object: {
         apostropheOnKey: true,
         keyAndValueInline: 'expanded',
-        closeParenthesisInline: true,
+        closeParenthesisInline: false,
       },
       array: {
         apostropheOnKey: true,
         keyAndValueInline: 'expanded',
         valuesInline: true,
         parenthesisForValues: true,
-        openParenthesisInline: false,
-        closeParenthesisInline: false,
+        openParenthesisInline: true,
+        closeParenthesisInline: true,
       },
       dta: {
         useSpaces: 3,
@@ -319,15 +319,15 @@ export class DTAIO {
       object: {
         apostropheOnKey: false,
         keyAndValueInline: false,
-        closeParenthesisInline: true
+        closeParenthesisInline: false,
       },
       array: {
         apostropheOnKey: false,
-        keyAndValueInline: false,
+        keyAndValueInline: true,
         valuesInline: true,
         parenthesisForValues: true,
         openParenthesisInline: true,
-        closeParenthesisInline: true
+        closeParenthesisInline: true,
       },
       dta: {
         useSpaces: false,

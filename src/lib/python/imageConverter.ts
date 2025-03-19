@@ -41,7 +41,6 @@ export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFo
   return new Promise<Path>((resolve, reject) => {
     const moduleName = `buffer_converter.py`
     const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-    console.log(pyPath)
     const process = spawn('python', [moduleName], { cwd: pyPath.root, windowsHide: true })
     const base64Str = buf.toString('base64')
 

@@ -1,4 +1,4 @@
-import type { DTAMap, UnformattedPartialDTAFile } from '../../lib'
+import type { DTAMap, CustomSourceValuesObject } from '../../lib'
 
 /**
  * Removes if statements from common values that generally uses if statements (Game Origin, Genre, and Sub-Genre).
@@ -7,13 +7,33 @@ import type { DTAMap, UnformattedPartialDTAFile } from '../../lib'
  * @returns {DTAMap} The DTA file map with only the values that works in vanilla game.
  */
 export const customSourceIfdefDeconstructor = (song: DTAMap): DTAMap => {
-  const gameOrigin = song.get('game_origin') as UnformattedPartialDTAFile['game_origin']
-  const genre = song.get('genre') as UnformattedPartialDTAFile['genre']
-  const subGenre = song.get('sub_genre') as UnformattedPartialDTAFile['sub_genre']
+  const gameOrigin = song.get('game_origin') as CustomSourceValuesObject['game_origin']
+  const genre = song.get('genre') as CustomSourceValuesObject['genre']
+  const subGenre = song.get('sub_genre') as CustomSourceValuesObject['sub_genre']
 
-  if (gameOrigin && gameOrigin.startsWith('#ifdef')) song.set('game_origin', gameOrigin.split(' ')[4])
-  if (genre && genre.startsWith('#ifdef')) song.set('genre', genre.split(' ')[4])
-  if (subGenre && subGenre.startsWith('#ifdef')) song.set('sub_genre', subGenre.split(' ')[4])
+  let hasAnyCustomSource = false
+  const customSource = new Map<keyof CustomSourceValuesObject, string>()
+
+  if (gameOrigin && gameOrigin.startsWith('#ifdef')) {
+    const split = gameOrigin.split(' ')
+    song.set('game_origin', split[4])
+    customSource.set('game_origin', split[2])
+    hasAnyCustomSource = true
+  }
+  if (genre && genre.startsWith('#ifdef')) {
+    const split = genre.split(' ')
+    song.set('genre', split[4])
+    customSource.set('genre', split[2])
+    hasAnyCustomSource = true
+  }
+  if (subGenre && subGenre.startsWith('#ifdef')) {
+    const split = subGenre.split(' ')
+    song.set('sub_genre', split[4])
+    customSource.set('sub_genre', split[2])
+    hasAnyCustomSource = true
+  }
+
+  if (hasAnyCustomSource) song.set('customsource', Object.fromEntries(customSource))
 
   return song
 }

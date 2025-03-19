@@ -30,7 +30,7 @@ export class DTAParser {
     format: 'rb3_dlc',
     wiiMode: null,
     allSongsInline: false,
-    customSource: null,
+    useCustomSourceValues: true,
     autoGeneratePansAndVols: true,
   } as RequiredDeep<DTAStringifyOptions>
 
@@ -46,7 +46,7 @@ export class DTAParser {
     format: 'rb3_dlc',
     wiiMode: null,
     allSongsInline: false,
-    customSource: null,
+    useCustomSourceValues: false,
     autoGeneratePansAndVols: false,
   } as RequiredDeep<DTAStringifyOptions>
 

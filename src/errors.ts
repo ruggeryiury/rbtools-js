@@ -16,6 +16,23 @@ export class FileNotFoundError extends Error {
 }
 
 /**
+ * An error that occurs when a function doesn't have
+ * all required values to proceed.
+ * - - - -
+ */
+export class MissingRequiredValueError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'MissingRequiredValueError'
+    Error.captureStackTrace(this, MissingRequiredValueError)
+    Object.setPrototypeOf(this, MissingRequiredValueError.prototype)
+  }
+}
+
+/**
  * A generic error that's thrown by the `ImgFile` class.
  * - - - -
  */
