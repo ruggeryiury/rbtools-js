@@ -303,7 +303,7 @@ export interface DTAFile {
    * `useCustomSource` parameters on the `DTAParser.toString()` method is set to `true`.
    */
   customsource?: CustomSourceValuesObject
-  magma?: MAGMAProjectData
+  magma?: MAGMAProjectSongData
 }
 
 export type PartialDTAFile = Partial<DTAFile> & {
@@ -337,15 +337,13 @@ export interface CustomSourceValuesObject {
   sub_genre?: LiteralUnion<SongSubGenre, string>
 }
 
-export interface MAGMAProjectData {
-  /**
-   *
-   */
-  autogen_theme?: 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop' | false
+export interface MAGMAProjectSongData {
+  autogen_theme?: 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
   release_ver?: number
   released_date?: string
   update_date?: string
-  lipsync?: boolean
+  lipsync?: true | 2 | 3 | null
+  separate_2x_wav?: boolean
 }
 
 /**

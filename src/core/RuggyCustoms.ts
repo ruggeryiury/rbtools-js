@@ -2428,7 +2428,7 @@ export class RuggyCustoms {
       master: true,
       song_id: 1774800050,
       songname: '7748track9',
-      tracks_count: [2, 1, 1, 0, 1, 1],
+      tracks_count: [2, 1, 1, 1, 0, 2],
       vocal_parts: 2,
       song_scroll_speed: 2300,
       bank: 'sfx/tambourine_bank.milo',
@@ -2485,5 +2485,16 @@ export class RuggyCustoms {
     }
 
     return io.toBuffer().toString()
+  }
+
+  /**
+   * Get the parsed song object based on its ID (shortname).
+   * - - - -
+   * @param {string} id The ID (shortname) of the song.
+   * @returns {DTAFile | undefined} Returns the found parsed song object or
+   * `undefined` if no song is found.
+   */
+  static getSongByID(id: string): DTAFile | undefined {
+    return RuggyCustoms.songs.find((song) => String(song.id) === String(id))
   }
 }
