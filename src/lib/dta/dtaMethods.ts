@@ -1,4 +1,5 @@
 import type { LiteralUnion } from 'type-fest'
+import type { MAGMAProjectSongData } from '../../core'
 import { dtaLocale, type AnimTempoNumbers, type BandFailCue, type DrumBank, type ExtraAuthoringFlags, type PercussionBank, type SoloFlags, type SongEncoding, type SongGameOrigin, type SongGenre, type SongKey, type SongRating, type SongScrollSpeed, type SongSubGenre, type SongTonality, type VocalGender, type VocalParts } from '../../lib'
 
 export type DTATracksCountArray = [number, number, number, number, number, number, number?]
@@ -303,6 +304,9 @@ export interface DTAFile {
    * `useCustomSource` parameters on the `DTAParser.toString()` method is set to `true`.
    */
   customsource?: CustomSourceValuesObject
+  /**
+   * An object with values that will be used to configure the `MAGMAProject` module.
+   */
   magma?: MAGMAProjectSongData
 }
 
@@ -335,15 +339,6 @@ export interface CustomSourceValuesObject {
    * The song's sub-genre.
    */
   sub_genre?: LiteralUnion<SongSubGenre, string>
-}
-
-export interface MAGMAProjectSongData {
-  autogen_theme?: 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
-  release_ver?: number
-  released_date?: string
-  update_date?: string
-  lipsync?: true | 2 | 3 | null
-  separate_2x_wav?: boolean
 }
 
 /**

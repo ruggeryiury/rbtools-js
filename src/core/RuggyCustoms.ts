@@ -2472,11 +2472,20 @@ export class RuggyCustoms {
   ]
 
   /**
-   * Returns a list of IDs used on all songs.
+   * Returns an array with all songs shortnames as `string`
+   * - - - -
+   * @returns {string[]}
+   */
+  static getAllSongsShortname(): string[] {
+    return RuggyCustoms.songs.map((song) => song.id)
+  }
+
+  /**
+   * Returns a list of IDs used on all songs as `string`.
    * - - - -
    * @returns {string}
    */
-  static getIDList(): string {
+  static getIDListString(): string {
     const io = new BinaryWriter()
     const sortedSongs = sortDTA(RuggyCustoms.songs, 'Song ID')
 
