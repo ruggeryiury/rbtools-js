@@ -23,10 +23,15 @@ export class EDAT {
    * Generate a default Content ID based on the given text.
    * - - - -
    * @param {string} text The custom text to place on the Content ID.
+   * @param {'rb2' | 'rb3'} game `OPTIONAL`. Default is `rb3`.
    * @returns {string}
    */
-  static genDefaultContentID(text: string): string {
-    let contentID = 'UP0002-BLUS30487_00-'
+  static genDefaultContentID(text: string, game: 'rb2' | 'rb3' = 'rb3'): string {
+    const gameIDs = {
+      rb2: 'BLUS30050',
+      rb3: 'BLUS30463',
+    } as const
+    let contentID = `UP0002-${gameIDs[game]}_00-`
     text = text.replace(/\s+/g, '').toUpperCase()
     if ((contentID + text).length > 36) {
       contentID += text
@@ -55,7 +60,7 @@ export class EDAT {
     const exePath = new Path(RBTools.getBinPath().path, moduleName)
     const src = Path.stringToPath(srcFile)
     const dest = Path.stringToPath(`${src.path}.edat`)
-    const command = `${moduleName} encrypt -custom:${devKLic} ${contentID} 00 00 00 "${src.path}" "${dest.path}"`
+    const command = `${moduleName} encrypt -custom:${devKLic} ${contentID.slice(0, 36)} 00 00 00 "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
     return stdout
@@ -75,6 +80,7 @@ export class EDAT {
     const dest = Path.stringToPath(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
+    console.log(command, stderr, stdout)
     if (stderr) throw new ExecutableError(stderr)
     return stdout
   }
@@ -123,5 +129,18 @@ export class EDAT {
     await midiFile.checkThenDeleteFile()
     const output = await EDAT.decryptEDAT(edat.path, devKLic)
     return output
+  }
+
+  /**
+   * Checks if the provided EDAT file is encrypted.
+   * - - - -
+   * @param {PathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
+   * @returns {Promise<boolean>}
+   */
+  static async isEncrypted(edatFilePath: PathLikeTypes): Promise<boolean> {
+    const edat = Path.stringToPath(edatFilePath)
+    const magic = (await edat.readFileOffset(0, 3)).toString('ascii')
+    if (magic === 'NPD') return true
+    else return false
   }
 }

@@ -1,5 +1,5 @@
 import { RBDTAJSError } from '../../errors'
-import type { DTAFile, DTATracksCountArray } from '../../lib'
+import type { DrumTracksTypes, DTAFile, DTATracksCountArray, InstrumentTracksTypes } from '../../lib'
 
 export interface AudioTracksCountObject {
   /**
@@ -142,6 +142,36 @@ export const genTracksCountArray = (tracksCount: DTATracksCountArray): AudioTrac
         if (guitarArray.includes(coreI)) return 1
         return -1
       }),
+  }
+}
+
+/**
+ * Generates an array of pan values based on the provided track count.
+ * - - - -
+ * @param {DrumTracksTypes | InstrumentTracksTypes} count The type of tracks.
+ * @returns {number[]} An array of pan values based on the track count.
+ */
+export const panValueToArray = (count: DrumTracksTypes | InstrumentTracksTypes): number[] => {
+  switch (count) {
+    case 'Mono':
+    case 1:
+      return [0]
+    case 'Stereo':
+    case 'Stereo Else':
+    case 2:
+      return [-1, 1]
+    case 'Mono Kick + Stereo Else':
+    case 3:
+      return [0, -1, 1]
+    case 'Mono Kick + Mono Snare + Stereo Else':
+    case 4:
+      return [0, 0, -1, 1]
+    case 'Mono Kick + Stereo Snare + Stereo Else':
+    case 5:
+      return [0, -1, 1, -1, 1]
+    case 'Stereo Kick + Stereo Snare + Stereo Else':
+    case 6:
+      return [-1, 1, -1, 1, -1, 1]
   }
 }
 

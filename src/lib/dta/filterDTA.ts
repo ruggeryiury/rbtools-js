@@ -1,5 +1,5 @@
 import { setDefaultOptions } from 'set-default-options'
-import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileKeys, type DTAFileWithIndex, type InstrRankingNumbers, type RankTypes } from '../../lib'
+import { dtaLocale, formatStringFromDTA, omitLeadingArticle, rankCalculator, sortDTA, type DTAFile, type DTAFileKeys, type DTAFileWithIndex, type InstrRankingNumbers, type DTAInstrumentTypes } from '../../lib'
 
 /**
  * Adds literal indexes as values to each song from a collection.
@@ -175,7 +175,7 @@ export interface SongFilterWithInstrOptions extends SongFilterOptions {
   /**
    * The instrument you want the difficulties to be based from. Default is `'band'` (Band difficulty).
    */
-  instrument?: RankTypes
+  instrument?: DTAInstrumentTypes
 }
 
 // #region Song Diff

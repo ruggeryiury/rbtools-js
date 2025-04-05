@@ -1,4 +1,4 @@
-import { BinaryWriter, sortDTA, type DTAFile } from '../lib'
+import { BinaryWriter, genTrackStructRecipe, sortDTA, type DTAFile } from '../lib'
 
 /**
  * A class that holds information of all Ruggy Customs.
@@ -60,7 +60,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -983,7 +982,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1094,7 +1092,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1403,7 +1400,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1456,7 +1452,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1565,7 +1560,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1621,7 +1615,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1677,7 +1670,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1934,7 +1926,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -1990,7 +1981,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2045,7 +2035,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2100,7 +2089,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2156,7 +2144,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2211,7 +2198,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2267,7 +2253,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2418,7 +2403,6 @@ export class RuggyCustoms {
       customsource: {
         game_origin: 'ruggy',
         genre: 'chiptune',
-        sub_genre: 'subgenre_chiptune',
       },
     },
     {
@@ -2467,6 +2451,120 @@ export class RuggyCustoms {
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
+      },
+    },
+    {
+      id: '7748defense',
+      name: 'Defense (ft. Cindy Lee)',
+      artist: 'Panda Bear',
+      master: true,
+      song_id: 1774800051,
+      songname: '7748defense',
+      tracks_count: [2, 1, 1, 1, 1, 2],
+      vocal_parts: 2,
+      song_scroll_speed: 2300,
+      bank: 'sfx/tambourine_bank.milo',
+      drum_bank: 'sfx/kit01_bank.milo',
+      anim_tempo: 16,
+      preview: [18388, 48388],
+      song_length: 95341,
+      rank_band: 68,
+      rank_bass: 1,
+      rank_drum: 1,
+      rank_guitar: 139,
+      rank_real_bass: 1,
+      rank_real_guitar: 150,
+      rank_vocals: 132,
+      genre: 'indierock',
+      sub_genre: 'subgenre_indierock',
+      vocal_gender: 'male',
+      format: 10,
+      version: 30,
+      album_art: true,
+      album_name: 'Sinister Grift',
+      album_track_number: 10,
+      year_released: 2025,
+      rating: 1,
+      game_origin: 'ugc_plus',
+      encoding: 'latin1',
+      vocal_tonic_note: 6,
+      song_tonality: 0,
+      author: 'Ruggy',
+      languages: ['english'],
+      karaoke: false,
+      multitrack: false,
+      convert: false,
+      double_kick: false,
+      rhythm_on_keys: false,
+      rhythm_on_bass: false,
+      cat_ehm: false,
+      expert_only: false,
+      customsource: {
+        game_origin: 'ruggy',
+      },
+    },
+    {
+      id: '7748tempoperdido',
+      name: 'Tempo Perdido',
+      artist: 'Legião Urbana',
+      master: true,
+      song_id: 1774800052,
+      ...genTrackStructRecipe({
+        backing: 2,
+        drum: {
+          channels: 3,
+          rank: 4,
+        },
+        bass: {
+          channels: 2,
+          rank: 3,
+        },
+        guitar: {
+          channels: 2,
+          rank: 3,
+        },
+        vocals: {
+          channels: 2,
+          rank: 2,
+          vocalParts: 1,
+        },
+      }),
+      songname: '7748tempoperdido',
+      song_scroll_speed: 2300,
+      bank: 'sfx/tambourine_bank.milo',
+      drum_bank: 'sfx/kit01_bank.milo',
+      anim_tempo: 64,
+      preview: [22490, 52490],
+      song_length: 235725,
+      genre: 'new_wave',
+      sub_genre: 'subgenre_new_wave',
+      vocal_gender: 'male',
+      format: 10,
+      version: 30,
+      album_art: true,
+      album_name: 'Dois',
+      album_track_number: 6,
+      year_released: 1986,
+      rating: 1,
+      game_origin: 'ugc_plus',
+      encoding: 'utf8',
+      vocal_tonic_note: 4,
+      song_tonality: 1,
+      author: 'Ruggy',
+      languages: ['english'],
+      karaoke: false,
+      multitrack: true,
+      convert: false,
+      double_kick: false,
+      rhythm_on_keys: false,
+      rhythm_on_bass: false,
+      cat_ehm: false,
+      expert_only: false,
+      customsource: {
+        game_origin: 'ruggy',
+      },
+      magma: {
+        hasLipsyncFiles: null,
       },
     },
   ]

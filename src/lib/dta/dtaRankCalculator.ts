@@ -13,7 +13,7 @@ const ranksMap = {
   band: [163, 215, 243, 267, 292, 345],
 }
 
-export type RankTypes = keyof typeof ranksMap
+export type DTAInstrumentTypes = keyof typeof ranksMap
 
 /**
  * Calculates the ranking from a desired instrument part
@@ -21,11 +21,11 @@ export type RankTypes = keyof typeof ranksMap
  *
  * The results can be from `-1` (meaning "No Part") to `6` (meaning "Impossible").
  * - - - -
- * @param {RankTypes} type The instrument part you want to be calculated.
+ * @param {DTAInstrumentTypes} type The instrument part you want to be calculated.
  * @param {number | undefined} rank `OPTIONAL` The rank number from the `.dta` file.
  * @returns {InstrRankingNumbers} The calculated instrument rank.
  */
-export const rankCalculator = (type: RankTypes, rank?: number): InstrRankingNumbers => {
+export const rankCalculator = (type: DTAInstrumentTypes, rank?: number): InstrRankingNumbers => {
   let parseRankReturn: InstrRankingNumbers = -1
 
   if (rank === undefined || rank === 0) {
@@ -44,11 +44,11 @@ export const rankCalculator = (type: RankTypes, rank?: number): InstrRankingNumb
 /**
  * Returns a `.dta` file-compatible ranking system number based on the given options.
  * - - - -
- * @param {RankTypes} type The instrument part you want to be processed to.
+ * @param {DTAInstrumentTypes} type The instrument part you want to be processed to.
  * @param {InstrRankingNumbers | InstrRankingNames} rank A string that indicates the ranking you want for the instrument part.
  * @returns {number} A `.dta` file-compatible ranking system number.
  */
-export const rankValuesToDTARankSystem = (type: RankTypes, rank: InstrRankingNumbers | InstrRankingNames): number => {
+export const rankValuesToDTARankSystem = (type: DTAInstrumentTypes, rank: InstrRankingNumbers | InstrRankingNames): number => {
   if (rank === 'No Part' || rank === -1) return 0
   else if (rank === 'Warmup' || rank === 0) return 1
   else if (rank === 'Apprentice' || rank === 1) return ranksMap[type][0]
@@ -72,7 +72,7 @@ export const rankValuesToDTARankSystem = (type: RankTypes, rank: InstrRankingNum
  */
 export const bandAverageRankCalculator = (count: number, quantity: number): number => Number((count / quantity).toFixed())
 
-export type DTARankObject = Partial<Record<RankTypes, InstrRankingNames | InstrRankingNumbers>>
+export type DTARankObject = Partial<Record<DTAInstrumentTypes, InstrRankingNames | InstrRankingNumbers>>
 export type DTARankObjectReturn = Pick<DTAFile, 'rank_band' | 'rank_bass' | 'rank_drum' | 'rank_guitar' | 'rank_keys' | 'rank_real_bass' | 'rank_real_guitar' | 'rank_real_keys' | 'rank_vocals'>
 
 /**

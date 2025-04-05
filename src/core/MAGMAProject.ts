@@ -74,20 +74,20 @@ export class MAGMAProject {
     dryVox1Name: 'gen/HARM1.wav',
     dryVox2Name: 'gen/HARM2.wav',
     dryVox3Name: 'gen/HARM3.wav',
-    kickWavName: 'wav/kick.wav',
-    kick2xWavName: 'wav/kick2x.wav',
-    snareWavName: 'wav/snare.wav',
-    drumKitWavName: 'wav/kit.wav',
-    drumKit2xWavName: 'wav/kit2x.wav',
-    drumsWavName: 'wav/drums.wav',
-    drums2xWavName: 'wav/drums2x.wav',
-    bassWavName: 'wav/bass.wav',
-    guitarWavName: 'wav/guitar.wav',
-    vocalsWavName: 'wav/vocals.wav',
-    keysWavName: 'wav/keys.wav',
-    backingWavName: 'wav/backing.wav',
-    crowdWavName: 'wav/crowd.wav',
-    conFilePackageName: '{{title}} - {{artist}}',
+    kickWavName: 'kick.wav',
+    kick2xWavName: 'kick2x.wav',
+    snareWavName: 'snare.wav',
+    drumKitWavName: 'kit.wav',
+    drumKit2xWavName: 'kit2x.wav',
+    drumsWavName: 'drums.wav',
+    drums2xWavName: 'drums2x.wav',
+    bassWavName: 'bass.wav',
+    guitarWavName: 'guitar.wav',
+    vocalsWavName: 'vocals.wav',
+    keysWavName: 'keys.wav',
+    backingWavName: 'backing.wav',
+    crowdWavName: 'crowd.wav',
+    conFilePackageName: '{{artist}} - {{title}}',
     conFilePackageDesc: 'Created with Magma: C3 Roks Edition. For more great customs authoring tools, visit forums.customscreators.com',
   }
 
@@ -371,15 +371,11 @@ export class MAGMAProject {
       },
     })
 
-    c3File.write(`//Created by Magma: C3 Roks Edition v3.3.5\n//DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${options.releaseVer.toString()}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=7\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${paths.stereoBlank.path}\nCrowdVol=${crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.double_kick ? 'True' : 'False'}\nRhythmKeys=${song.rhythm_on_keys ? 'True' : 'False'}\nRhythmBass=${song.rhythm_on_bass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expert_only ? 'True' : 'False'}\n`)
+    c3File.write(`//Created by Magma: C3 Roks Edition v3.3.5\n//DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${options.releaseVer.toString()}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=3\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${paths.stereoBlank.path}\nCrowdVol=${crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.double_kick ? 'True' : 'False'}\nRhythmKeys=${song.rhythm_on_keys ? 'True' : 'False'}\nRhythmBass=${song.rhythm_on_bass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expert_only ? 'True' : 'False'}\n`)
 
-    if (song.rank_real_bass && song.real_bass_tuning) {
-      c3File.write(`ProBassDiff=${song.rank_real_bass.toString()}\nProBassTuning4=(real_bass_tuning (${song.real_bass_tuning.join(' ')}))\n`)
-    }
+    if (song.rank_real_bass && song.real_bass_tuning) c3File.write(`ProBassDiff=${song.rank_real_bass.toString()}\nProBassTuning4=(real_bass_tuning (${song.real_bass_tuning.join(' ')}))\n`)
 
-    if (song.rank_real_guitar && song.real_guitar_tuning) {
-      c3File.write(`ProGuitarDiff=${song.rank_real_guitar.toString()}\nProGuitarTuning=(real_guitar_tuning (${song.real_guitar_tuning.join(' ')}))\n`)
-    }
+    if (song.rank_real_guitar && song.real_guitar_tuning) c3File.write(`ProGuitarDiff=${song.rank_real_guitar.toString()}\nProGuitarTuning=(real_guitar_tuning (${song.real_guitar_tuning.join(' ')}))\n`)
 
     c3File.write(`DisableProKeys=False\nTonicNote=${song.vocal_tonic_note?.toString() ?? '0'}\nTuningCents=${song.tuning_offset_cents?.toString() ?? '0'}\nSongRating=${song.rating.toString()}\nDrumKitSFX=${song.drum_bank === 'sfx/kit01_bank.milo' ? '0' : song.drum_bank === 'sfx/kit02_bank.milo' ? '1' : song.drum_bank === 'sfx/kit03_bank.milo' ? '2' : song.drum_bank === 'sfx/kit04_bank.milo' ? '3' : '4'}\nHopoTresholdIndex=${song.hopo_threshold === 90 ? '0' : song.hopo_threshold === 130 ? '1' : song.hopo_threshold === 170 ? '2' : song.hopo_threshold === 250 ? '3' : '2'}\n`)
     c3File.write(`MuteVol=${song.mute_volume?.toString() ?? '-96'}\nVocalMuteVol=${song.mute_volume_vocals?.toString() ?? '-12'}\nSoloDrums=${drumSolo}\nSoloGuitar=${guitarSolo}\nSoloBass=${bassSolo}\nSoloKeys=${keysSolo}\nSoloVocals=${vocalsSolo}\nSongPreview=${song.preview[0].toString()}\nCheckTempoMap=False\nWiiMode=False\nDoDrumMixEvents=True\nPackageDisplay=${formatStringFromDTA(song, this.options.conFilePackageName)}\nPackageDescription=${formatStringFromDTA(song, this.options.conFilePackageDesc)}\n`)
@@ -393,8 +389,8 @@ export class MAGMAProject {
     const rbprojFilePath = new Path(new Path(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.rbproj'))
     const c3FilePath = new Path(new Path(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.c3'))
 
-    rbprojFilePath.writeFileSync(rbprojFile, 'latin1')
-    c3FilePath.writeFileSync(c3File)
+    rbprojFilePath.writeFileSync(rbprojFile.replace(new RegExp('\\n', 'g'), '\r\n'), 'latin1')
+    c3FilePath.writeFileWithBOMSync(c3File.replace(new RegExp('\\n', 'g'), '\r\n'))
 
     return [rbprojFilePath, c3FilePath]
   }

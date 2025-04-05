@@ -163,7 +163,7 @@ export const formatStringFromDTA = (song: DTAFile | null, format: string, option
       newText = newText.replace(new RegExp(`{{${uniqueKeys}.trailing}}`, 'g'), leadingArticleToTrailing(String(song[uniqueKeys as keyof typeof song])))
     }
 
-    newText.replace(new RegExp(`{{title}}`, 'g'), song.name)
+    newText = newText.replace(new RegExp(`{{title}}`, 'g'), song.name)
     newText = newText.replace(new RegExp(`{{title.emit}}`, 'g'), song.name)
     newText = newText.replace(new RegExp(`{{title.omit}}`, 'g'), omitLeadingArticle(song.name))
     newText = newText.replace(new RegExp(`{{title.trailing}}`, 'g'), leadingArticleToTrailing(song.name))
