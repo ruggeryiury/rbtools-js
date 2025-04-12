@@ -4,12 +4,19 @@ import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../e
 import { RBTools } from '../index'
 import { execPromise } from '../lib'
 
+const ps3GameIDs = {
+  rb2: 'BLUS30050',
+  rb3: 'BLUS30463',
+} as const
+
+export type RockBandPS3ContentIDs = keyof typeof ps3GameIDs
+
 /**
  * Class with static methods to deal with PS3 EDAT files.
  */
 export class EDAT {
   /**
-   * Generates a MD5 hash that decrypts `.edat` files based on the installed DLC folder name.
+   * Generates a MD5 hash that decrypts Rock Band 3 `.edat` files based on the installed DLC folder name.
    * - - - -
    * @param {string} folderName The installed DLC folder name.
    * @returns {string}
@@ -23,15 +30,11 @@ export class EDAT {
    * Generate a default Content ID based on the given text.
    * - - - -
    * @param {string} text The custom text to place on the Content ID.
-   * @param {'rb2' | 'rb3'} game `OPTIONAL`. Default is `rb3`.
+   * @param {RockBandPS3ContentIDs} game `OPTIONAL`. Default is `rb3`.
    * @returns {string}
    */
-  static genDefaultContentID(text: string, game: 'rb2' | 'rb3' = 'rb3'): string {
-    const gameIDs = {
-      rb2: 'BLUS30050',
-      rb3: 'BLUS30463',
-    } as const
-    let contentID = `UP0002-${gameIDs[game]}_00-`
+  static genDefaultContentID(text: string, game: RockBandPS3ContentIDs = 'rb3'): string {
+    let contentID = `UP0002-${ps3GameIDs[game]}_00-`
     text = text.replace(/\s+/g, '').toUpperCase()
     if ((contentID + text).length > 36) {
       contentID += text
@@ -80,7 +83,6 @@ export class EDAT {
     const dest = Path.stringToPath(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
-    console.log(command, stderr, stdout)
     if (stderr) throw new ExecutableError(stderr)
     return stdout
   }

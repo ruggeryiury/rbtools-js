@@ -192,18 +192,37 @@ export const renderAnimTempo = (animTempo: AnimTempoNumbers, format: DTAStringif
  */
 export const renderCustomAttributes = (song: PartialDTAFile): string => {
   let content = ''
-  content += '{n};DO NOT EDIT THE FOLLOWING LINES MANUALLY{n};Created using Magma: C3 Roks Edition v3.3.5{n}'
-  if (song.author !== undefined) content += `;Song authored by ${song.author}{n}`
-  if (song.name !== undefined) content += `;Song=${song.name}{n}`
-  if (song.languages !== undefined) content += `;Language(s)=${song.languages.map((lang) => capitalizeFirstLetter(lang)).join(',')},{n}`
-  if (song.karaoke !== undefined) content += `;Karaoke=${song.karaoke ? '1' : '0'}{n}`
-  if (song.multitrack !== undefined) content += `;Multitrack=${song.multitrack ? '1' : '0'}{n}`
-  if (song.convert !== undefined) content += `;Convert=${song.convert ? '1' : '0'}{n}`
-  if (song.double_kick !== undefined) content += `;2xBass=${song.double_kick ? '1' : '0'}{n}`
-  if (song.rhythm_on_keys !== undefined) content += `;RhythmKeys=${song.rhythm_on_keys ? '1' : '0'}{n}`
-  if (song.rhythm_on_bass !== undefined) content += `;RhythmBass=${song.rhythm_on_bass ? '1' : '0'}{n}`
-  if (song.cat_ehm !== undefined) content += `;CATemh=${song.cat_ehm ? '1' : '0'}{n}`
-  if (song.expert_only !== undefined) content += `;ExpertOnly=${song.expert_only ? '1' : '0'}{n}`
+  content += '{n};DO NOT EDIT THE FOLLOWING LINES MANUALLY{n};Created using Magma: Rok On Edition v4.0.2{n}'
+  content += `;Song authored by ${song.author ?? 'Unknown Charter'}{n}`
+  content += `;Song=${song.name ?? ''}{n}`
+  if (!song.languages || song.languages.length === 0) content += `;Language(s)=English,{n}`
+  else content += `;Language(s)=${song.languages.join(', ')},{n}`
+
+  const karaoke = song.multitrack === 'karaoke'
+  content += `;Karaoke=${karaoke ? '1' : '0'}{n}`
+
+  const multitrack = song.multitrack === 'multitrack' || song.multitrack === true
+  content += `;Multitrack=${multitrack ? '1' : '0'}{n}`
+
+  const diyStems = song.multitrack === 'diy_stems'
+  content += `;DIYStems=${diyStems ? '1' : '0'}{n}`
+
+  const partial = song.multitrack === 'partial'
+  content += `;PartialMultitrack=${partial ? '1' : '0'}{n}`
+
+  content += `;UnpitchedVocals=${song.unpitched_vocals ? '1' : '0'}{n}`
+  content += `;Convert=${song.convert ? '1' : '0'}{n}`
+  content += `;2xBass=${song.double_kick ? '1' : '0'}{n}`
+
+  const rhythmKeys = song.rhythm_on === 'keys'
+  content += `;RhythmKeys=${rhythmKeys ? '1' : '0'}{n}`
+  const rhythmBass = song.rhythm_on === 'bass'
+  content += `;RhythmBass=${rhythmBass ? '1' : '0'}{n}`
+
+  const CATemh = song.emh === 'cat'
+  content += `;CATemh=${CATemh ? '1' : '0'}{n}`
+  const expertOnly = song.emh === 'expert_only'
+  content += `;ExpertOnly=${expertOnly ? '1' : '0'}{n}`
 
   return tabNewLineFormatter(content)
 }

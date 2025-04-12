@@ -178,9 +178,9 @@ export class DTASongContentIO {
         if (song.vocal_parts !== undefined) content += addTabToAllLines(renderNumberOrStringValue('vocal_parts', song.vocal_parts, format), 2)
         if (this.type === 'complete') content += addTabToAllLines(renderDrumsCue(format), 2)
 
-        if (song.mute_volume !== undefined) content += addTabToAllLines(renderNumberOrStringValue('mute_volume', song.mute_volume, format), 2)
-        if (song.mute_volume_vocals !== undefined) content += addTabToAllLines(renderNumberOrStringValue('mute_volume_vocals', song.mute_volume_vocals, format), 2)
-        if (song.hopo_threshold !== undefined) content += addTabToAllLines(renderNumberOrStringValue('hopo_threshold', song.hopo_threshold, format), 2)
+        if (song.mute_volume !== undefined && song.mute_volume !== -96) content += addTabToAllLines(renderNumberOrStringValue('mute_volume', song.mute_volume, format), 2)
+        if (song.mute_volume_vocals !== undefined && song.mute_volume_vocals !== -12) content += addTabToAllLines(renderNumberOrStringValue('mute_volume_vocals', song.mute_volume_vocals, format), 2)
+        if (song.hopo_threshold !== undefined && song.hopo_threshold !== 170) content += addTabToAllLines(renderNumberOrStringValue('hopo_threshold', song.hopo_threshold, format), 2)
         content += addTabToAllLines(renderSongEntryClose())
       }
 

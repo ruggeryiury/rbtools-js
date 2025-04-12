@@ -55,7 +55,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -108,7 +108,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -153,7 +153,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -204,7 +204,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -257,7 +257,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -304,7 +304,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -356,7 +356,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -407,7 +407,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -458,7 +458,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -509,7 +509,7 @@ export class RuggyCustoms {
       double_kick: true,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -562,7 +562,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -611,7 +611,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -665,7 +665,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -718,7 +718,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -771,7 +771,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -822,7 +822,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -877,7 +877,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -924,7 +924,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -977,7 +977,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1033,7 +1033,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1087,7 +1087,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1143,7 +1143,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1191,7 +1191,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1239,7 +1239,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1288,7 +1288,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1340,7 +1340,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1395,7 +1395,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1447,7 +1447,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1501,7 +1501,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1555,7 +1555,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1610,7 +1610,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1665,7 +1665,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1714,7 +1714,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1766,7 +1766,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1820,7 +1820,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1870,7 +1870,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1921,7 +1921,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -1976,7 +1976,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2030,7 +2030,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2084,7 +2084,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2139,7 +2139,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2193,7 +2193,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2248,7 +2248,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2299,7 +2299,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2348,7 +2348,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2398,7 +2398,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
@@ -2447,34 +2447,47 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: true,
+      cat_emh: true,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
       },
     },
     {
-      id: '7748defense',
-      name: 'Defense (ft. Cindy Lee)',
-      artist: 'Panda Bear',
-      master: true,
-      song_id: 1774800051,
+      ...genTrackStructRecipe({
+        name: 'Defense (ft. Cindy Lee)',
+        artist: 'Panda Bear',
+        master: true,
+        song_id: 1774800051,
+        id: '7748defense',
+        backingTracksCount: 2,
+        drum: {
+          channels: 2,
+          rank: 0,
+        },
+        bass: {
+          channels: 1,
+          rank: 0,
+        },
+        guitar: {
+          channels: 1,
+          rank: 1,
+          hasSolo: true,
+        },
+        vocals: {
+          channels: 1,
+          rank: 1,
+          vocalParts: 2,
+        },
+      }),
       songname: '7748defense',
       tracks_count: [2, 1, 1, 1, 1, 2],
-      vocal_parts: 2,
       song_scroll_speed: 2300,
       bank: 'sfx/tambourine_bank.milo',
       drum_bank: 'sfx/kit01_bank.milo',
       anim_tempo: 16,
       preview: [18388, 48388],
       song_length: 95341,
-      rank_band: 68,
-      rank_bass: 1,
-      rank_drum: 1,
-      rank_guitar: 139,
-      rank_real_bass: 1,
-      rank_real_guitar: 150,
-      rank_vocals: 132,
       genre: 'indierock',
       sub_genre: 'subgenre_indierock',
       vocal_gender: 'male',
@@ -2497,31 +2510,32 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',
       },
     },
     {
-      id: '7748tempoperdido',
-      name: 'Tempo Perdido',
-      artist: 'Legião Urbana',
-      master: true,
-      song_id: 1774800052,
       ...genTrackStructRecipe({
-        backing: 2,
+        id: '7748tempoperdido',
+        name: 'Tempo Perdido',
+        artist: 'Legião Urbana',
+        master: true,
+        song_id: 1774800052,
+        backingTracksCount: 2,
         drum: {
-          channels: 3,
+          channels: 5,
           rank: 4,
+          vols: [-4, -3, -3, 0, 0],
         },
         bass: {
-          channels: 2,
-          rank: 3,
+          channels: 1,
+          rank: 2,
         },
         guitar: {
           channels: 2,
-          rank: 3,
+          rank: 4,
         },
         vocals: {
           channels: 2,
@@ -2531,7 +2545,7 @@ export class RuggyCustoms {
       }),
       songname: '7748tempoperdido',
       song_scroll_speed: 2300,
-      bank: 'sfx/tambourine_bank.milo',
+      bank: 'sfx/handclap_bank.milo',
       drum_bank: 'sfx/kit01_bank.milo',
       anim_tempo: 64,
       preview: [22490, 52490],
@@ -2550,7 +2564,7 @@ export class RuggyCustoms {
       encoding: 'utf8',
       vocal_tonic_note: 4,
       song_tonality: 1,
-      author: 'Ruggy',
+      author: 'Ruggy, RoneyNero',
       languages: ['english'],
       karaoke: false,
       multitrack: true,
@@ -2558,7 +2572,7 @@ export class RuggyCustoms {
       double_kick: false,
       rhythm_on_keys: false,
       rhythm_on_bass: false,
-      cat_ehm: false,
+      cat_emh: false,
       expert_only: false,
       customsource: {
         game_origin: 'ruggy',

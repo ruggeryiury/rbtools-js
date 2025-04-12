@@ -385,49 +385,67 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
 
     if (s.includes('Karaoke=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('karaoke', proof)
+      if (proof) newDTA.set('multitrack', 'karaoke')
       return
     }
 
     if (s.includes('Multitrack=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('multitrack', proof)
+      if (proof) newDTA.set('multitrack', 'multitrack')
+      return
+    }
+
+    if (s.includes('DIYStems=')) {
+      const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
+      if (proof) newDTA.set('multitrack', 'diy_stems')
+      return
+    }
+
+    if (s.includes('PartialMultitrack=')) {
+      const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
+      if (proof) newDTA.set('multitrack', 'partial')
+      return
+    }
+
+    if (s.includes('UnpitchedVocals=')) {
+      const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
+      if (proof) newDTA.set('unpitched_vocals', 'partial')
       return
     }
 
     if (s.includes('Convert=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('convert', proof)
+      if (proof) newDTA.set('convert', true)
       return
     }
 
     if (s.includes('2xBass=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('double_kick', proof)
+      if (proof) newDTA.set('double_kick', true)
       return
     }
 
     if (s.includes('RhythmKeys=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('rhythm_on_keys', proof)
+      if (proof) newDTA.set('rhythm_on', 'keys')
       return
     }
 
     if (s.includes('RhythmBass=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('rhythm_on_bass', proof)
+      if (proof) newDTA.set('rhythm_on', 'bass')
       return
     }
 
     if (s.includes('CATemh=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('cat_ehm', proof)
+      if (proof) newDTA.set('emh', 'cat')
       return
     }
 
     if (s.includes('ExpertOnly=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      newDTA.set('expert_only', proof)
+      if (proof) newDTA.set('emh', 'expert_only')
       return
     }
   })
@@ -465,14 +483,12 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
     if (newDTA.get('format') === 10) newDTA.delete('format')
     if (newDTA.get('tuning_offset_cents') === 0) newDTA.delete('tuning_offset_cents')
     if (newDTA.get('guide_pitch_volume') === -3) newDTA.delete('guide_pitch_volume')
-    if (newDTA.get('karaoke') === false) newDTA.delete('karaoke')
-    if (newDTA.get('multitrack') === false) newDTA.delete('multitrack')
-    if (newDTA.get('convert') === false) newDTA.delete('convert')
-    if (newDTA.get('double_kick') === false) newDTA.delete('double_kick')
-    if (newDTA.get('rhythm_on_keys') === false) newDTA.delete('rhythm_on_keys')
-    if (newDTA.get('rhythm_on_bass') === false) newDTA.delete('rhythm_on_bass')
-    if (newDTA.get('cat_ehm') === false) newDTA.delete('cat_ehm')
-    if (newDTA.get('expert_only') === false) newDTA.delete('expert_only')
+    if (newDTA.get('multitrack') === undefined) newDTA.delete('multitrack')
+    if (newDTA.get('unpitched_vocals') === undefined) newDTA.delete('unpitched_vocals')
+    if (newDTA.get('convert') === undefined) newDTA.delete('convert')
+    if (newDTA.get('double_kick') === undefined) newDTA.delete('double_kick')
+    if (newDTA.get('rhythm_on') === undefined) newDTA.delete('rhythm_on')
+    if (newDTA.get('emh') === undefined) newDTA.delete('emh')
   }
 
   return customSourceIfdefDeconstructor(sortDTAMap(newDTA))

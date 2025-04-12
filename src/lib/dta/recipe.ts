@@ -1,13 +1,13 @@
-import { bandAverageRankCalculator, panValueToArray, rankValuesToDTARankSystem, sortDTAMap, type DTAFile, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib'
+import { bandAverageRankCalculator, channelsCountToPanArray, rankValuesToDTARankSystem, sortDTAMap, type DTAFile, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib'
 import type { BandRankingNames, BandRankingNumbers, VocalPartsNames, VocalParts, SongGenreNames, SoloFlags } from './dtaLocale'
 
 export type DrumTracksTypes = 2 | 'Stereo Else' | 3 | 'Mono Kick + Stereo Else' | 4 | 'Mono Kick + Mono Snare + Stereo Else' | 5 | 'Mono Kick + Stereo Snare + Stereo Else' | 6 | 'Stereo Kick + Stereo Snare + Stereo Else'
 
-export type InstrumentTracksTypes = 'Mono' | 'Stereo' | 1 | 2
+export type InstrumentChannelsTypes = 'Mono' | 'Stereo' | 1 | 2
 
 export type PansVolsDrumsInformation<T extends DrumTracksTypes> = T extends 2 | 'Stereo Else' ? [number, number] : T extends 3 | 'Mono Kick + Stereo Else' ? [number, number, number] : T extends 4 | 'Mono Kick + Mono Snare + Stereo Else' ? [number, number, number, number] : T extends 5 | 'Mono Kick + Stereo Snare + Stereo Else' ? [number, number, number, number, number] : T extends 6 | 'Stereo Kick + Stereo Snare + Stereo Else' ? [number, number, number, number, number, number] : never
 
-export type PansVolsInformation<T extends InstrumentTracksTypes> = T extends 1 | 'Mono' ? [number] : T extends 2 | 'Stereo' ? [number, number] : never
+export type PansVolsInformation<T extends InstrumentChannelsTypes> = T extends 1 | 'Mono' ? [number] : T extends 2 | 'Stereo' ? [number, number] : never
 
 export interface DrumUpdateOptions<T extends DrumTracksTypes> {
   /**
@@ -41,7 +41,7 @@ export interface DrumUpdateOptions<T extends DrumTracksTypes> {
   vols?: PansVolsDrumsInformation<T>
 }
 
-export interface BassUpdateOptions<T extends InstrumentTracksTypes> {
+export interface BassUpdateOptions<T extends InstrumentChannelsTypes> {
   /**
    * The quantity of channels for the instrument.
    *
@@ -80,7 +80,7 @@ export interface BassUpdateOptions<T extends InstrumentTracksTypes> {
   vols?: PansVolsInformation<T>
 }
 
-export interface GuitarUpdateOptions<T extends InstrumentTracksTypes> {
+export interface GuitarUpdateOptions<T extends InstrumentChannelsTypes> {
   /**
    * The quantity of channels for the instrument.
    *
@@ -119,7 +119,7 @@ export interface GuitarUpdateOptions<T extends InstrumentTracksTypes> {
   vols?: PansVolsInformation<T>
 }
 
-export interface VocalsUpdateOptions<T extends InstrumentTracksTypes> {
+export interface VocalsUpdateOptions<T extends InstrumentChannelsTypes> {
   /**
    * The quantity of channels for the instrument.
    *
@@ -152,7 +152,7 @@ export interface VocalsUpdateOptions<T extends InstrumentTracksTypes> {
   vols?: PansVolsInformation<T>
 }
 
-export interface KeysUpdateOptions<T extends InstrumentTracksTypes> {
+export interface KeysUpdateOptions<T extends InstrumentChannelsTypes> {
   /**
    * The quantity of channels for the instrument.
    *
@@ -185,7 +185,7 @@ export interface KeysUpdateOptions<T extends InstrumentTracksTypes> {
   vols?: PansVolsInformation<T>
 }
 
-export interface BackingUpdateOptions<T extends InstrumentTracksTypes> {
+export interface BackingUpdateOptions<T extends InstrumentChannelsTypes> {
   /**
    * The quantity of channels for the drum part.
    *
@@ -210,20 +210,20 @@ export type DrumUpdateOptionsTypes = {
   [P in DrumTracksTypes]: DrumUpdateOptions<P>
 }[DrumTracksTypes]
 export type BassUpdateOptionsTypes = {
-  [P in InstrumentTracksTypes]: BassUpdateOptions<P>
-}[InstrumentTracksTypes]
+  [P in InstrumentChannelsTypes]: BassUpdateOptions<P>
+}[InstrumentChannelsTypes]
 export type GuitarUpdateOptionsTypes = {
-  [P in InstrumentTracksTypes]: GuitarUpdateOptions<P>
-}[InstrumentTracksTypes]
+  [P in InstrumentChannelsTypes]: GuitarUpdateOptions<P>
+}[InstrumentChannelsTypes]
 export type VocalsUpdateOptionsTypes = {
-  [P in InstrumentTracksTypes]: VocalsUpdateOptions<P>
-}[InstrumentTracksTypes]
+  [P in InstrumentChannelsTypes]: VocalsUpdateOptions<P>
+}[InstrumentChannelsTypes]
 export type KeysUpdateOptionsTypes = {
-  [P in InstrumentTracksTypes]: KeysUpdateOptions<P>
-}[InstrumentTracksTypes]
+  [P in InstrumentChannelsTypes]: KeysUpdateOptions<P>
+}[InstrumentChannelsTypes]
 export type BackingUpdateOptionsTypes = {
-  [P in InstrumentTracksTypes]: BackingUpdateOptions<P>
-}[InstrumentTracksTypes]
+  [P in InstrumentChannelsTypes]: BackingUpdateOptions<P>
+}[InstrumentChannelsTypes]
 
 export type SongKeyMajorValues = 'C' | 'C Major' | 'C#' | 'Db' | 'C# Major' | 'Db Major' | 'D' | 'D Major' | 'D#' | 'Eb' | 'D# Major' | 'Eb Major' | 'E' | 'E Major' | 'F' | 'F Major' | 'F#' | 'Gb' | 'F# Major' | 'Gb Major' | 'G' | 'G Major' | 'G#' | 'Ab' | 'G# Major' | 'Ab Major' | 'A' | 'A Major' | 'A#' | 'Bb' | 'A# Major' | 'Bb Major' | 'B' | 'B Major'
 
@@ -255,6 +255,28 @@ export type SubGenreUpdateValues<G extends SongGenreNames> = G extends 'Classica
 
 export interface SongTracksData {
   /**
+   * An unique shortname ID of the song. The same ID will be placed on shortname value as well.
+   */
+  id: string
+  /**
+   * The song's title.
+   */
+  name: string
+  /**
+   * The song's artist/band.
+   */
+  artist: string
+  /**
+   * Tells if the song is a master recording. Default is `true`.
+   */
+  master?: boolean
+  /**
+   * A numerical, unique number ID of the song, used as an ID for saving scores. Might be a string ID as well (but scores won't be saved on these songs).
+   */
+  song_id: number | string
+  genre?: SongGenreUpdateOptions
+  backingTracksCount?: InstrumentChannelsTypes | BackingUpdateOptionsTypes
+  /**
    * An object specifying the structure of the drum part.
    */
   drum?: DrumUpdateOptionsTypes
@@ -275,9 +297,8 @@ export interface SongTracksData {
    */
   keys?: KeysUpdateOptionsTypes
   /**
-   * The quantity of channels for the backing track. Can be either `'Mono'` or `'Stereo'`.
+   * The quantity of channels for the backing track. Can be either `Mono` or `Stereo`. Default is `Stereo`.
    */
-  backing: InstrumentTracksTypes | BackingUpdateOptionsTypes
   bandRank?: BandRankingNumbers
   /**
    * Tells if the song has crowd channels.
@@ -299,10 +320,26 @@ export interface TrackStructureDataObject extends Omit<PartialDTAFile, 'id'> {
   rank_band: DTAFile['rank_band']
 }
 
-export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataObject => {
+export const genTrackStructRecipe = (data: SongTracksData): DTAFile => {
   const map = new Map() as DTAMap
 
-  const { backing, drum, bandRank, bass, guitar, hasCrowdChannels, keys, vocals } = data
+  const { backingTracksCount, drum, bandRank, bass, guitar, hasCrowdChannels, keys, vocals, genre, id, master, artist, name, song_id } = data
+
+  map.set('id', id)
+  map.set('name', name)
+  map.set('artist', artist)
+  map.set('song_id', song_id)
+  map.set('songname', id)
+
+  if (typeof master === 'boolean') map.set('master', master)
+  else map.set('master', true)
+
+  if (genre) {
+    const { genre: g, sub_genre } = genre
+    map.set('genre', g)
+    if (sub_genre) map.set('sub_genre', sub_genre)
+  }
+
   const tracksCount = [0, 0, 0, 0, 0, 0]
   let pans: number[] = []
   let vols: number[] = []
@@ -311,12 +348,12 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
   let gtrTuning: number[] = [0, 0, 0, 0, 0, 0]
   let bassTuning: number[] = [0, 0, 0, 0]
 
-  const drumT = drum ? panValueToArray(drum.channels).length : 0
-  const bassT = bass ? panValueToArray(bass.channels).length : 0
-  const guitarT = guitar ? panValueToArray(guitar.channels).length : 0
-  const vocalsT = vocals ? panValueToArray(vocals.channels).length : 0
-  const keysT = keys ? panValueToArray(keys.channels).length : 0
-  const backingT = panValueToArray(typeof backing === 'object' ? backing.channels : backing).length
+  const drumT = drum ? channelsCountToPanArray(drum.channels).length : 0
+  const bassT = bass ? channelsCountToPanArray(bass.channels).length : 0
+  const guitarT = guitar ? channelsCountToPanArray(guitar.channels).length : 0
+  const vocalsT = vocals ? channelsCountToPanArray(vocals.channels).length : 0
+  const keysT = keys ? channelsCountToPanArray(keys.channels).length : 0
+  const backingT = backingTracksCount ? channelsCountToPanArray(typeof backingTracksCount === 'object' ? backingTracksCount.channels : backingTracksCount).length : 2
 
   map.set('tracks_count', [drumT, bassT, guitarT, vocalsT, keysT, backingT])
 
@@ -335,7 +372,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
     drumR = rankValuesToDTARankSystem('drum', drum.rank)
     map.set('rank_drum', drumR)
 
-    panValueToArray(drum.channels).forEach((pan) => {
+    channelsCountToPanArray(drum.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -366,7 +403,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
       map.set('real_bass_tuning', bassTuning)
     }
 
-    panValueToArray(bass.channels).forEach((pan) => {
+    channelsCountToPanArray(bass.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -397,7 +434,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
       map.set('real_guitar_tuning', gtrTuning)
     }
 
-    panValueToArray(guitar.channels).forEach((pan) => {
+    channelsCountToPanArray(guitar.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -423,7 +460,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
 
     map.set('vocal_parts', typeof vocals.vocalParts === 'number' ? vocals.vocalParts : vocals.vocalParts === 'Solo Vocals' ? 1 : vocals.vocalParts === '2-Part Harmonies' ? 2 : 3)
 
-    panValueToArray(vocals.channels).forEach((pan) => {
+    channelsCountToPanArray(vocals.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -449,7 +486,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
     map.set('rank_keys', keysR)
     map.set('rank_real_keys', real_keysR)
 
-    panValueToArray(keys.channels).forEach((pan) => {
+    channelsCountToPanArray(keys.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -467,23 +504,25 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
     if (keys.hasSolo) solo.push('keys')
   }
 
-  if (typeof backing === 'object') {
-    panValueToArray(backing.channels).forEach((pan) => {
+  if (!backingTracksCount) {
+    // Do nothing
+  } else if (typeof backingTracksCount === 'object') {
+    channelsCountToPanArray(backingTracksCount.channels).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
 
-    if (backing.pans) {
-      pans = pans.slice(0, backing.pans.length * -1)
-      backing.pans.forEach((pan) => pans.push(pan))
+    if (backingTracksCount.pans) {
+      pans = pans.slice(0, backingTracksCount.pans.length * -1)
+      backingTracksCount.pans.forEach((pan) => pans.push(pan))
     }
 
-    if (backing.vols) {
-      vols = vols.slice(0, backing.vols.length * -1)
-      backing.vols.forEach((pan) => vols.push(pan))
+    if (backingTracksCount.vols) {
+      vols = vols.slice(0, backingTracksCount.vols.length * -1)
+      backingTracksCount.vols.forEach((pan) => vols.push(pan))
     }
   } else {
-    panValueToArray(backing).forEach((pan) => {
+    channelsCountToPanArray(backingTracksCount).forEach((pan) => {
       pans.push(pan)
       vols.push(0)
     })
@@ -506,7 +545,7 @@ export const genTrackStructRecipe = (data: SongTracksData): TrackStructureDataOb
 
   map.set('pans', pans)
   map.set('vols', vols)
-  map.set('solo', solo)
+  if (solo.length > 0) map.set('solo', solo)
 
-  return Object.fromEntries(sortDTAMap(map).entries()) as DTARecord as TrackStructureDataObject
+  return Object.fromEntries(sortDTAMap(map).entries()) as DTARecord as DTAFile
 }

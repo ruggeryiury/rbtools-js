@@ -10,7 +10,7 @@ const ranksMap = {
   real_keys: [153, 211, 269, 327, 385, 443],
   real_bass: [150, 208, 267, 325, 384, 442],
   real_guitar: [150, 208, 267, 325, 384, 442],
-  band: [163, 215, 243, 267, 292, 345],
+  band: [165, 215, 243, 267, 292, 345],
 }
 
 export type DTAInstrumentTypes = keyof typeof ranksMap

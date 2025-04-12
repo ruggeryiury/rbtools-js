@@ -1,6 +1,6 @@
 {
   "name": "rbtools-js",
-  "version": "1.5.0-beta3",
+  "version": "1.5.0-beta4",
   "private": true,
   "description": "A module package to manipulate several Rock Band game files.",
   "type": "module",

@@ -3,7 +3,8 @@ import { Path, type PathLikeTypes } from 'path-js'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAParserError, WrongDTATypeError } from '../errors'
-import { bufferSHA256Hash, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib'
+import { calculateHashFromBuffer, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib'
+import { createDTA, type SongDataCreationObject } from '../lib/dta/createDTA'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -123,7 +124,7 @@ export class DTAParser {
     }
 
     parsed.sort('ID')
-    return bufferSHA256Hash(Buffer.from(parsed.toString()))
+    return calculateHashFromBuffer(Buffer.from(parsed.toString()))
   }
 
   /**
@@ -136,6 +137,16 @@ export class DTAParser {
     const dtaPath = Path.stringToPath(dtaFilePath)
     const dtaBuffer = await dtaPath.readFile()
     return DTAParser.calculateHashFromBuffer(dtaBuffer)
+  }
+
+  /**
+   * Creates a complete `DTAFile` object from a song's data.
+   * - - - -
+   * @param {SongDataCreationObject} songdata An object with values of the song.
+   * @returns {DTAFile}
+   */
+  static create(songdata: SongDataCreationObject): DTAFile {
+    return createDTA(songdata)
   }
 
   /** An array with object that represents the contents of a DTA song entry. */
@@ -331,7 +342,7 @@ export class DTAParser {
    */
   calculateHash(): string {
     const dtaBuffer = Buffer.from(stringifyDTA(sortDTA(this.songs, 'ID'), this.type, this.type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions))
-    return bufferSHA256Hash(dtaBuffer)
+    return calculateHashFromBuffer(dtaBuffer)
   }
 
   /**
