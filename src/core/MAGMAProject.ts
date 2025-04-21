@@ -1,4 +1,5 @@
-import { Path } from 'path-js'
+import { FilePath } from 'path-js'
+import { isAbsolute, resolve } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { MissingRequiredValueError } from '../errors'
 import { BinaryWriter, DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib'
@@ -22,7 +23,13 @@ export interface MAGMAProjectSongData {
    * The date where you last updated the song. Default is the current time.
    */
   updateDate?: string
+  /**
+   * Default is `null`.
+   */
   hasLipsyncFiles?: true | 2 | 3 | null
+  /**
+   * Default is `true`.
+   */
   hasSeparated2xWavFiles?: boolean
   magmaPath?: string
   songsProjectRootFolderPath?: string
@@ -51,8 +58,12 @@ export interface MAGMAProjectSongData {
   conFilePackageDesc?: string
 }
 
-export type MAGMAPathMapperReturnObject = Record<'magmaPath' | 'songsProjectRootFolderPath' | 'songFolderPath' | 'monoBlank' | 'stereoBlank' | 'dryVoxBlank' | 'midiFilePath' | 'albumArtPathPNG' | 'rbaFilePath' | 'backingWavPath' | 'defaultMAGMAArt' | 'rbprojFilePath' | 'c3FilePath', Path> & Record<'dryVox1Path' | 'dryVox2Path' | 'dryVox3Path' | 'albumArtPath' | 'kickWavPath' | 'snareWavPath' | 'drumKitWavPath' | 'bassWavPath' | 'guitarWavPath' | 'vocalsWavPath' | 'keysWavPath', Path | undefined>
+export type MAGMAPathMapperReturnObject = Record<'magmaPath' | 'songsProjectRootFolderPath' | 'songFolderPath' | 'monoBlank' | 'stereoBlank' | 'dryVoxBlank' | 'midiFilePath' | 'albumArtPathPNG' | 'rbaFilePath' | 'backingWavPath' | 'defaultMAGMAArt' | 'rbprojFilePath' | 'c3FilePath', FilePath> & Record<'dryVox1Path' | 'dryVox2Path' | 'dryVox3Path' | 'albumArtPath' | 'kickWavPath' | 'snareWavPath' | 'drumKitWavPath' | 'bassWavPath' | 'guitarWavPath' | 'vocalsWavPath' | 'keysWavPath', FilePath | undefined>
 
+/**
+ * A class to create MAGMA files based on a parsed song object.
+ * - - - -
+ */
 export class MAGMAProject {
   song: DTAFile
   options: Required<MAGMAProjectSongData>
@@ -66,7 +77,7 @@ export class MAGMAProject {
     hasSeparated2xWavFiles: true,
     magmaPath: '',
     songsProjectRootFolderPath: '',
-    destPath: Path.resolve(process.env.USERPROFILE, 'Desktop/{{songname}}.rba'),
+    destPath: resolve(process.env.USERPROFILE, 'Desktop/{{songname}}.rba'),
     songFolderName: '{{songname}}',
     albumArtName: 'gen/{{songname}}_keep_x256.bmp',
     albumArtNamePNG: 'gen/{{songname}}_keep.png',
@@ -91,6 +102,9 @@ export class MAGMAProject {
     conFilePackageDesc: 'Created with Magma: C3 Roks Edition. For more great customs authoring tools, visit forums.customscreators.com',
   }
 
+  /**
+   * @param {DTAFile} song A parsed song object.
+   */
   constructor(song: DTAFile) {
     const { magma, ...songValues } = song
     this.song = songValues
@@ -101,60 +115,60 @@ export class MAGMAProject {
     const song = this.song
     const options = this.options
 
-    let magmaPath: Path
+    let magmaPath: FilePath
     if (!process.env.MAGMA_PATH && !options.magmaPath) throw new MissingRequiredValueError('Required MAGMA Path not provided. You can either declare it on an .env file (using key value "MAGMA_PATH") or passing as a property on this instantiated class options parameter.')
-    if (process.env.MAGMA_PATH) magmaPath = Path.stringToPath(process.env.MAGMA_PATH)
-    else magmaPath = Path.stringToPath(options.magmaPath)
+    if (process.env.MAGMA_PATH) magmaPath = FilePath.of(process.env.MAGMA_PATH)
+    else magmaPath = FilePath.of(options.magmaPath)
 
-    let songsProjectRootFolderPath: Path
+    let songsProjectRootFolderPath: FilePath
     if (!process.env.SONGS_PROJECT_ROOT_PATH && !options.songsProjectRootFolderPath) throw new MissingRequiredValueError('Required Songs project folder not provided. You can either declare it on an .env file (using key value "SONGS_PROJECT_ROOT_PATH") or passing as a property on this instantiated class options parameter.')
-    if (process.env.SONGS_PROJECT_ROOT_PATH) songsProjectRootFolderPath = Path.stringToPath(process.env.SONGS_PROJECT_ROOT_PATH)
-    else songsProjectRootFolderPath = Path.stringToPath(options.songsProjectRootFolderPath)
+    if (process.env.SONGS_PROJECT_ROOT_PATH) songsProjectRootFolderPath = FilePath.of(process.env.SONGS_PROJECT_ROOT_PATH)
+    else songsProjectRootFolderPath = FilePath.of(options.songsProjectRootFolderPath)
 
-    const rbprojFilePath = new Path(new Path(formatStringFromDTA(song, options.destPath)).changeFileExt('.rbproj'))
-    const c3FilePath = new Path(new Path(formatStringFromDTA(song, options.destPath)).changeFileExt('.c3'))
+    const rbprojFilePath = FilePath.of(formatStringFromDTA(song, options.destPath)).changeFileExt('.rbproj')
+    const c3FilePath = FilePath.of(formatStringFromDTA(song, options.destPath)).changeFileExt('.c3')
 
-    const monoBlank = new Path(magmaPath.path, `audio/mono44.wav`)
-    const stereoBlank = new Path(magmaPath.path, `audio/stereo44.wav`)
-    const dryVoxBlank = new Path(magmaPath.path, `audio/blank_dryvox.wav`)
-    const defaultMAGMAArt = new Path(magmaPath.path, `default.bmp`)
+    const monoBlank = FilePath.of(magmaPath.path, `audio/mono44.wav`)
+    const stereoBlank = FilePath.of(magmaPath.path, `audio/stereo44.wav`)
+    const dryVoxBlank = FilePath.of(magmaPath.path, `audio/blank_dryvox.wav`)
+    const defaultMAGMAArt = FilePath.of(magmaPath.path, `default.bmp`)
 
-    let rbaFilePath = new Path(formatStringFromDTA(song, options.destPath))
-    rbaFilePath = rbaFilePath.ext.endsWith('.rba') ? rbaFilePath : new Path(rbaFilePath.changeFileExt('.rba'))
+    let rbaFilePath = FilePath.of(formatStringFromDTA(song, options.destPath))
+    rbaFilePath = rbaFilePath.ext.endsWith('.rba') ? rbaFilePath : rbaFilePath.changeFileExt('.rba')
 
-    const songFolderPath = new Path(songsProjectRootFolderPath.path, formatStringFromDTA(song, options.songFolderName))
+    const songFolderPath = FilePath.of(songsProjectRootFolderPath.path, formatStringFromDTA(song, options.songFolderName))
 
-    const albumArtPath: Path | undefined = song.album_art ? (Path.isAbsolute(options.albumArtName) ? new Path(formatStringFromDTA(song, options.albumArtName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.albumArtName))) : undefined
-    const albumArtPathPNG = Path.isAbsolute(options.albumArtNamePNG) ? new Path(formatStringFromDTA(song, options.albumArtNamePNG)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.albumArtNamePNG))
+    const albumArtPath: FilePath | undefined = song.album_art ? (isAbsolute(options.albumArtName) ? FilePath.of(formatStringFromDTA(song, options.albumArtName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.albumArtName))) : undefined
+    const albumArtPathPNG = isAbsolute(options.albumArtNamePNG) ? FilePath.of(formatStringFromDTA(song, options.albumArtNamePNG)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.albumArtNamePNG))
 
-    const midiFilePath = Path.isAbsolute(options.midiFileName) ? new Path(formatStringFromDTA(song, options.midiFileName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.midiFileName))
+    const midiFilePath = isAbsolute(options.midiFileName) ? FilePath.of(formatStringFromDTA(song, options.midiFileName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.midiFileName))
 
-    const dryVox1Path: Path | undefined = options.hasLipsyncFiles !== null && song.vocal_parts > 0 ? (Path.isAbsolute(options.dryVox1Name) ? new Path(formatStringFromDTA(song, options.dryVox1Name)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.dryVox1Name))) : song.vocal_parts > 0 ? dryVoxBlank : undefined
-    const dryVox2Path: Path | undefined = options.hasLipsyncFiles === 2 || options.hasLipsyncFiles === 3 ? (Path.isAbsolute(options.dryVox2Name) ? new Path(formatStringFromDTA(song, options.dryVox2Name)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.dryVox2Name))) : options.hasLipsyncFiles !== null && song.vocal_parts > 1 ? (Path.isAbsolute(options.dryVox2Name) ? new Path(formatStringFromDTA(song, options.dryVox2Name)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.dryVox2Name))) : song.vocal_parts > 1 ? dryVoxBlank : undefined
-    const dryVox3Path: Path | undefined = options.hasLipsyncFiles === 3 ? (Path.isAbsolute(options.dryVox3Name) ? new Path(formatStringFromDTA(song, options.dryVox3Name)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.dryVox3Name))) : options.hasLipsyncFiles !== null && song.vocal_parts > 2 ? (Path.isAbsolute(options.dryVox3Name) ? new Path(formatStringFromDTA(song, options.dryVox3Name)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.dryVox3Name))) : song.vocal_parts > 2 ? dryVoxBlank : undefined
+    const dryVox1Path: FilePath | undefined = options.hasLipsyncFiles !== null && song.vocal_parts > 0 ? (isAbsolute(options.dryVox1Name) ? FilePath.of(formatStringFromDTA(song, options.dryVox1Name)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.dryVox1Name))) : song.vocal_parts > 0 ? dryVoxBlank : undefined
+    const dryVox2Path: FilePath | undefined = options.hasLipsyncFiles === 2 || options.hasLipsyncFiles === 3 ? (isAbsolute(options.dryVox2Name) ? FilePath.of(formatStringFromDTA(song, options.dryVox2Name)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.dryVox2Name))) : options.hasLipsyncFiles !== null && song.vocal_parts > 1 ? (isAbsolute(options.dryVox2Name) ? FilePath.of(formatStringFromDTA(song, options.dryVox2Name)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.dryVox2Name))) : song.vocal_parts > 1 ? dryVoxBlank : undefined
+    const dryVox3Path: FilePath | undefined = options.hasLipsyncFiles === 3 ? (isAbsolute(options.dryVox3Name) ? FilePath.of(formatStringFromDTA(song, options.dryVox3Name)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.dryVox3Name))) : options.hasLipsyncFiles !== null && song.vocal_parts > 2 ? (isAbsolute(options.dryVox3Name) ? FilePath.of(formatStringFromDTA(song, options.dryVox3Name)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.dryVox3Name))) : song.vocal_parts > 2 ? dryVoxBlank : undefined
 
-    let kickWavPath: Path | undefined
-    let snareWavPath: Path | undefined
-    let drumKitWavPath: Path | undefined
-    let bassWavPath: Path | undefined
-    let guitarWavPath: Path | undefined
-    let vocalsWavPath: Path | undefined
-    let keysWavPath: Path | undefined
+    let kickWavPath: FilePath | undefined
+    let snareWavPath: FilePath | undefined
+    let drumKitWavPath: FilePath | undefined
+    let bassWavPath: FilePath | undefined
+    let guitarWavPath: FilePath | undefined
+    let vocalsWavPath: FilePath | undefined
+    let keysWavPath: FilePath | undefined
     if (song.multitrack) {
       // TODO Path absolute check: kick and drum kit
-      kickWavPath = song.tracks_count[0] > 2 ? (song.double_kick && options.hasSeparated2xWavFiles ? (Path.isAbsolute(options.kick2xWavName) ? new Path(formatStringFromDTA(song, options.kick2xWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.kick2xWavName))) : Path.isAbsolute(options.kickWavName) ? new Path(formatStringFromDTA(song, options.kickWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.kickWavName))) : undefined
+      kickWavPath = song.tracks_count[0] > 2 ? (song.doubleKick && options.hasSeparated2xWavFiles ? (isAbsolute(options.kick2xWavName) ? FilePath.of(formatStringFromDTA(song, options.kick2xWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.kick2xWavName))) : isAbsolute(options.kickWavName) ? FilePath.of(formatStringFromDTA(song, options.kickWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.kickWavName))) : undefined
 
-      snareWavPath = song.tracks_count[0] > 3 ? (Path.isAbsolute(options.snareWavName) ? new Path(formatStringFromDTA(song, options.snareWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.snareWavName))) : undefined
+      snareWavPath = song.tracks_count[0] > 3 ? (isAbsolute(options.snareWavName) ? FilePath.of(formatStringFromDTA(song, options.snareWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.snareWavName))) : undefined
 
-      drumKitWavPath = song.tracks_count[0] === 2 ? (options.hasSeparated2xWavFiles && song.double_kick ? (Path.isAbsolute(options.drums2xWavName) ? new Path(formatStringFromDTA(song, options.drums2xWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.drums2xWavName))) : Path.isAbsolute(options.drumsWavName) ? new Path(formatStringFromDTA(song, options.drumsWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.drumsWavName))) : song.tracks_count[0] > 2 ? (options.hasSeparated2xWavFiles && song.double_kick ? (Path.isAbsolute(options.drumKit2xWavName) ? new Path(formatStringFromDTA(song, options.drumKit2xWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.drumKit2xWavName))) : Path.isAbsolute(options.drumKitWavName) ? new Path(formatStringFromDTA(song, options.drumKitWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.drumKitWavName))) : undefined
+      drumKitWavPath = song.tracks_count[0] === 2 ? (options.hasSeparated2xWavFiles && song.doubleKick ? (isAbsolute(options.drums2xWavName) ? FilePath.of(formatStringFromDTA(song, options.drums2xWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.drums2xWavName))) : isAbsolute(options.drumsWavName) ? FilePath.of(formatStringFromDTA(song, options.drumsWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.drumsWavName))) : song.tracks_count[0] > 2 ? (options.hasSeparated2xWavFiles && song.doubleKick ? (isAbsolute(options.drumKit2xWavName) ? FilePath.of(formatStringFromDTA(song, options.drumKit2xWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.drumKit2xWavName))) : isAbsolute(options.drumKitWavName) ? FilePath.of(formatStringFromDTA(song, options.drumKitWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.drumKitWavName))) : undefined
 
-      bassWavPath = song.tracks_count[1] !== 0 ? (Path.isAbsolute(options.bassWavName) ? new Path(formatStringFromDTA(song, options.bassWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.bassWavName))) : undefined
+      bassWavPath = song.tracks_count[1] !== 0 ? (isAbsolute(options.bassWavName) ? FilePath.of(formatStringFromDTA(song, options.bassWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.bassWavName))) : undefined
 
-      guitarWavPath = song.tracks_count[2] !== 0 ? (Path.isAbsolute(options.guitarWavName) ? new Path(formatStringFromDTA(song, options.guitarWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.guitarWavName))) : undefined
+      guitarWavPath = song.tracks_count[2] !== 0 ? (isAbsolute(options.guitarWavName) ? FilePath.of(formatStringFromDTA(song, options.guitarWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.guitarWavName))) : undefined
 
-      vocalsWavPath = song.tracks_count[3] !== 0 ? (Path.isAbsolute(options.vocalsWavName) ? new Path(formatStringFromDTA(song, options.vocalsWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.vocalsWavName))) : undefined
+      vocalsWavPath = song.tracks_count[3] !== 0 ? (isAbsolute(options.vocalsWavName) ? FilePath.of(formatStringFromDTA(song, options.vocalsWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.vocalsWavName))) : undefined
 
-      keysWavPath = song.tracks_count[4] !== 0 ? (Path.isAbsolute(options.keysWavName) ? new Path(formatStringFromDTA(song, options.keysWavName)) : new Path(songFolderPath.path, formatStringFromDTA(song, options.keysWavName))) : undefined
+      keysWavPath = song.tracks_count[4] !== 0 ? (isAbsolute(options.keysWavName) ? FilePath.of(formatStringFromDTA(song, options.keysWavName)) : FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.keysWavName))) : undefined
     } else {
       kickWavPath = song.tracks_count[0] > 5 ? stereoBlank : song.tracks_count[0] > 2 ? monoBlank : undefined
 
@@ -171,7 +185,7 @@ export class MAGMAProject {
       keysWavPath = song.tracks_count[4] === 1 ? monoBlank : song.tracks_count[4] === 2 ? stereoBlank : undefined
     }
 
-    const backingWavPath = new Path(songFolderPath.path, formatStringFromDTA(song, options.backingWavName))
+    const backingWavPath = FilePath.of(songFolderPath.path, formatStringFromDTA(song, options.backingWavName))
 
     return { magmaPath, songsProjectRootFolderPath, songFolderPath, monoBlank, stereoBlank, dryVoxBlank, midiFilePath, albumArtPath, albumArtPathPNG, rbaFilePath, dryVox1Path, dryVox2Path, dryVox3Path, backingWavPath, defaultMAGMAArt, rbprojFilePath, c3FilePath, kickWavPath, snareWavPath, drumKitWavPath, bassWavPath, guitarWavPath, vocalsWavPath, keysWavPath }
   }
@@ -182,12 +196,12 @@ export class MAGMAProject {
     const { backing, bass, crowd, drum, guitar, keys, vocals } = genAudioFileStructure(song)
     const paths = this.mapAllOptionsPaths()
 
-    const hasEnglish = song.languages ? (song.languages.findIndex((value) => value === 'english') > -1 ? true : false) : true
-    const hasFrench = song.languages ? (song.languages.findIndex((value) => value === 'french') > -1 ? true : false) : true
-    const hasItalian = song.languages ? (song.languages.findIndex((value) => value === 'french') > -1 ? true : false) : true
-    const hasSpanish = song.languages ? (song.languages.findIndex((value) => value === 'french') > -1 ? true : false) : true
-    const hasGerman = song.languages ? (song.languages.findIndex((value) => value === 'french') > -1 ? true : false) : true
-    const hasJapanese = song.languages ? (song.languages.findIndex((value) => value === 'french') > -1 ? true : false) : true
+    const hasEnglish = song.languages ? (song.languages.findIndex((value) => value === 'English') > -1 ? true : false) : true
+    const hasFrench = song.languages ? (song.languages.findIndex((value) => value === 'French') > -1 ? true : false) : true
+    const hasItalian = song.languages ? (song.languages.findIndex((value) => value === 'Italian') > -1 ? true : false) : true
+    const hasSpanish = song.languages ? (song.languages.findIndex((value) => value === 'Spanish') > -1 ? true : false) : true
+    const hasGerman = song.languages ? (song.languages.findIndex((value) => value === 'German') > -1 ? true : false) : true
+    const hasJapanese = song.languages ? (song.languages.findIndex((value) => value === 'Japanese') > -1 ? true : false) : true
 
     const drumSolo = song.solo?.find((flags) => flags === 'drum') ? 'True' : 'False'
     const guitarSolo = song.solo?.find((flags) => flags === 'guitar') ? 'True' : 'False'
@@ -371,7 +385,7 @@ export class MAGMAProject {
       },
     })
 
-    c3File.write(`//Created by Magma: Rok On Edition v4.0.2\n//DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${options.releaseVer.toString()}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=3\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${paths.stereoBlank.path}\nCrowdVol=${crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.double_kick ? 'True' : 'False'}\nRhythmKeys=${song.rhythm_on_keys ? 'True' : 'False'}\nRhythmBass=${song.rhythm_on_bass ? 'True' : 'False'}\nKaraoke=${song.karaoke ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.expert_only ? 'True' : 'False'}\n`)
+    c3File.write(`//Created by Magma: Rok On Edition v4.0.2\n//DO NOT EDIT MANUALLY\nSong=${song.name}\nArtist=${song.artist}\nAlbum=${song.album_name ? song.album_name : ''}\nCustomID=\nVersion=${options.releaseVer.toString()}\nIsMaster=${song.master ? 'True' : 'False'}\nEncodingQuality=3\n${song.tracks_count[6] !== undefined ? `CrowdAudio=${paths.stereoBlank.path}\nCrowdVol=${crowd.vol?.toString() ?? '-5'}\n` : ''}${song.year_recorded ? `ReRecordYear=${song.year_recorded.toString()}` : ''}2xBass=${song.doubleKick ? 'True' : 'False'}\nRhythmKeys=${song.rhythmOn === `keys` ? 'True' : 'False'}\nRhythmBass=${song.rhythmOn === 'bass' ? 'True' : 'False'}\nKaraoke=${song.multitrack === 'karaoke' ? 'True' : 'False'}\nMultitrack=${song.multitrack ? 'True' : 'False'}\nConvert=${song.convert ? 'True' : 'False'}\nExpertOnly=${song.emh === 'expert_only' ? 'True' : 'False'}\n`)
 
     if (song.rank_real_bass && song.real_bass_tuning) c3File.write(`ProBassDiff=${song.rank_real_bass.toString()}\nProBassTuning4=(real_bass_tuning (${song.real_bass_tuning.join(' ')}))\n`)
 
@@ -384,13 +398,13 @@ export class MAGMAProject {
     return [rbprojFile.toString(), c3File.toBuffer().toString()]
   }
 
-  saveMAGMAC3FileContentsSync(): [Path, Path] {
+  saveMAGMAC3FileContentsSync(): [FilePath, FilePath] {
     const [rbprojFile, c3File] = this.getMAGMAC3FileContents()
-    const rbprojFilePath = new Path(new Path(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.rbproj'))
-    const c3FilePath = new Path(new Path(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.rok'))
+    const rbprojFilePath = FilePath.of(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.rbproj')
+    const c3FilePath = FilePath.of(formatStringFromDTA(this.song, this.options.destPath)).changeFileExt('.rok')
 
-    rbprojFilePath.writeFileSync(rbprojFile.replace(new RegExp('\\n', 'g'), '\r\n'), 'latin1')
-    c3FilePath.writeFileWithBOMSync(c3File.replace(new RegExp('\\n', 'g'), '\r\n'))
+    rbprojFilePath.writeSync(rbprojFile.replace(new RegExp('\\n', 'g'), '\r\n'), 'latin1')
+    c3FilePath.writeWithBOMSync(c3File.replace(new RegExp('\\n', 'g'), '\r\n'))
 
     return [rbprojFilePath, c3FilePath]
   }

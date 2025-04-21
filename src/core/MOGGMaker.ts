@@ -1,5 +1,6 @@
 import { ExifTool } from 'exiftool-vendored'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
 import { MOGGFile } from '../core'
@@ -65,7 +66,7 @@ export class MOGGMaker {
    * @param {PathLikeTypes} audioFilePath The path to the audio track that will be added to the MOGG file.
    */
   async addTrack(audioFilePath: PathLikeTypes): Promise<void> {
-    const path = Path.stringToPath(audioFilePath)
+    const path = FilePath.of(pathLikeToString(audioFilePath))
     const data = await this.exiftool.read(path.path)
 
     const { NumChannels, Duration, SampleRate, FileTypeExtension } = data
@@ -95,12 +96,12 @@ export class MOGGMaker {
   async create(destPath: PathLikeTypes, options?: MOGGCreateOptions): Promise<MOGGFile> {
     const { throwSixChannelsBugError } = setDefaultOptions<MOGGCreateOptions>({ encryptMOGG: false, throwSixChannelsBugError: true }, options)
     if (this.channelsCount === 6 && throwSixChannelsBugError) throw new MOGGFileError("Tried to create a MOGG file with six channels, which is known to cause glitches on the audio.\n\nIf you want to create the file anyway, set 'throwSixChannelsError' to false.")
-    destPath = Path.stringToPath(temporaryFile({ extension: '.ogg' }))
-    const newMoggFile = Path.stringToPath(destPath).changeFileExt('.mogg')
+    const newDestPath = FilePath.of(temporaryFile({ extension: '.ogg' }))
+    const newMoggFile = newDestPath.changeFileExt('.mogg')
     await this.exiftool.end()
-    await audioToMOGG(this.tracks, Path.stringToPath(destPath))
+    await audioToMOGG(this.tracks, FilePath.of(pathLikeToString(newDestPath)))
     await MakeMogg(destPath, newMoggFile)
-    await destPath.checkThenDeleteFile()
+    await newDestPath.delete()
     return new MOGGFile(newMoggFile)
   }
 }

@@ -1,4 +1,5 @@
-import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { MOGGFileError } from '../errors'
 import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib'
 
@@ -36,7 +37,7 @@ export type MOGGFileStatObject = Omit<MOGGFileStatRawObject, 'is_encrypted' | 's
   sizeBytes: number
 }
 
-export interface MOGGFileJSONObject extends PathJSONRepresentation {
+export interface MOGGFileJSONObject extends FilePathJSONRepresentation {
   /** The statistics of the MIDI file. */
   file: MOGGFileStatObject
 }
@@ -47,13 +48,13 @@ export interface MOGGFileJSONObject extends PathJSONRepresentation {
  */
 export class MOGGFile {
   /** The path of the MOGG file. */
-  path: Path
+  path: FilePath
 
   /**
    * @param {PathLikeTypes} moggFilePath The path to the MOGG file.
    */
   constructor(moggFilePath: PathLikeTypes) {
-    this.path = Path.stringToPath(moggFilePath)
+    this.path = FilePath.of(pathLikeToString(moggFilePath))
   }
 
   /**
@@ -62,7 +63,7 @@ export class MOGGFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists()) throw new MOGGFileError(`MOGG file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new MOGGFileError(`MOGG file "${this.path.path}" does not exists`)
     return true
   }
 
@@ -73,7 +74,7 @@ export class MOGGFile {
    */
   async encryptionVersion(): Promise<number> {
     this.checkExistence()
-    const version = await this.path.readFileOffset(0, 1)
+    const version = await this.path.readOffset(0, 1)
     return parseInt(version.toString('hex'), 16)
   }
 
@@ -165,8 +166,8 @@ export class MOGGFile {
     this.checkExistence()
     const isEncrypted = await this.isEncrypted()
     if (!isEncrypted) return this
-    let dest = new Path(this.path.changeFileName(`${this.path.name}_decrypted`))
-    if (destPath) dest = Path.stringToPath(destPath)
+    let dest = this.path.changeFileName(`${this.path.name}_decrypted`)
+    if (destPath) dest = FilePath.of(pathLikeToString(destPath))
 
     return new MOGGFile(await moggDecrypt(this.path, dest))
   }

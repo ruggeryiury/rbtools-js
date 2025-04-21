@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
-import { Path, type PathLikeTypes } from 'path-js'
+import { DirPath, FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors'
 import { RBTools } from '../index'
 import { execPromise } from '../lib'
@@ -60,9 +61,9 @@ export class EDAT {
    */
   static async encryptToEDAT(srcFile: PathLikeTypes, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(RBTools.getBinPath().path, moduleName)
-    const src = Path.stringToPath(srcFile)
-    const dest = Path.stringToPath(`${src.path}.edat`)
+    const exePath = FilePath.of(RBTools.bin.path, moduleName)
+    const src = FilePath.of(pathLikeToString(srcFile))
+    const dest = FilePath.of(`${src.path}.edat`)
     const command = `${moduleName} encrypt -custom:${devKLic} ${contentID.slice(0, 36)} 00 00 00 "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
@@ -78,9 +79,9 @@ export class EDAT {
    */
   static async decryptEDAT(srcFile: PathLikeTypes, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
-    const exePath = new Path(RBTools.getBinPath().path, moduleName)
-    const src = Path.stringToPath(srcFile)
-    const dest = Path.stringToPath(src.path.replace('.edat', ''))
+    const exePath = FilePath.of(RBTools.bin.path, moduleName)
+    const src = FilePath.of(pathLikeToString(srcFile))
+    const dest = FilePath.of(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
     const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
@@ -94,21 +95,20 @@ export class EDAT {
    * @returns {Promise<string>}
    */
   static async decryptRPCS3DLCFolder(dlcFolder: PathLikeTypes): Promise<string> {
-    const dlc = Path.stringToPath(dlcFolder)
-    if (dlc.type() !== 'directory') throw new FileNotFoundError(`Provided path "${dlc.path} is not a directory."`)
-    const usrDirFolder = new Path(dlc.root)
-    const eboot = new Path(usrDirFolder.path, 'EBOOT.BIN')
-    if (!eboot.exists()) throw new FileNotFoundError(`Provided DLC folder path "${dlc.path}" is not on a valid RPCS3 DLC folder.`)
+    const dlc = DirPath.of(pathLikeToString(dlcFolder))
+    const usrDirFolder = DirPath.of(dlc.root)
+    const eboot = FilePath.of(usrDirFolder.path, 'EBOOT.BIN')
+    if (!eboot.exists) throw new FileNotFoundError(`Provided DLC folder path "${dlc.path}" is not on a valid RPCS3 DLC folder.`)
     const devKLic = EDAT.devklicFromFolderName(dlc.name)
-    const songsFolder = new Path(dlc.path, './songs')
+    const songsFolder = DirPath.of(dlc.path, './songs')
     const songsFolderContents = await songsFolder.readDir(true)
     let funcOutput = ''
     for (const song of songsFolderContents) {
-      const s = new Path(song)
+      const s = DirPath.of(song)
       const songName = s.name
-      const songMidi = new Path(s.path, `${songName}.mid`)
-      const songEDAT = new Path(s.path, `${songName}.mid.edat`)
-      await songMidi.checkThenDeleteFile()
+      const songMidi = FilePath.of(s.path, `${songName}.mid`)
+      const songEDAT = FilePath.of(s.path, `${songName}.mid.edat`)
+      await songMidi.delete()
       const output = await EDAT.decryptEDAT(songEDAT.path, devKLic)
       funcOutput += `${output}\n`
     }
@@ -122,13 +122,13 @@ export class EDAT {
    * @returns {Promise<string>}
    */
   static async decryptEDATFromDLCFolder(edatFilePath: PathLikeTypes): Promise<string> {
-    const edat = Path.stringToPath(edatFilePath)
-    const midiFile = new Path(edat.changeFileName(edat.name.split('.')[0], '.mid'))
-    if (!midiFile.exists()) if (!edat.exists()) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)
+    const edat = FilePath.of(pathLikeToString(edatFilePath))
+    const midiFile = edat.changeFileName(edat.name.split('.')[0], '.mid')
+    if (!midiFile.exists) if (!edat.exists) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)
     if (edat.ext !== '.edat') throw new UnknownFileFormatError(`Provided path "${edat.path} is not an EDAT file."`)
-    const edatDLCFolderName = new Path(edat.root, '../../').name
+    const edatDLCFolderName = DirPath.of(edat.root, '../../').name
     const devKLic = EDAT.devklicFromFolderName(edatDLCFolderName)
-    await midiFile.checkThenDeleteFile()
+    await midiFile.delete()
     const output = await EDAT.decryptEDAT(edat.path, devKLic)
     return output
   }
@@ -140,8 +140,8 @@ export class EDAT {
    * @returns {Promise<boolean>}
    */
   static async isEncrypted(edatFilePath: PathLikeTypes): Promise<boolean> {
-    const edat = Path.stringToPath(edatFilePath)
-    const magic = (await edat.readFileOffset(0, 3)).toString('ascii')
+    const edat = FilePath.of(pathLikeToString(edatFilePath))
+    const magic = (await edat.readOffset(0, 3)).toString('ascii')
     if (magic === 'NPD') return true
     else return false
   }

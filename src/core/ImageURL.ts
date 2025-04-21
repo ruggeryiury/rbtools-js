@@ -1,6 +1,7 @@
 import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { ImgFile } from '../core'
 import { ImageFetchingError } from '../errors'
@@ -66,7 +67,7 @@ export class ImageURL {
       options
     )
     if (this.buf.length === 0) throw new ImageFetchingError('Fetched image has no bytes')
-    const dest = Path.stringToPath(destPath)
+    const dest = FilePath.of(pathLikeToString(destPath))
 
     const image = await bufferConverter(this.buf, dest.changeFileExt(toFormat), toFormat, opts)
     this.buf = Buffer.alloc(0)

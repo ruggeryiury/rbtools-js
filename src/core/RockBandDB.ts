@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString, resolve } from 'path-js/lib'
 import { DTAParser, RBTools } from '../index'
 import type { PartialDTAFile } from '../lib'
 
@@ -17,22 +18,22 @@ export class RockBandDB {
    * @returns {PartialDTAFile[]}
    */
   static async createUpdatesJSONFile(dxSongUpdatesFolder?: PathLikeTypes): Promise<PartialDTAFile[]> {
-    const dtaPath = dxSongUpdatesFolder ? Path.stringToPath(dxSongUpdatesFolder) : RBTools.getDTAPath()
-    const updates = new Path(Path.resolve(dtaPath.path, 'dx_updates.json'))
+    const dtaPath = dxSongUpdatesFolder ? FilePath.of(pathLikeToString(dxSongUpdatesFolder)) : RBTools.getDTAPath()
+    const updates = FilePath.of(dtaPath.path, 'dx_updates.json')
 
-    const vanillaStrings = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'vanilla_strings.dta'), 'partial')
-    const officialAdditionalMetadata = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'official_additional_metadata.dta'), 'partial')
-    const unofficialAdditionalMetadata = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'unofficial_additional_metadata.dta'), 'partial')
-    const metadataUpdates = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'metadata_updates.dta'), 'partial')
-    const harmsAndUpdates = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'harms_and_updates.dta'), 'partial')
-    const rbhpKeys = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'rbhp_keys.dta'), 'partial')
-    const rbhpStrings = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'rbhp_strings.dta'), 'partial')
-    const rb3PlusStrings = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'rb3_plus_strings.dta'), 'partial')
-    const combinedStringsAndKeys = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'combined_strings_and_keys.dta'), 'partial')
-    const rb3PlusKeys = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'rb3_plus_keys.dta'), 'partial')
-    const vanilla = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'vanilla.dta'), 'partial')
-    const otherUpgrades = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'other_upgrades.dta'), 'partial')
-    const loadingPhrases = await DTAParser.fromFile(Path.resolve(dtaPath.path, 'loading_phrases.dta'), 'partial')
+    const vanillaStrings = await DTAParser.fromFile(resolve(dtaPath.path, 'vanilla_strings.dta'), 'partial')
+    const officialAdditionalMetadata = await DTAParser.fromFile(resolve(dtaPath.path, 'official_additional_metadata.dta'), 'partial')
+    const unofficialAdditionalMetadata = await DTAParser.fromFile(resolve(dtaPath.path, 'unofficial_additional_metadata.dta'), 'partial')
+    const metadataUpdates = await DTAParser.fromFile(resolve(dtaPath.path, 'metadata_updates.dta'), 'partial')
+    const harmsAndUpdates = await DTAParser.fromFile(resolve(dtaPath.path, 'harms_and_updates.dta'), 'partial')
+    const rbhpKeys = await DTAParser.fromFile(resolve(dtaPath.path, 'rbhp_keys.dta'), 'partial')
+    const rbhpStrings = await DTAParser.fromFile(resolve(dtaPath.path, 'rbhp_strings.dta'), 'partial')
+    const rb3PlusStrings = await DTAParser.fromFile(resolve(dtaPath.path, 'rb3_plus_strings.dta'), 'partial')
+    const combinedStringsAndKeys = await DTAParser.fromFile(resolve(dtaPath.path, 'combined_strings_and_keys.dta'), 'partial')
+    const rb3PlusKeys = await DTAParser.fromFile(resolve(dtaPath.path, 'rb3_plus_keys.dta'), 'partial')
+    const vanilla = await DTAParser.fromFile(resolve(dtaPath.path, 'vanilla.dta'), 'partial')
+    const otherUpgrades = await DTAParser.fromFile(resolve(dtaPath.path, 'other_upgrades.dta'), 'partial')
+    const loadingPhrases = await DTAParser.fromFile(resolve(dtaPath.path, 'loading_phrases.dta'), 'partial')
 
     vanillaStrings.applyUpdates(officialAdditionalMetadata.songs)
     vanillaStrings.applyUpdates(unofficialAdditionalMetadata.songs)
@@ -47,7 +48,7 @@ export class RockBandDB {
     vanillaStrings.applyUpdates(otherUpgrades.songs)
     vanillaStrings.applyUpdates(loadingPhrases.songs)
 
-    await updates.writeFile(JSON.stringify(vanillaStrings.songs))
+    await updates.write(JSON.stringify(vanillaStrings.songs))
     return vanillaStrings.songs
   }
 
@@ -58,8 +59,8 @@ export class RockBandDB {
    */
   static async loadDXUpdates(): Promise<PartialDTAFile[]> {
     const dtaPath = RBTools.getDTAPath()
-    const updates = new Path(Path.resolve(dtaPath.path, 'dx_updates.json'))
-    return await updates.readJSONFile<PartialDTAFile[]>()
+    const updates = FilePath.of(dtaPath.path, 'dx_updates.json')
+    return await updates.readJSON<PartialDTAFile[]>()
   }
 
   /**
@@ -71,14 +72,14 @@ export class RockBandDB {
    */
   static async loadRB3(withUpdates = true): Promise<PartialDTAFile[]> {
     const dtaPath = RBTools.getDTAPath()
-    const rb3 = new DTAParser(await new Path(Path.resolve(dtaPath.path, 'rb3.json')).readJSONFile<PartialDTAFile[]>())
+    const rb3 = new DTAParser(await FilePath.of(dtaPath.path, 'rb3.json').readJSON<PartialDTAFile[]>())
 
     const songs: DTAParser[] = []
     songs.push(rb3)
 
     const parsedSongs: PartialDTAFile[] = []
     if (withUpdates) {
-      const updates = await new Path(Path.resolve(dtaPath.path, 'dx_updates.json')).readJSONFile<PartialDTAFile[]>()
+      const updates = await FilePath.of(dtaPath.path, 'dx_updates.json').readJSON<PartialDTAFile[]>()
       for (const song of songs) {
         song.applyUpdates(updates)
         parsedSongs.push(...song.songs)

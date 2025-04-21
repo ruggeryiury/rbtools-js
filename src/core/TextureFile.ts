@@ -1,4 +1,5 @@
-import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFileError } from '../errors'
 import { ImgFile } from '../index'
@@ -19,7 +20,7 @@ export interface TextureFileStatReturnObject {
   formatDesc: string
 }
 
-export interface TextureFileJSONObject extends PathJSONRepresentation {
+export interface TextureFileJSONObject extends FilePathJSONRepresentation {
   /** The statistics of the image file. */
   file: TextureFileStatReturnObject
 }
@@ -40,7 +41,7 @@ export interface ConvertTextureToTextureOptions {
  */
 export class TextureFile {
   /** The path of the texture file */
-  path: Path
+  path: FilePath
 
   /**
    * Checks if a path resolves to an existing image file.
@@ -48,7 +49,7 @@ export class TextureFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists()) throw new Error(`TextureFileNotFoundError: Texture file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new Error(`TextureFileNotFoundError: Texture file "${this.path.path}" does not exists`)
     return true
   }
 
@@ -56,7 +57,7 @@ export class TextureFile {
    * @param {string} textureFilePath The path to the texture file.
    */
   constructor(textureFilePath: PathLikeTypes) {
-    this.path = Path.stringToPath(textureFilePath)
+    this.path = FilePath.of(pathLikeToString(textureFilePath))
     this.checkExistence()
 
     if (this.path.ext === '.png' || this.path.ext === '.bmp' || this.path.ext === '.jpg' || this.path.ext === '.webp' || this.path.ext === '.tga') throw new TextureFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "TextureFile()" class, try to use the "ImgFile()" class instead`)
@@ -124,8 +125,8 @@ export class TextureFile {
       },
       options
     )
-    const unformattedDestPath = Path.stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
+    const unformattedDestPath = FilePath.of(pathLikeToString(destPath))
+    const dest = unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat)
     return await texToTex(this.path, dest, toFormat, opts)
   }
 
@@ -137,8 +138,7 @@ export class TextureFile {
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
   async convertToImage(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
-    const unformattedDestPath = Path.stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
+    const dest = FilePath.of(pathLikeToString(destPath)).changeFileExt(toFormat)
     if (this.path.ext === '.png_wii') return await texToImgWii(this.path, dest, toFormat)
     return await texToImgXboxPs3(this.path, dest, toFormat)
   }

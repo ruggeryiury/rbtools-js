@@ -1,4 +1,5 @@
-import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { MIDIFileError } from '../errors'
 import { midiFileStat, midiFileStatSync } from '../lib'
 
@@ -13,7 +14,7 @@ export interface MIDIFileStatObject {
   tracks: string[]
 }
 
-export interface MIDIFileJSONObject extends PathJSONRepresentation {
+export interface MIDIFileJSONObject extends FilePathJSONRepresentation {
   /** The statistics of the MIDI file. */
   file: MIDIFileStatObject
 }
@@ -24,14 +25,13 @@ export interface MIDIFileJSONObject extends PathJSONRepresentation {
  */
 export class MIDIFile {
   /** The path of the MIDI file. */
-  path: Path
+  path: FilePath
 
   /**
    * @param {PathLikeTypes} midiFilePath The path to the MIDI file.
    */
   constructor(midiFilePath: PathLikeTypes) {
-    const path = Path.stringToPath(midiFilePath)
-    this.path = path
+    this.path = FilePath.of(pathLikeToString(midiFilePath))
 
     this.checkExistence()
   }
@@ -42,7 +42,7 @@ export class MIDIFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists()) throw new MIDIFileError(`MIDI file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new MIDIFileError(`MIDI file "${this.path.path}" does not exists`)
     return true
   }
 

@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
 import { TextureFile, type ConvertToTextureOptions } from '../../core'
@@ -19,17 +20,17 @@ export const imgToTexWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
     },
     options
   )
-  const src = Path.stringToPath(srcFile)
-  const dest = new Path(Path.stringToPath(destPath).changeFileExt('png_wii'))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath)).changeFileExt('png_wii')
 
   if (src.ext === dest.ext) throw new FileConvertionError('Source and destination file has the same texture format')
 
-  const png = new Path(temporaryFile({ extension: '.png' }))
-  const tpl = new Path(temporaryFile({ extension: '.tpl' }))
+  const png = FilePath.of(temporaryFile({ extension: '.png' }))
+  const tpl = FilePath.of(temporaryFile({ extension: '.tpl' }))
 
-  await dest.checkThenDeleteFile()
-  await png.checkThenDeleteFile()
-  await tpl.checkThenDeleteFile()
+  await dest.delete()
+  await png.delete()
+  await tpl.delete()
 
   await imageConverter(src.path, png.path, 'png', { width: 256, height: 256, interpolation, quality: 100 })
   try {
@@ -39,10 +40,10 @@ export const imgToTexWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
     // but the file is coverted successfully...
   }
 
-  await png.checkThenDeleteFile()
+  await png.delete()
 
-  const tplBytes = await tpl.readFile()
-  const destStream = await dest.createFileWriteStream()
+  const tplBytes = await tpl.read()
+  const destStream = await dest.createWriteStream()
 
   // 64 is the size of the TPL file header we need to skip
   const loop = (tplBytes.length - 64) / 4
@@ -58,6 +59,6 @@ export const imgToTexWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
   destStream.stream.end()
   await destStream.once
 
-  await tpl.checkThenDeleteFile()
+  await tpl.delete()
   return new TextureFile(dest)
 }

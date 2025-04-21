@@ -1,5 +1,5 @@
 import { RBDTAJSError } from '../../index'
-import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib'
+import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFile, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib'
 
 export class DTASongContentIO {
   /**
@@ -125,7 +125,7 @@ export class DTASongContentIO {
         }
         if (song.tracks_count !== undefined && tracks) {
           if (format === 'rbn' && this.type === 'complete') content += addTabToAllLines(renderArray('tracks_count', song.tracks_count, format), 2)
-          content += addTabToAllLines(renderTrackMap(tracks, format), 2)
+          content += addTabToAllLines(renderTrackMap(song as DTAFile, tracks, format), 2)
         }
         if (!song.pans && this.type === 'complete' && tracks && this.opts.autoGeneratePansAndVols) {
           content += addTabToAllLines(

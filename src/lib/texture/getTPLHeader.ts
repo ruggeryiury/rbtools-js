@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { FileNotFoundError, UnknownFileFormatError } from '../../errors'
 import { pngWiiStat, pngWiiStatSync, type ArtworkSizeTypes, imageHeaders } from '../../lib'
 
@@ -21,9 +22,9 @@ export interface TPLHeaderParserObject {
  * @returns {Promise<TPLHeaderParserObject>} An object with the header data and values.
  */
 export const getTPLHeader = async (pngWiiPath: PathLikeTypes): Promise<TPLHeaderParserObject> => {
-  const src = Path.stringToPath(pngWiiPath)
-  if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
-  if (src.type() === 'file' && src.ext === '.png_wii') {
+  const src = FilePath.of(pathLikeToString(pngWiiPath))
+  if (!src.exists) throw new FileNotFoundError('Provided file path does not exists.')
+  if (src.ext === '.png_wii') {
     const { width, height, type } = await pngWiiStat(src)
     const headerKey = `TPL${width.toString()}x${height.toString()}${type === 'NORMAL' ? '' : `_${type}`}`
     if (headerKey in imageHeaders)
@@ -46,9 +47,9 @@ export const getTPLHeader = async (pngWiiPath: PathLikeTypes): Promise<TPLHeader
  * @returns {TPLHeaderParserObject} An object with the header data and values.
  */
 export const getTPLHeaderSync = (pngWiiPath: PathLikeTypes): TPLHeaderParserObject => {
-  const src = Path.stringToPath(pngWiiPath)
-  if (!src.exists()) throw new FileNotFoundError('Provided file path does not exists.')
-  if (src.type() === 'file' && src.ext === '.png_wii') {
+  const src = FilePath.of(pathLikeToString(pngWiiPath))
+  if (!src.exists) throw new FileNotFoundError('Provided file path does not exists.')
+  if (src.ext === '.png_wii') {
     const { width, height, type } = pngWiiStatSync(src)
     const headerKey = `TPL${width.toString()}x${height.toString()}${type === 'NORMAL' ? '' : `_${type}`}`
     if (headerKey in imageHeaders)

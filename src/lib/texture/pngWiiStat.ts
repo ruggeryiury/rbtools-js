@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { type TextureFileStatReturnObject } from '../../core'
 import { UnknownFileFormatError } from '../../errors'
 import { imageHeaders } from '../../lib'
@@ -10,9 +11,9 @@ import { imageHeaders } from '../../lib'
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_WII texture file
  */
 export const pngWiiStat = async (filePath: PathLikeTypes): Promise<TextureFileStatReturnObject> => {
-  const srcPath = Path.stringToPath(filePath)
+  const srcPath = FilePath.of(pathLikeToString(filePath))
 
-  const srcBuffer = await srcPath.readFile()
+  const srcBuffer = await srcPath.read()
   const srcHeader = srcBuffer.subarray(0, 32)
 
   let width = 0
@@ -53,9 +54,9 @@ export const pngWiiStat = async (filePath: PathLikeTypes): Promise<TextureFileSt
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_WII texture file
  */
 export const pngWiiStatSync = (filePath: PathLikeTypes): TextureFileStatReturnObject => {
-  const srcPath = Path.stringToPath(filePath)
+  const srcPath = FilePath.of(pathLikeToString(filePath))
 
-  const srcBuffer = srcPath.readFileSync()
+  const srcBuffer = srcPath.readSync()
   const srcHeader = srcBuffer.subarray(0, 32)
 
   let width = 0

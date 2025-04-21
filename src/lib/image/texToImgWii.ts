@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { ImgFile } from '../../index'
 import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib'
 
@@ -11,19 +12,19 @@ import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib'
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const texToImgWii = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  const destWithCorrectExt = dest.changeFileExt(toFormat)
 
-  const tpl = new Path(src.changeFileExt('tpl'))
+  const tpl = src.changeFileExt('tpl')
 
-  await destWithCorrectExt.checkThenDeleteFile()
-  await tpl.checkThenDeleteFile()
+  await destWithCorrectExt.delete()
+  await tpl.delete()
 
-  const srcBuffer = await src.readFile()
+  const srcBuffer = await src.read()
   const srcHeader = await getTPLHeader(src)
 
-  const tplStream = await tpl.createFileWriteStream()
+  const tplStream = await tpl.createWriteStream()
   tplStream.stream.write(srcHeader.data)
 
   // 32 is the size of the texture file header we need to skip
@@ -40,6 +41,6 @@ export const texToImgWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
     // but the file is coverted successfully...
   }
 
-  await tpl.checkThenDeleteFile()
+  await tpl.delete()
   return new ImgFile(destWithCorrectExt)
 }

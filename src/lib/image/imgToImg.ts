@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { type ConvertToImageOptions, ImgFile } from '../../core'
 import { ValueError, FileConvertionError } from '../../errors'
@@ -26,13 +27,13 @@ export const imgToImg = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, 
 
   if (quality < 1 || quality > 100) throw new ValueError(`Quality value must be a number value from 1 to 100, given ${quality.toString()}.`)
 
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  const destWithCorrectExt = dest.changeFileExt(toFormat)
 
   if (src.ext === destWithCorrectExt.ext && src.name === destWithCorrectExt.name) throw new FileConvertionError('Source and destination file has the same file name and extension')
 
-  await destWithCorrectExt.checkThenDeleteFile()
+  await destWithCorrectExt.delete()
 
   const { width: srcWidth, height: srcHeight } = await imgFileStat(src.path)
 

@@ -34,6 +34,7 @@ export default tseslint.config({
     '@typescript-eslint/no-dynamic-delete': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
+    // '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [
       'error',
       {

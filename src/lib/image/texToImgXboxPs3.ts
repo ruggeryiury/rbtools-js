@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { ImgFile } from '../../index'
 import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib'
 
@@ -11,16 +12,16 @@ import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../.
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const texToImgXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> => {
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
-  const dds = new Path(src.changeFileExt('dds'))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  const destWithCorrectExt = dest.changeFileExt(toFormat)
+  const dds = src.changeFileExt('dds')
 
-  await destWithCorrectExt.checkThenDeleteFile()
-  await dds.checkThenDeleteFile()
+  await destWithCorrectExt.delete()
+  await dds.delete()
 
-  const srcBuffer = await src.readFile()
-  const ddsStream = await dds.createFileWriteStream()
+  const srcBuffer = await src.read()
+  const ddsStream = await dds.createWriteStream()
 
   // 32 is the size of the texture file header we need to skip
   const loop = (srcBuffer.length - 32) / 4
@@ -47,6 +48,6 @@ export const texToImgXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLike
 
   await imageConverter(dds.path, destWithCorrectExt.path, toFormat, { width: srcHeader.width, height: srcHeader.height })
 
-  await dds.checkThenDeleteFile()
+  await dds.delete()
   return new ImgFile(destWithCorrectExt)
 }

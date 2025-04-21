@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { OnyxCLIError } from '../errors'
 import { execPromise } from '../lib'
 
@@ -12,20 +13,20 @@ export class OnyxCLI {
   /**
    * The path to the Onyx CLI executable.
    */
-  path: Path
+  path: FilePath
 
   /**
    * @param {PathLikeTypes} onyxCliPath The path to the Onyx CLI executable.
    */
   constructor(onyxCliPath: PathLikeTypes) {
-    const path = Path.stringToPath(onyxCliPath)
+    const path = FilePath.of(pathLikeToString(onyxCliPath))
     this.path = path
 
     this.checkOnyxCLIIntegrity()
   }
 
   private checkOnyxCLIIntegrity(): void {
-    if (!this.path.exists()) throw new OnyxCLIError(`No Onyx CLI executable found on provided path "${this.path.path}"`)
+    if (!this.path.exists) throw new OnyxCLIError(`No Onyx CLI executable found on provided path "${this.path.path}"`)
   }
 
   /**
@@ -50,8 +51,8 @@ export class OnyxCLI {
    * @returns {Promise<string>} The printable text from the child process.
    */
   async stfs(srcFolder: PathLikeTypes, destFile: PathLikeTypes, game: STFSGameTypes = 'rb3'): Promise<string> {
-    const src = Path.stringToPath(srcFolder)
-    const dest = new Path(Path.stringToPath(destFile).changeFileExt(''))
+    const src = FilePath.of(pathLikeToString(srcFolder))
+    const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('')
     const cmd = `"${this.path.path}" stfs "${src.path}" --to ${dest.path} --game ${game}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
@@ -67,8 +68,8 @@ export class OnyxCLI {
    * @returns {Promise<string>} The printable text from the child process.
    */
   async pkg(srcFolder: PathLikeTypes, destFile: PathLikeTypes, contentID: string): Promise<string> {
-    const src = Path.stringToPath(srcFolder)
-    const dest = new Path(Path.stringToPath(destFile).changeFileExt('pkg'))
+    const src = FilePath.of(pathLikeToString(srcFolder))
+    const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('pkg')
     const cmd = `"${this.path.path}" pkg ${contentID} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
@@ -85,8 +86,8 @@ export class OnyxCLI {
    * @returns {Promise<string>} The printable text from the child process.
    */
   async edat(srcFile: PathLikeTypes, destFile: PathLikeTypes, contentID: string, klic: string): Promise<string> {
-    const src = Path.stringToPath(srcFile)
-    const dest = new Path(Path.stringToPath(destFile).changeFileExt('edat'))
+    const src = FilePath.of(pathLikeToString(srcFile))
+    const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('edat')
     const cmd = `"${this.path.path}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`
     const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)

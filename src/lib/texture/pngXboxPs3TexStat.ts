@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import type { TextureFileStatReturnObject } from '../../core'
 import { getDDSHeader, getDDSHeaderSync } from '../../lib'
 
@@ -9,9 +10,9 @@ import { getDDSHeader, getDDSHeaderSync } from '../../lib'
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
 export const pngXboxPs3TexStat = async (filePath: PathLikeTypes): Promise<TextureFileStatReturnObject> => {
-  const srcPath = Path.stringToPath(filePath)
+  const srcPath = FilePath.of(pathLikeToString(filePath))
 
-  const srcBuffer = await srcPath.readFile()
+  const srcBuffer = await srcPath.read()
   const fullSrcHeader = Buffer.alloc(16)
   const shortSrcHeader = Buffer.alloc(11)
 
@@ -31,9 +32,9 @@ export const pngXboxPs3TexStat = async (filePath: PathLikeTypes): Promise<Textur
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
 export const pngXboxPs3TexStatSync = (filePath: PathLikeTypes): TextureFileStatReturnObject => {
-  const srcPath = Path.stringToPath(filePath)
+  const srcPath = FilePath.of(pathLikeToString(filePath))
 
-  const srcBuffer = srcPath.readFileSync()
+  const srcBuffer = srcPath.readSync()
   const fullSrcHeader = Buffer.alloc(16)
   const shortSrcHeader = Buffer.alloc(11)
 

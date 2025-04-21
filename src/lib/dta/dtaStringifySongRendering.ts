@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter, quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAStringifyFormats, type PartialDTAFile } from '../../lib'
+import { capitalizeFirstLetter, quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAFile, type DTAStringifyFormats, type PartialDTAFile } from '../../lib'
 
 /**
  * Adds tabs at the beginning of each line on a string.
@@ -131,11 +131,12 @@ export const renderDrumsCue = (format: DTAStringifyFormats): string => {
 /**
  * Renders tracks information of the song.
  * - - - -
+ * @param {PartialDTAFile} song A parsed song object
  * @param {AudioTracksCountObject} tracks An object with information about each track of the song.
  * @param {DTAStringifyFormats} format The format of the DTA text you want to render.
  * @returns {string} The new formatted string.
  */
-export const renderTrackMap = (tracks: AudioTracksCountObject, format: DTAStringifyFormats): string => {
+export const renderTrackMap = (song: DTAFile, tracks: AudioTracksCountObject, format: DTAStringifyFormats): string => {
   let content = ''
   if (format === 'rbn') {
     content += tabNewLineFormatter(`({n}{t}'tracks'{n}{t}({n}`)
@@ -157,10 +158,15 @@ export const renderTrackMap = (tracks: AudioTracksCountObject, format: DTAString
       else {
         const trackChannels = tracks[track]
         if (trackChannels) {
-          if (i === 0 && i !== tracksCount) content += tabNewLineFormatter(`(${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`}){n}`)
-          else if (i === 0 && i === tracksCount) content += tabNewLineFormatter(`(${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`})`)
-          else if (i !== 0 && i === tracksCount) content += tabNewLineFormatter(`{t} (${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`})`)
-          else content += tabNewLineFormatter(`{t} (${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`}){n}`)
+          if (i === 0 && i !== tracksCount - 1) {
+            content += tabNewLineFormatter(`(${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`}){n}`)
+          } else if (i === 0 && i === tracksCount - 1) {
+            content += tabNewLineFormatter(`(${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`})`)
+          } else if (i === tracksCount - 1) {
+            content += tabNewLineFormatter(`{t} (${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`})`)
+          } else {
+            content += tabNewLineFormatter(`{t} (${track} ${trackChannels.length === 1 ? trackChannels[0].toFixed() : `(${trackChannels.join(' ')})`}){n}`)
+          }
           i++
         }
       }
@@ -201,7 +207,7 @@ export const renderCustomAttributes = (song: PartialDTAFile): string => {
   const karaoke = song.multitrack === 'karaoke'
   content += `;Karaoke=${karaoke ? '1' : '0'}{n}`
 
-  const multitrack = song.multitrack === 'multitrack' || song.multitrack === true
+  const multitrack = song.multitrack === 'full'
   content += `;Multitrack=${multitrack ? '1' : '0'}{n}`
 
   const diyStems = song.multitrack === 'diy_stems'
@@ -210,13 +216,13 @@ export const renderCustomAttributes = (song: PartialDTAFile): string => {
   const partial = song.multitrack === 'partial'
   content += `;PartialMultitrack=${partial ? '1' : '0'}{n}`
 
-  content += `;UnpitchedVocals=${song.unpitched_vocals ? '1' : '0'}{n}`
+  content += `;UnpitchedVocals=${song.unpitchedVocals ? '1' : '0'}{n}`
   content += `;Convert=${song.convert ? '1' : '0'}{n}`
-  content += `;2xBass=${song.double_kick ? '1' : '0'}{n}`
+  content += `;2xBass=${song.doubleKick ? '1' : '0'}{n}`
 
-  const rhythmKeys = song.rhythm_on === 'keys'
+  const rhythmKeys = song.rhythmOn === 'keys'
   content += `;RhythmKeys=${rhythmKeys ? '1' : '0'}{n}`
-  const rhythmBass = song.rhythm_on === 'bass'
+  const rhythmBass = song.rhythmOn === 'bass'
   content += `;RhythmBass=${rhythmBass ? '1' : '0'}{n}`
 
   const CATemh = song.emh === 'cat'

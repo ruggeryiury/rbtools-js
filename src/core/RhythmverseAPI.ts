@@ -155,7 +155,7 @@ export class RhythmverseAPI {
           album_name: song.data.album,
           album_track_number: song.data.album_track_number ?? 1,
           author: song.file.author.name,
-          multitrack: song.file.audio_type === 'full',
+          multitrack: song.file.audio_type === 'full' ? 'full' : undefined,
 
           // Non-DTA values relative
           file_name: song.file.file_name === 'file' ? undefined : song.file.file_name,

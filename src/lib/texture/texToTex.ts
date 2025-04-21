@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { ConvertTextureToTextureOptions } from '../../core'
 import { TextureFile } from '../../index'
@@ -21,10 +22,10 @@ export const texToTex = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, 
     options
   )
 
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
-  const tempPng = new Path(src.changeFileName(`${src.name}_temp`, 'png'))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  const destWithCorrectExt = dest.changeFileExt(toFormat)
+  const tempPng = src.changeFileName(`${src.name}_temp`, 'png')
 
   if (src.ext === '.png_ps3' || src.ext === '.png_xbox') {
     return new TextureFile(await swapRBArtBytes(src, destWithCorrectExt))
@@ -34,6 +35,6 @@ export const texToTex = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, 
   const { width } = temp.statSync()
   const newTex = await temp.convertToTexture(destWithCorrectExt, toFormat, { DTX5, textureSize: width as ArtworkSizeTypes })
 
-  await temp.path.checkThenDeleteFile()
+  await temp.path.delete()
   return newTex
 }

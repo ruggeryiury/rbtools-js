@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib'
 
 /**
@@ -8,10 +9,10 @@ import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../l
  * @returns {Promise<string>} A Base64-encoded DataURL `string` of the texture file.
  */
 export const texBufferToWEBPDataUrl = async (srcPath: PathLikeTypes): Promise<string> => {
-  const src = Path.stringToPath(srcPath)
+  const src = FilePath.of(pathLikeToString(srcPath))
   if (src.ext === '.png_wii') return await webpDataURLPNGWii(src.path)
 
-  const srcBuffer = await src.readFile()
+  const srcBuffer = await src.read()
 
   const fullSrcHeader = Buffer.alloc(16)
   const shortSrcHeader = Buffer.alloc(11)

@@ -1,4 +1,4 @@
-import { Path } from 'path-js'
+import { FilePath } from 'path-js'
 import { RBTools } from '../../index'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'
@@ -154,16 +154,16 @@ export const buildDDSHeader = (format: DDSFormatTypes, width: number, height: nu
  */
 export const getDDSHeader = async (fullDDSHeader: Buffer, shortDDSHeader: Buffer): Promise<DDSHeaderParserObject> => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = RBTools.getImageHeadersPath()
+  const headerFolderPath = RBTools.imgHeaders
   const headerPaths = await headerFolderPath.readDir(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512
   let ddsHeight: ArtworkSizeTypes = 512
 
   for (const headerPath of headerPaths) {
-    const headerFilePath = new Path(headerPath)
+    const headerFilePath = FilePath.of(headerPath)
     const headerName = headerFilePath.name
-    const headerBytes = await headerFilePath.readFile()
+    const headerBytes = await headerFilePath.read()
     if (headerBytes.toString() === fullDDSHeader.toString() || headerBytes.toString() === shortDDSHeader.toString()) {
       ddsFormat = 'DXT5'
       if (headerName.includes('DXT1')) ddsFormat = 'DXT1'
@@ -200,16 +200,16 @@ export const getDDSHeader = async (fullDDSHeader: Buffer, shortDDSHeader: Buffer
  */
 export const getDDSHeaderSync = (fullDDSHeader: Buffer, shortDDSHeader: Buffer): DDSHeaderParserObject => {
   let header = buildDDSHeader('DXT1', 256, 256)
-  const headerFolderPath = RBTools.getImageHeadersPath()
+  const headerFolderPath = RBTools.imgHeaders
   const headerPaths = headerFolderPath.readDirSync(true)
   let ddsFormat: DDSHeaderTypes = 'UNKNOWN'
   let ddsWidth: ArtworkSizeTypes = 512
   let ddsHeight: ArtworkSizeTypes = 512
 
   for (const headerPath of headerPaths) {
-    const headerFilePath = new Path(headerPath)
+    const headerFilePath = FilePath.of(headerPath)
     const headerName = headerFilePath.name
-    const headerBytes = headerFilePath.readFileSync()
+    const headerBytes = headerFilePath.readSync()
     if (headerBytes.toString() === fullDDSHeader.toString() || headerBytes.toString() === shortDDSHeader.toString()) {
       ddsFormat = 'DXT5'
       if (headerName.includes('DXT1')) ddsFormat = 'DXT1'

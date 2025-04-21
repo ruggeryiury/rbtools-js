@@ -1,4 +1,5 @@
-import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { STFSFileError, WrongDTATypeError } from '../errors'
 import { DTAParser } from '../index'
 import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib'
@@ -27,7 +28,7 @@ export type STFSFileStatObject = Omit<STFSFileStatRawObject, 'dta' | 'upgrades'>
   hasUpgrades: boolean
 }
 
-export interface STFSFileJSONObject extends PathJSONRepresentation {
+export interface STFSFileJSONObject extends FilePathJSONRepresentation {
   /** The statistics of the CON file. */
   file: STFSFileStatObject
 }
@@ -38,13 +39,13 @@ export interface STFSFileJSONObject extends PathJSONRepresentation {
  */
 export class STFSFile {
   /** The path of the CON file. */
-  path: Path
+  path: FilePath
 
   /**
    * @param {PathLikeTypes} stfsFilePath The path to the CON file.
    */
   constructor(stfsFilePath: PathLikeTypes) {
-    const path = Path.stringToPath(stfsFilePath)
+    const path = FilePath.of(pathLikeToString(stfsFilePath))
     this.path = path
 
     this.checkExistence()
@@ -56,7 +57,7 @@ export class STFSFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists()) throw new STFSFileError(`Xbox CON file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new STFSFileError(`Xbox CON file "${this.path.path}" does not exists`)
     return true
   }
 
@@ -152,9 +153,9 @@ export class STFSFile {
    * Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
    * - - - -
    * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
-   * @returns {Promise<string>}
+   * @returns {Promise<DirPath>}
    */
-  async extract(destPath: PathLikeTypes): Promise<Path> {
+  async extract(destPath: PathLikeTypes): Promise<DirPath> {
     return await stfsExtract(this.path, destPath)
   }
 
@@ -163,9 +164,9 @@ export class STFSFile {
    * the folder path where all contents were extracted.
    * - - - -
    * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
-   * @returns {Promise<Path>}
+   * @returns {Promise<DirPath>}
    */
-  async extractAllFiles(destPath: PathLikeTypes): Promise<Path> {
+  async extractAllFiles(destPath: PathLikeTypes): Promise<DirPath> {
     return await stfsExtractAllFiles(this.path, destPath)
   }
 }

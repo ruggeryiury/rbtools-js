@@ -1,6 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Path } from 'path-js'
+import { DirPath, FilePath } from 'path-js'
+import { exists } from 'path-js/lib'
 import { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandDB, STFSFile, TextureFile } from './core'
 import 'dotenv/config'
 
@@ -15,35 +16,38 @@ export class RBTools {
    * Defaults to built `dist` folder unless a `RBTOOLS_USESOURCE` variable environment is set to `1`
    * that sets the folder to `src`.
    * - - - -
-   * @returns {Path}
+   * @returns {DirPath}
    */
-  static root(): Path {
-    return new Path(dirname(decodeURIComponent(fileURLToPath(import.meta.url))), process.env.RBTOOLS_USESOURCE === '1' ? '../src' : '../dist')
+  static get root(): DirPath {
+    return new DirPath(dirname(decodeURIComponent(fileURLToPath(import.meta.url))), process.env.RBTOOLS_USESOURCE === '1' ? '../src' : '../dist')
   }
   /**
    * Gets the `dist/bin` path of the module.
    * - - - -
-   * @returns {Path}
+   * @returns {DirPath}
    */
-  static getBinPath(): Path {
-    if (process.env.RBTOOLS_BIN_PATH && Path.isValidPath(process.env.RBTOOLS_BIN_PATH)) return new Path(process.env.RBTOOLS_BIN_PATH)
-    return new Path(RBTools.root().path, 'bin')
+  static get bin(): DirPath {
+    if (process.env.RBTOOLS_BIN_PATH) {
+      if (!exists(process.env.RBTOOLS_BIN_PATH)) throw new ReferenceError(`Provided path ${process.env.RBTOOLS_BIN_PATH} (as env variable RBTOOLS_BIN_PATH) does not exists.`)
+      return new DirPath(process.env.RBTOOLS_BIN_PATH)
+    }
+    return new DirPath(RBTools.root.path, 'bin')
   }
   /**
    * Gets the `dist/bin/python` path of the module.
    * - - - -
-   * @returns {Path}
+   * @returns {DirPath}
    */
-  static getPythonScriptsPath(): Path {
-    return new Path(RBTools.getBinPath().path, 'python')
+  static get python(): DirPath {
+    return new DirPath(RBTools.bin.path, 'python')
   }
   /**
    * Gets the `dist/bin/headers` path of the module.
    * - - - -
-   * @returns {Path}
+   * @returns {DirPath}
    */
-  static getImageHeadersPath(): Path {
-    return new Path(RBTools.getBinPath().path, 'headers')
+  static get imgHeaders(): DirPath {
+    return new DirPath(RBTools.bin.path, 'headers')
   }
   /**
    * Gets the `dist/bin/dta` path of the module.
@@ -51,8 +55,8 @@ export class RBTools {
    * @param {string[]} paths Paths to resolve from the DTA folder.
    * @returns {Path}
    */
-  static getDTAPath(...paths: string[]): Path {
-    return new Path(RBTools.getBinPath().path, 'dta', ...paths)
+  static getDTAPath(...paths: string[]): FilePath {
+    return new FilePath(RBTools.bin.path, 'dta', ...paths)
   }
 }
 

@@ -1,7 +1,7 @@
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import type { MAGMAProjectSongData } from '../../core'
-import { dtaLocale, genNumericSongID, getKeyFromMapValue, channelsCountToPanArray, rankValuesToDTARankSystem, sortDTAMap, type AnimTempoNames, type BandFailCueNames, type BandRankingNames, type BandRankingNumbers, type DrumBankNames, type DTAFile, type DTAMap, type DTARecord, type PercussionBankNames, type SongGameOriginNames, type SongGenreNames, type SongRatingNames, type SongScrollSpeedNames, type VocalParts, type VocalPartsNames, type SongEncoding, containsLatin1SpecificChars, type SoloFlags, bandAverageRankCalculator, type MAGMALanguagesTypes, type CustomSourceValuesObject, type VocalGenderNames } from '../../lib'
+import { dtaLocale, genNumericSongID, getKeyFromMapValue, channelsCountToPanArray, rankValuesToDTARankSystem, sortDTAMap, type AnimTempoNames, type BandFailCueNames, type BandRankingNames, type BandRankingNumbers, type DrumBankNames, type DTAFile, type DTAMap, type DTARecord, type PercussionBankNames, type SongGameOriginNames, type SongGenreNames, type SongRatingNames, type SongScrollSpeedNames, type VocalParts, type VocalPartsNames, type SongEncoding, containsLatin1SpecificChars, type SoloFlags, bandAverageRankCalculator, type MAGMALanguagesTypes, type CustomSourceValuesObject, type VocalGenderNames, localeKeyToValue } from '../../lib'
 
 export type InstrumentChannelsTypes = 'Mono' | 'Stereo' | 1 | 2
 export type DrumTracksTypes = 2 | 'Stereo Else' | 3 | 'Mono Kick + Stereo Else' | 4 | 'Mono Kick + Mono Snare + Stereo Else' | 5 | 'Mono Kick + Stereo Snare + Stereo Else' | 6 | 'Stereo Kick + Stereo Snare + Stereo Else'
@@ -616,10 +616,8 @@ export const createDTA = (songdata: SongDataCreationObject): DTAFile => {
 
     vocalsR = rankValuesToDTARankSystem('vocals', vocals.rank)
     map.set('rank_vocals', vocalsR)
-
     map.set('vocal_parts', typeof vocals.vocalParts === 'number' ? vocals.vocalParts : vocals.vocalParts === 'Solo Vocals' ? 1 : vocals.vocalParts === '2-Part Harmonies' ? 2 : 3)
-
-    map.set('vocal_gender', (vocals.vocalGender as typeof vocals.vocalGender | undefined) ?? 'Male')
+    map.set('vocal_gender', (vocals.vocalGender as typeof vocals.vocalGender | undefined) ? vocals.vocalGender.toLowerCase() : 'male')
 
     channelsCountToPanArray(vocals.channels).forEach((pan) => {
       pans.push(pan)
@@ -740,6 +738,8 @@ export const createDTA = (songdata: SongDataCreationObject): DTAFile => {
       if (albumName && containsLatin1SpecificChars(albumName)) hasNonASCIIChars = true
       if (packName && containsLatin1SpecificChars(packName)) hasNonASCIIChars = true
       if (author && containsLatin1SpecificChars(author)) hasNonASCIIChars = true
+      if (keysAuthor && containsLatin1SpecificChars(keysAuthor)) hasNonASCIIChars = true
+      if (stringsAuthor && containsLatin1SpecificChars(stringsAuthor)) hasNonASCIIChars = true
       if (loadingPhrase && containsLatin1SpecificChars(loadingPhrase)) hasNonASCIIChars = true
 
       return hasNonASCIIChars ? 'utf8' : 'latin1'
@@ -1093,10 +1093,10 @@ export const createDTA = (songdata: SongDataCreationObject): DTAFile => {
 
   map.set('languages', languages)
   if (multitrack) map.set('multitrack', multitrack)
-  if (unpitchedVocals) map.set('unpitched_vocals', unpitchedVocals)
+  if (unpitchedVocals) map.set('unpitchedVocals', unpitchedVocals)
   if (convert) map.set('convert', convert)
-  if (doubleKick) map.set('double_kick', doubleKick)
-  if (rhythmOn) map.set('rhythm_on', rhythmOn)
+  if (doubleKick) map.set('doubleKick', doubleKick)
+  if (rhythmOn) map.set('rhythmOn', rhythmOn)
   if (emh) map.set('emh', emh)
   if (customsource) map.set('customsource', customsource)
   if (magma) map.set('magma', magma)

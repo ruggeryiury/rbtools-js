@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import type { MOGGFileStatRawObject } from '../../core'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
@@ -13,8 +14,8 @@ import { execPromise } from '../../lib'
  */
 export const moggFileStat = async (moggFilePath: PathLikeTypes): Promise<MOGGFileStatRawObject> => {
   const moduleName = 'mogg_file_stat.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(moggFilePath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(moggFilePath))
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -30,8 +31,8 @@ export const moggFileStat = async (moggFilePath: PathLikeTypes): Promise<MOGGFil
  */
 export const moggFileStatSync = (moggFilePath: PathLikeTypes): MOGGFileStatRawObject => {
   const moduleName = 'mogg_file_stat.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(moggFilePath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(moggFilePath))
   const command = `python ${moduleName} "${src.path}"`
   try {
     return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as MOGGFileStatRawObject

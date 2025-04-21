@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import type { ImgFileStatReturnObject } from '../../core'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
@@ -13,8 +14,8 @@ import { execPromise } from '../execPromise'
  */
 export const imgFileStat = async (imageFilePath: PathLikeTypes): Promise<ImgFileStatReturnObject> => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(imageFilePath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(imageFilePath))
   const command = `python ${moduleName} "${src.path}"`
   const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
@@ -30,8 +31,8 @@ export const imgFileStat = async (imageFilePath: PathLikeTypes): Promise<ImgFile
  */
 export const imgFileStatSync = (imageFilePath: PathLikeTypes): ImgFileStatReturnObject => {
   const moduleName = 'img_file_stat.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(imageFilePath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(imageFilePath))
   const command = `python ${moduleName} "${src.path}"`
   try {
     return JSON.parse(execSync(command, { windowsHide: true, cwd: pyPath.root }).toString()) as ImgFileStatReturnObject

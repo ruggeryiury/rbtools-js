@@ -1,5 +1,5 @@
-import type { PathLikeTypes } from 'path-js'
-import { Path } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { RB3SaveFileError, UnknownFileFormatError } from '../errors'
 import type { InstrumentTypes } from '../lib'
 
@@ -398,7 +398,7 @@ export class RB3SaveFilePS3 {
   /**
    * The path to the Rock Band 3 save file.
    */
-  path: Path
+  path: FilePath
   /**
    * The Rock Band 3 save file buffer.
    */
@@ -413,9 +413,9 @@ export class RB3SaveFilePS3 {
    * @param {PathLikeTypes} saveFilePath The path to the Rock Band 3 save file.
    */
   constructor(saveFilePath: PathLikeTypes) {
-    this.path = Path.stringToPath(saveFilePath)
+    this.path = FilePath.of(pathLikeToString(saveFilePath))
     if (this.path.ext.toLowerCase() !== '.dat') throw new UnknownFileFormatError('Only Wii "band3.dat", Xbox 360 "save.dat", and decrypted PS3 "SAVE.DAT" files are supported.')
-    this.buffer = this.path.readFileSync()
+    this.buffer = this.path.readSync()
 
     if (this.buffer.length === 0xc00000) {
       throw new RB3SaveFileError('Tried to read a Wii save file, but this class only supports decrypted PS3 .dat files.')

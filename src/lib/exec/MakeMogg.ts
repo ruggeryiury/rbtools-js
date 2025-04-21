@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { ExecutableError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../execPromise'
@@ -12,9 +13,9 @@ import { execPromise } from '../execPromise'
  */
 export const MakeMogg = async (srcFile: PathLikeTypes, destPath: PathLikeTypes): Promise<string> => {
   const moduleName = 'makemogg.exe'
-  const exePath = new Path(RBTools.getBinPath().path, moduleName)
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
+  const exePath = FilePath.of(RBTools.bin.path, moduleName)
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
 
   const command = `${moduleName} "${src.path}" -m "${dest.path}"`
   const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })

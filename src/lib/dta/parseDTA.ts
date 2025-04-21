@@ -409,7 +409,7 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
 
     if (s.includes('UnpitchedVocals=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      if (proof) newDTA.set('unpitched_vocals', 'partial')
+      if (proof) newDTA.set('unpitchedVocals', 'partial')
       return
     }
 
@@ -421,19 +421,19 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
 
     if (s.includes('2xBass=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      if (proof) newDTA.set('double_kick', true)
+      if (proof) newDTA.set('doubleKick', true)
       return
     }
 
     if (s.includes('RhythmKeys=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      if (proof) newDTA.set('rhythm_on', 'keys')
+      if (proof) newDTA.set('rhythmOn', 'keys')
       return
     }
 
     if (s.includes('RhythmBass=')) {
       const proof = Boolean(Number(s.split('=')[1].replaceAll(')', '').trim()))
-      if (proof) newDTA.set('rhythm_on', 'bass')
+      if (proof) newDTA.set('rhythmOn', 'bass')
       return
     }
 
@@ -484,10 +484,10 @@ export const parseDTA = (song: string, options?: DTAContentParserOptions): DTAMa
     if (newDTA.get('tuning_offset_cents') === 0) newDTA.delete('tuning_offset_cents')
     if (newDTA.get('guide_pitch_volume') === -3) newDTA.delete('guide_pitch_volume')
     if (newDTA.get('multitrack') === undefined) newDTA.delete('multitrack')
-    if (newDTA.get('unpitched_vocals') === undefined) newDTA.delete('unpitched_vocals')
+    if (newDTA.get('unpitchedVocals') === undefined) newDTA.delete('unpitchedVocals')
     if (newDTA.get('convert') === undefined) newDTA.delete('convert')
-    if (newDTA.get('double_kick') === undefined) newDTA.delete('double_kick')
-    if (newDTA.get('rhythm_on') === undefined) newDTA.delete('rhythm_on')
+    if (newDTA.get('doubleKick') === undefined) newDTA.delete('doubleKick')
+    if (newDTA.get('rhythmOn') === undefined) newDTA.delete('rhythmOn')
     if (newDTA.get('emh') === undefined) newDTA.delete('emh')
   }
 

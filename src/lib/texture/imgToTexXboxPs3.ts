@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFile, type ConvertToTextureOptions } from '../../core'
 import { FileConvertionError, UnknownFileFormatError } from '../../errors'
@@ -22,18 +23,18 @@ export const imgToTexXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLike
     },
     options
   )
-  const src = Path.stringToPath(srcFile)
-  const dest = Path.stringToPath(destPath)
-  const destWithCorrectExt = new Path(dest.changeFileExt(toFormat))
+  const src = FilePath.of(pathLikeToString(srcFile))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  const destWithCorrectExt = dest.changeFileExt(toFormat)
 
   if (src.ext === destWithCorrectExt.ext) throw new FileConvertionError('Source and destination file has the same file extension')
 
-  const tga = new Path(src.changeFileExt('tga'))
-  const dds = new Path(src.changeFileExt('dds'))
+  const tga = src.changeFileExt('tga')
+  const dds = src.changeFileExt('dds')
 
-  await destWithCorrectExt.checkThenDeleteFile()
-  await tga.checkThenDeleteFile()
-  await dds.checkThenDeleteFile()
+  await destWithCorrectExt.delete()
+  await tga.delete()
+  await dds.delete()
 
   await imageConverter(src.path, tga.path, 'tga', {
     width: textureSize,
@@ -43,15 +44,15 @@ export const imgToTexXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLike
   })
 
   await NVCompress(tga.path, dds.path, DTX5)
-  await tga.checkThenDeleteFile()
+  await tga.delete()
 
   const headerName = `${textureSize.toString()}p${DTX5 ? 'DTX5' : 'DTX1'}` as keyof typeof imageHeaders
   const header = imageHeaders[headerName] as readonly number[] | undefined
   if (header === undefined) throw new UnknownFileFormatError('Provided file path is not recognizable as a DDS file.')
   const headerBuffer = Buffer.from(header)
 
-  const ddsBuffer = await dds.readFile()
-  const destStream = await destWithCorrectExt.createFileWriteStream()
+  const ddsBuffer = await dds.read()
+  const destStream = await destWithCorrectExt.createWriteStream()
 
   // 128 is the size of the DDS file header we need to skip
   // 4 for byte swapping
@@ -69,6 +70,6 @@ export const imgToTexXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLike
   destStream.stream.end()
   await destStream.once
 
-  await dds.checkThenDeleteFile()
+  await dds.delete()
   return new TextureFile(destWithCorrectExt)
 }

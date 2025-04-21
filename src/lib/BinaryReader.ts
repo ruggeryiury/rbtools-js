@@ -1,5 +1,6 @@
 import type { FileHandle } from 'fs/promises'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { FileNotFoundError, BinaryReaderError } from '../errors'
 
 /**
@@ -9,7 +10,7 @@ export class BinaryReader {
   /**
    * The path of the binary file that will be read. This is `undefined` when you initialize this class instance using the static `loadBuffer()` method.
    */
-  path?: Path
+  path?: FilePath
   /**
    * The handler of the file that will be read. This is `undefined` when you initialize this class instance using the static `loadBuffer()` method.
    */
@@ -30,8 +31,8 @@ export class BinaryReader {
    * @returns {Promise<BinaryReader>}
    */
   static async loadFile(filePath: PathLikeTypes): Promise<BinaryReader> {
-    const path = Path.stringToPath(filePath)
-    const handler = await path.openFile()
+    const path = FilePath.of(pathLikeToString(filePath))
+    const handler = await path.open()
     return new BinaryReader(path, handler)
   }
 
@@ -55,10 +56,8 @@ export class BinaryReader {
     if (this.buffer) {
       return true
     } else if (this.path && this.handler) {
-      const fileExists = this.path.exists()
-      const fileType = this.path.type()
+      const fileExists = this.path.exists
       if (!fileExists) throw new FileNotFoundError(`Binary file "${this.path.path}" does not exists`)
-      if (fileType === 'directory') throw new TypeError(`Provided path "${this.path.path}" resolves to a directiory, not a file`)
       return true
     }
     throw new BinaryReaderError('Internal function error')
@@ -71,8 +70,8 @@ export class BinaryReader {
    * @param {FileHandle | Buffer} handlerOrBuffer A `FileHandle` or `Buffer` object that will be stored on this class instance.
    */
   private constructor(path: PathLikeTypes, handlerOrBuffer: FileHandle | Buffer) {
-    if (path instanceof Path) this.path = path
-    else this.path = Path.stringToPath(path)
+    if (path instanceof FilePath) this.path = path
+    else this.path = FilePath.of(pathLikeToString(path))
 
     if (Buffer.isBuffer(handlerOrBuffer)) this.buffer = handlerOrBuffer
     else this.handler = handlerOrBuffer

@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 
 /**
  * Computes the SHA-256 hash of a buffer's contents.
@@ -20,8 +21,8 @@ export const calculateHashFromBuffer = (content: Buffer): string => {
  * @returns {string} The SHA-256 hash of the file in hexadecimal format.
  */
 export const calculateHashFromFile = async (filePath: PathLikeTypes): Promise<string> => {
-  const dtaPath = Path.stringToPath(filePath)
-  const dtaBuffer = await dtaPath.readFile()
+  const dtaPath = FilePath.of(pathLikeToString(filePath))
+  const dtaBuffer = await dtaPath.read()
   return calculateHashFromBuffer(dtaBuffer)
 }
 
@@ -32,7 +33,7 @@ export const calculateHashFromFile = async (filePath: PathLikeTypes): Promise<st
  * @returns {string} The SHA-256 hash of the file in hexadecimal format.
  */
 export const calculateHashFromFileSync = (filePath: PathLikeTypes): string => {
-  const dtaPath = Path.stringToPath(filePath)
-  const dtaBuffer = dtaPath.readFileSync()
+  const dtaPath = FilePath.of(pathLikeToString(filePath))
+  const dtaBuffer = dtaPath.readSync()
   return calculateHashFromBuffer(dtaBuffer)
 }

@@ -1,5 +1,6 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAParserError, WrongDTATypeError } from '../errors'
@@ -101,9 +102,9 @@ export class DTAParser {
    * @returns {Promise<DTAParser>}
    */
   static async fromFile(dtaFilePath: PathLikeTypes, type: DTAContentParserFormatTypes = 'complete'): Promise<DTAParser> {
-    const path = Path.stringToPath(dtaFilePath)
-    if (!Path.isValidPath(path.path)) throw new DTAParserError(`Provided argument "${path.path}" is not a path or the file does not exists`)
-    const dtaBuffer = await path.readFile()
+    const path = FilePath.of(pathLikeToString(dtaFilePath))
+    if (!path.exists) throw new DTAParserError(`Provided argument "${path.path}" is not a path or the file does not exists`)
+    const dtaBuffer = await path.read()
     return DTAParser.fromBuffer(dtaBuffer, type)
   }
 
@@ -134,8 +135,8 @@ export class DTAParser {
    * @returns {Promise<string>}
    */
   static async calculateHashFromFile(dtaFilePath: PathLikeTypes): Promise<string> {
-    const dtaPath = Path.stringToPath(dtaFilePath)
-    const dtaBuffer = await dtaPath.readFile()
+    const dtaPath = FilePath.of(pathLikeToString(dtaFilePath))
+    const dtaBuffer = await dtaPath.read()
     return DTAParser.calculateHashFromBuffer(dtaBuffer)
   }
 
@@ -329,10 +330,20 @@ export class DTAParser {
    * @param {SongEncoding | undefined} encoding The encoding of the DTA file. Default is `utf8`.
    * @returns {Promise<Path>}
    */
-  async saveToFile(destPath: PathLikeTypes, options?: DTAStringifyOptions, encoding: SongEncoding = 'utf8'): Promise<Path> {
-    const dest = Path.stringToPath(destPath)
+  async saveToFile(
+    destPath: PathLikeTypes,
+    options?: DTAStringifyOptions,
+    encoding: SongEncoding = 'utf8'
+  ): Promise<{
+    path: FilePath
+    content: string
+  }> {
+    const dest = FilePath.of(pathLikeToString(destPath))
     const content = this.toString(options)
-    return new Path(await dest.writeFile(content, encoding))
+    return {
+      path: await dest.write(content, encoding),
+      content,
+    }
   }
 
   /**

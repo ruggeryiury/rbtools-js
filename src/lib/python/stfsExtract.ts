@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { DirPath, FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../../lib'
@@ -8,15 +9,15 @@ import { execPromise } from '../../lib'
  * - - - -
  * @param {PathLikeTypes} stfsFilePath The path of the CON file.
  * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
- * @returns {Promise<Path>}
+ * @returns {Promise<DirPath>}
  */
-export const stfsExtract = async (stfsFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<Path> => {
+export const stfsExtract = async (stfsFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<DirPath> => {
   const moduleName = 'stfs_extract.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(stfsFilePath)
-  const dest = Path.stringToPath(destPath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(stfsFilePath))
+  const dest = DirPath.of(pathLikeToString(destPath))
 
-  if (dest.exists()) await dest.deleteDir()
+  if (dest.exists) await dest.deleteDir()
   await dest.mkDir()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
@@ -32,15 +33,15 @@ export const stfsExtract = async (stfsFilePath: PathLikeTypes, destPath: PathLik
  * - - - -
  * @param {PathLikeTypes} stfsFilePath The path of the CON file.
  * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
- * @returns {Promise<Path>}
+ * @returns {Promise<DirPath>}
  */
-export const stfsExtractAllFiles = async (stfsFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<Path> => {
+export const stfsExtractAllFiles = async (stfsFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<DirPath> => {
   const moduleName = 'stfs_extract_all_files.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(stfsFilePath)
-  const dest = Path.stringToPath(destPath)
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(stfsFilePath))
+  const dest = DirPath.of(pathLikeToString(destPath))
 
-  if (dest.exists()) await dest.deleteDir()
+  if (dest.exists) await dest.deleteDir()
   await dest.mkDir()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`

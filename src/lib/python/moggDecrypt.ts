@@ -1,4 +1,5 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../../lib'
@@ -10,12 +11,12 @@ import { execPromise } from '../../lib'
  * @param {PathLikeTypes} destPath The new decrypted MOGG file path
  * @returns {Promise<Path>}
  */
-export const moggDecrypt = async (moggFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<Path> => {
+export const moggDecrypt = async (moggFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<FilePath> => {
   const moduleName = 'mogg_decrypt.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const src = Path.stringToPath(moggFilePath)
-  const dest = Path.stringToPath(destPath)
-  await dest.checkThenDeleteFile()
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const src = FilePath.of(pathLikeToString(moggFilePath))
+  const dest = FilePath.of(pathLikeToString(destPath))
+  await dest.delete()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })

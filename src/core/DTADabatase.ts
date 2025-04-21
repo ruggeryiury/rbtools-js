@@ -1,9 +1,29 @@
 import { sortDTA, type DTAFile } from '../lib'
 
+/**
+ * A class that acts as a DTA file database processor.
+ * - - - -
+ */
 export class DTADatabase<T extends DTAFile> {
+  /**
+   * An array with all songs from the database.
+   */
   readonly songs: T[]
+  /**
+   * @param {T[] | undefined} songs `OPTIONAL` An array with parsed songs to be added on the database,
+   * or `undefined` if you want to add
+   */
   constructor(songs?: T[]) {
     this.songs = songs ?? []
+  }
+
+  /**
+   * Adds more songs to the database.
+   * - - - -
+   * @param {T[]} songs The songs to be added.
+   */
+  addSongs(...songs: T[]) {
+    this.songs.push(...songs)
   }
 
   /**

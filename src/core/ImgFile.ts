@@ -1,4 +1,5 @@
-import { Path, type PathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors'
 import type { TextureFile } from '../index'
@@ -19,7 +20,7 @@ export interface ImgFileStatReturnObject {
   imageMode: string
 }
 
-export interface ImgFileJSONObject extends PathJSONRepresentation {
+export interface ImgFileJSONObject extends FilePathJSONRepresentation {
   /** The statistics of the image file. */
   file: ImgFileStatReturnObject
 }
@@ -66,7 +67,7 @@ export interface ConvertToWEBPDataURLOptions {
  */
 export class ImgFile {
   /** The path of the image file */
-  path: Path
+  path: FilePath
 
   /**
    * Checks if a path resolves to an existing image file.
@@ -74,7 +75,7 @@ export class ImgFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists() && this.path.type() !== 'file') throw new FileNotFoundError(`Texture file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new FileNotFoundError(`Texture file "${this.path.path}" does not exists`)
     return true
   }
 
@@ -82,7 +83,7 @@ export class ImgFile {
    * @param {PathLikeTypes} imageFilePath The path to the image file.
    */
   constructor(imageFilePath: PathLikeTypes) {
-    this.path = Path.stringToPath(imageFilePath)
+    this.path = FilePath.of(pathLikeToString(imageFilePath))
     this.checkExistence()
 
     if (this.path.ext === '.png_xbox' || this.path.ext === '.png_ps3' || this.path.ext === '.png_wii') throw new ImgFileError(`Tired to load a ${this.path.ext.slice(1).toUpperCase()} file on an "ImgFile()" class, try to use the "TextureFile()" class instead`)
@@ -150,8 +151,8 @@ export class ImgFile {
       },
       options
     )
-    const unformattedDestPath = Path.stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat))
+    const unformattedDestPath = FilePath.of(pathLikeToString(destPath))
+    const dest = unformattedDestPath.changeFileName(unformattedDestPath.name.endsWith('_keep') ? unformattedDestPath.name : `${unformattedDestPath.name}_keep`, toFormat)
 
     if (toFormat === 'png_wii') {
       return await imgToTexWii(this.path, dest, { interpolation: opts.interpolation })
@@ -177,8 +178,8 @@ export class ImgFile {
       },
       options
     )
-    const unformattedDestPath = Path.stringToPath(destPath)
-    const dest = new Path(unformattedDestPath.changeFileExt(toFormat))
+    const unformattedDestPath = FilePath.of(pathLikeToString(destPath))
+    const dest = unformattedDestPath.changeFileExt(toFormat)
     return await imgToImg(this.path, dest, toFormat, opts)
   }
 

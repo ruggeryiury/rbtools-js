@@ -1,19 +1,20 @@
-import { Path, type PathLikeTypes } from 'path-js'
+import { FilePath, type PathLikeTypes } from 'path-js'
+import { pathLikeToString } from 'path-js/lib'
 import { PythonExecutionError, ValueError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../execPromise'
 
 export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLikeTypes, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'
-  const pyPath = new Path(RBTools.getPythonScriptsPath().path, moduleName)
-  const dest = Path.stringToPath(destPath)
-  await dest.checkThenDeleteFile()
+  const pyPath = FilePath.of(RBTools.python.path, moduleName)
+  const dest = FilePath.of(pathLikeToString(destPath))
+  await dest.delete()
 
   if (quality < 1 || quality > 10) throw new ValueError(`MOGG quality must be between 1 and 10, got ${quality.toString()}`)
 
   let audioFileInput = ''
   for (const file of audioFiles) {
-    audioFileInput += `"${Path.stringToPath(file).path}" `
+    audioFileInput += `"${FilePath.of(pathLikeToString(file)).path}" `
   }
   const command = `python ${moduleName} ${audioFileInput} -o "${dest.path}" -q ${quality.toString()}`
   const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })

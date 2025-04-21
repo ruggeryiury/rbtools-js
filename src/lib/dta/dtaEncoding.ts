@@ -49,7 +49,7 @@ export const containsLatin1SpecificChars = (input: string): boolean => {
  * @returns {SongEncoding | undefined} The correct encoding for the song.
  */
 export const patchDTAEncodingFromDTAFileObject = (song: PartialDTAFile): SongEncoding | undefined => {
-  const { name, artist, album_name, pack_name, author, loading_phrase, encoding } = song
+  const { name, artist, album_name, pack_name, author, keys_author, strings_author, loading_phrase, encoding } = song
   let hasNonASCIIChars = false
   let hasAnyStringValue = false
 
@@ -70,6 +70,14 @@ export const patchDTAEncodingFromDTAFileObject = (song: PartialDTAFile): SongEnc
     hasAnyStringValue = true
   }
   if (author && containsLatin1SpecificChars(author)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (keys_author && containsLatin1SpecificChars(keys_author)) {
+    hasNonASCIIChars = true
+    hasAnyStringValue = true
+  }
+  if (strings_author && containsLatin1SpecificChars(strings_author)) {
     hasNonASCIIChars = true
     hasAnyStringValue = true
   }
