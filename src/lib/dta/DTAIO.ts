@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { BinaryWriter } from 'binary-rw'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
-import { BinaryWriter, dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib'
+import { dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib'
 
 export type DTADocumentInlineTypes = boolean | 'expanded'
 

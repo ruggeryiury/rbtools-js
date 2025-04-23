@@ -1,6 +1,7 @@
+import { BinaryWriter } from 'binary-rw'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
-import { BinaryWriter, DTAIO, quoteToSlashQ, tabNewLineFormatter, type ArrayValueObject, type BooleanFormattingOptions, type BooleanValueObject, type DTAIOAddValueTypes, type DTAIOFormattingOptions, type FloatValueObject, type NumberAndFloatFormattingOptions, type NumberValueObject, type ObjectValueObject, type StringFormattingOptions, type StringValueObject, type StringVariableFormattingOptions, type StringVariableValueObject } from '../../lib'
+import { DTAIO, quoteToSlashQ, tabNewLineFormatter, type ArrayValueObject, type BooleanFormattingOptions, type BooleanValueObject, type DTAIOAddValueTypes, type DTAIOFormattingOptions, type FloatValueObject, type NumberAndFloatFormattingOptions, type NumberValueObject, type ObjectValueObject, type StringFormattingOptions, type StringValueObject, type StringVariableFormattingOptions, type StringVariableValueObject } from '../../lib'
 
 export const dtaRenderKey = (key: string, apostropheOnKey: boolean): string => {
   let content = ''

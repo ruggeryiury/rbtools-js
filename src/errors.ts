@@ -295,38 +295,6 @@ export class WrongDTATypeError extends Error {
 }
 
 /**
- * A generic error that's thrown by the `BinaryWriter` class.
- * - - - -
- */
-export class BinaryWriterError extends Error {
-  /**
-   * @param {string} message The message you want to display.
-   */
-  constructor(message = '') {
-    super(message)
-    this.name = 'BinaryWriterError'
-    Error.captureStackTrace(this, BinaryWriterError)
-    Object.setPrototypeOf(this, BinaryWriterError.prototype)
-  }
-}
-
-/**
- * A generic error that's thrown by the `BinaryWriter` class.
- * - - - -
- */
-export class BinaryReaderError extends Error {
-  /**
-   * @param {string} message The message you want to display.
-   */
-  constructor(message = '') {
-    super(message)
-    this.name = 'BinaryReaderError'
-    Error.captureStackTrace(this, BinaryReaderError)
-    Object.setPrototypeOf(this, BinaryReaderError.prototype)
-  }
-}
-
-/**
  * A generic error that's thrown by the `PACKFile` class.
  * - - - -
  */

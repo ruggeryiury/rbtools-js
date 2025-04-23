@@ -1,8 +1,9 @@
+import { BinaryWriter } from 'binary-rw'
 import { FilePath } from 'path-js'
 import { isAbsolute, resolve } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { MissingRequiredValueError } from '../errors'
-import { BinaryWriter, DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib'
+import { DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib'
 
 export type MAGMAAutogenOptions = 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
 export interface MAGMAProjectSongData {
