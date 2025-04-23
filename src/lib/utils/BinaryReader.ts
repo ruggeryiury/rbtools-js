@@ -1,7 +1,8 @@
+import { lstatSync } from 'fs'
 import type { FileHandle } from 'fs/promises'
 import { FilePath, type PathLikeTypes } from 'path-js'
 import { pathLikeToString } from 'path-js/lib'
-import { FileNotFoundError, BinaryReaderError } from '../errors'
+import { FileNotFoundError, BinaryReaderError, MissingRequiredValueError } from '../../errors'
 
 /**
  * A class to read binary files.
@@ -20,6 +21,10 @@ export class BinaryReader {
    */
   buffer?: Buffer
   /**
+   * The size of the file/buffer that the class is working upon.
+   */
+  size: number
+  /**
    * The byte offset that all read methods will use.
    */
   protected offset: number
@@ -32,8 +37,9 @@ export class BinaryReader {
    */
   static async loadFile(filePath: PathLikeTypes): Promise<BinaryReader> {
     const path = FilePath.of(pathLikeToString(filePath))
+    if (!path.exists) throw new FileNotFoundError(`Provided path ${path.path} does not exists.`)
     const handler = await path.open()
-    return new BinaryReader(path, handler)
+    return new BinaryReader(path, handler, (await handler.stat()).size)
   }
 
   /**
@@ -43,7 +49,7 @@ export class BinaryReader {
    * @returns {BinaryReader}
    */
   static loadBuffer(buffer: Buffer): BinaryReader {
-    return new BinaryReader('', buffer)
+    return new BinaryReader(null, buffer, buffer.length)
   }
 
   /**
@@ -66,15 +72,23 @@ export class BinaryReader {
   /**
    * Creates a `BinaryReader` class instance.
    * - - - -
-   * @param {PathLikeTypes} path The path of any binary file to be read.
+   * @param {PathLikeTypes | null} path The path of any binary file to be read. The `null` value can be used to manipulate `Buffer` objects.
    * @param {FileHandle | Buffer} handlerOrBuffer A `FileHandle` or `Buffer` object that will be stored on this class instance.
+   * @param {number | undefined} [size] `OPTIONAL` The size of the file or buffer that the `BinaryReader` will work upon.
+   * If not provided, it will be simply inherited from file/buffer.
    */
-  private constructor(path: PathLikeTypes, handlerOrBuffer: FileHandle | Buffer) {
+  constructor(path: PathLikeTypes | null, handlerOrBuffer: FileHandle | Buffer, size?: number) {
     if (path instanceof FilePath) this.path = path
-    else this.path = FilePath.of(pathLikeToString(path))
+    else if (path) this.path = FilePath.of(pathLikeToString(path))
 
-    if (Buffer.isBuffer(handlerOrBuffer)) this.buffer = handlerOrBuffer
-    else this.handler = handlerOrBuffer
+    if (Buffer.isBuffer(handlerOrBuffer)) {
+      this.buffer = handlerOrBuffer
+      this.size = handlerOrBuffer.length
+    } else {
+      this.handler = handlerOrBuffer
+      if (!this.path) throw new MissingRequiredValueError('BinaryReader received "FileHandle" object to process, but no file path. This error must not happen!!! Contact if this error ever be thrown at you!!!')
+      this.size = lstatSync(this.path.path).size
+    }
     this.offset = 0
   }
 
@@ -94,9 +108,11 @@ export class BinaryReader {
         this.offset += allocSize
         return buf
       }
-      const { buffer } = await this.handler.read({ offset: this.offset, length: allocSize })
+      allocSize = this.size - this.offset
+      const buf = Buffer.alloc(allocSize)
+      await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
       this.offset = 0
-      return buffer
+      return buf
     } else if (this.buffer) {
       if (allocSize !== undefined) {
         const buf = this.buffer.subarray(this.offset, this.offset + allocSize)
@@ -126,9 +142,11 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('ascii').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset })
-      this.offset += 0
-      return buffer.toString('ascii').replaceAll('\x00', '')
+      allocSize = this.size - this.offset
+      const buf = Buffer.alloc(allocSize)
+      await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
+      this.offset = 0
+      return buf.toString('ascii').replaceAll('\x00', '')
     } else if (this.buffer) {
       if (allocSize !== undefined) {
         const buf = this.buffer.subarray(this.offset, this.offset + allocSize)
@@ -158,9 +176,11 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('latin1').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset })
-      this.offset += 0
-      return buffer.toString('latin1').replaceAll('\x00', '')
+      allocSize = this.size - this.offset
+      const buf = Buffer.alloc(allocSize)
+      await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
+      this.offset = 0
+      return buf.toString('latin1').replaceAll('\x00', '')
     } else if (this.buffer) {
       if (allocSize !== undefined) {
         const buf = this.buffer.subarray(this.offset, this.offset + allocSize)
@@ -190,9 +210,11 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('utf8').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset })
-      this.offset += 0
-      return buffer.toString('utf8').replace('\x00', '')
+      allocSize = this.size - this.offset
+      const buf = Buffer.alloc(allocSize)
+      await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
+      this.offset = 0
+      return buf.toString('utf8').replace('\x00', '')
     } else if (this.buffer) {
       if (allocSize !== undefined) {
         const buf = this.buffer.subarray(this.offset, this.offset + allocSize)
@@ -222,9 +244,11 @@ export class BinaryReader {
         this.offset += allocSize
         return buf.toString('hex').replaceAll('\x00', '')
       }
-      const { buffer } = await this.handler.read({ position: this.offset })
-      this.offset += 0
-      return buffer.toString('hex').replace('\x00', '')
+      allocSize = this.size - this.offset
+      const buf = Buffer.alloc(allocSize)
+      await this.handler.read({ buffer: buf, position: this.offset, length: allocSize })
+      this.offset = 0
+      return buf.toString('hex').replace('\x00', '')
     } else if (this.buffer) {
       if (allocSize !== undefined) {
         const buf = this.buffer.subarray(this.offset, this.offset + allocSize)

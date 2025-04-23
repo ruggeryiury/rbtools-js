@@ -1,4 +1,4 @@
-import { BinaryWriterError } from '../errors'
+import { BinaryWriterError } from '../../errors'
 
 export type BinaryWriteEncodings = 'ascii' | 'latin1' | 'latin-1' | 'utf-8' | 'utf8' | 'hex'
 

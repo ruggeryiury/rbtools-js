@@ -4,7 +4,7 @@ import { pathLikeToString } from 'path-js/lib'
 import type { MIDIFileStatObject } from '../../core'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../execPromise'
+import { execPromise } from '../utils/execPromise'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.

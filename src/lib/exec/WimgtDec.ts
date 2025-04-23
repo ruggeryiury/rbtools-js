@@ -2,7 +2,7 @@ import { FilePath, type PathLikeTypes } from 'path-js'
 import { pathLikeToString } from 'path-js/lib'
 import { ExecutableError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../execPromise'
+import { execPromise } from '../utils/execPromise'
 
 /**
  * Asynchronously executes the Wiimms Image Tool decoder.
