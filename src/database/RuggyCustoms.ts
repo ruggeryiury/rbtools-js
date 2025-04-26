@@ -1,5 +1,5 @@
 import { DTAParser } from '../core'
-import { rankCalculator, sortDTA, type BandRankingNumbers, type DTAFile } from '../lib'
+import { sortDTA, type DTAFile } from '../lib'
 
 export class RuggyCustoms {
   static readonly songs: DTAFile[] = [

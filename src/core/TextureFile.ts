@@ -2,7 +2,7 @@ import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'p
 import { pathLikeToString } from 'path-js/lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFileError } from '../errors'
-import { ImgFile } from '../index'
+import { type ImgFile } from '../index'
 import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib'
 
 export interface TextureFileStatReturnObject {

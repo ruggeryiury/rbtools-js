@@ -467,19 +467,19 @@ export class DTAIO {
    * Adds a new value to the DTA file content.
    * - - - -
    * @param {string} key The key name of the value.
-   * @param {T} value The value that will be added to the DTA file contents.
+   * @param {DTAIOAddValueTypes} value The value that will be added to the DTA file contents.
    * @returns {void}
    */
-  addValue<T extends DTAIOAddValueTypes>(key: string, value: T): void {
+  addValue(key: string, value: DTAIOAddValueTypes): void {
     this.content[key] = value
   }
 
   /**
    * Returns an object with all values added to the DTA file contents.
-   * @returns {T}
+   * @returns {Record<string, any>}
    */
-  toJSON<T extends Record<string, any>>(): T {
-    return this.content as T
+  toJSON(): Record<string, any> {
+    return this.content
   }
 
   toString(): string {

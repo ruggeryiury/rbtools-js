@@ -153,14 +153,16 @@ export const formatStringFromDTA = (song: DTAFile | null, format: string, option
     const allSongKeys = Object.keys(song) as (keyof typeof song)[]
     for (const songKey of allSongKeys) {
       if (valuesThatAreUnique.includes(songKey)) continue
-      newText = newText.replace(new RegExp(`{{${songKey}}}`, 'g'), String(song[songKey]))
+      if (!song[songKey]) continue
+      newText = newText.replace(new RegExp(`{{${songKey}}}`, 'g'), song[songKey] as string)
     }
 
     for (const uniqueKeys of valuesThatAreUnique) {
-      newText = newText.replace(new RegExp(`{{${uniqueKeys}}}`, 'g'), String(song[uniqueKeys as keyof typeof song]))
-      newText = newText.replace(new RegExp(`{{${uniqueKeys}.emit}}`, 'g'), String(song[uniqueKeys as keyof typeof song]))
-      newText = newText.replace(new RegExp(`{{${uniqueKeys}.omit}}`, 'g'), omitLeadingArticle(String(song[uniqueKeys as keyof typeof song])))
-      newText = newText.replace(new RegExp(`{{${uniqueKeys}.trailing}}`, 'g'), leadingArticleToTrailing(String(song[uniqueKeys as keyof typeof song])))
+      if (!song[uniqueKeys as keyof typeof song]) continue
+      newText = newText.replace(new RegExp(`{{${uniqueKeys}}}`, 'g'), song[uniqueKeys as keyof typeof song] as string)
+      newText = newText.replace(new RegExp(`{{${uniqueKeys}.emit}}`, 'g'), song[uniqueKeys as keyof typeof song] as string)
+      newText = newText.replace(new RegExp(`{{${uniqueKeys}.omit}}`, 'g'), omitLeadingArticle(song[uniqueKeys as keyof typeof song] as string))
+      newText = newText.replace(new RegExp(`{{${uniqueKeys}.trailing}}`, 'g'), leadingArticleToTrailing(song[uniqueKeys as keyof typeof song] as string))
     }
 
     newText = newText.replace(new RegExp(`{{title}}`, 'g'), song.name)

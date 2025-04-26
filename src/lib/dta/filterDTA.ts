@@ -391,7 +391,7 @@ export const filterSongsByArtist = (songs: DTAFile[], options?: SongFilterWithAl
       if (allTracksFromAlbum.length >= albumQuantityThreshold) {
         header.albums.push({
           id: album ? `album_${header.id}_${formatStringFromDTA(null, album, 'id')}` : `album_${header.id}_${formatStringFromDTA(null, 'No Album Specified', 'id')}_${noAlbumSpecifiedCount.toString()}`,
-          name: album ? album : 'No Album Specified',
+          name: album ?? 'No Album Specified',
           songs: allTracksFromAlbum
             .map((track) => track)
             .sort((a, b): number => {

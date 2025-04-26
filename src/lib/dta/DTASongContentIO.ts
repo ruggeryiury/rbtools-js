@@ -41,7 +41,7 @@ export class DTASongContentIO {
    * @returns {void}
    */
   openNewSongRegistry(id: string): void {
-    if (!this.content[id]) this.content[id] = this.createDefaultEntry(id)
+    this.content[id] ??= this.createDefaultEntry(id)
   }
 
   /**

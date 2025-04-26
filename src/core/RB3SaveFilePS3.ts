@@ -454,7 +454,7 @@ export class RB3SaveFilePS3 {
    * @returns {InstrumentTypes}
    */
   getMostPlayedInstrument(): InstrumentTypes {
-    const { scores } = this.parsed ? this.parsed : this.parseSaveFile()
+    const { scores } = this.parsed ?? this.parseSaveFile()
     const results: InstrumentTypes[] = []
     for (const score of scores) {
       if (score.bass.topScore > 0) results.push('bass')

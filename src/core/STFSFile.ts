@@ -1,4 +1,4 @@
-import { DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
+import { type DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
 import { pathLikeToString } from 'path-js/lib'
 import { STFSFileError, WrongDTATypeError } from '../errors'
 import { DTAParser } from '../index'

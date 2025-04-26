@@ -1,6 +1,5 @@
 import type { PartialDTAFile } from '../../lib'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const rhythmverseAPISourceURL = {
   all: 'https://rhythmverse.co/api/all/songfiles/list',
   rb3: 'https://rhythmverse.co/api/rb3/songfiles/list',

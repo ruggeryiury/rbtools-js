@@ -59,12 +59,12 @@ export const sortDTA = <T extends AnyDTATypeArray>(songs: T, sortBy: SongSorting
       const BID = b.id.toLowerCase()
       const artistA = a.artist ? omitLeadingArticle(a.artist.toLowerCase()) : undefined
       const artistB = b.artist ? omitLeadingArticle(b.artist.toLowerCase()) : undefined
-      const yearA = a.year_released ? a.year_released : undefined
-      const yearB = b.year_released ? a.year_released : undefined
+      const yearA = a.year_released ?? undefined
+      const yearB = b.year_released ?? undefined
       const albumA = a.album_name ? omitLeadingArticle(a.album_name.toLowerCase()) : undefined
       const albumB = b.album_name ? omitLeadingArticle(b.album_name.toLowerCase()) : undefined
-      const trackA = a.album_track_number ? a.album_track_number : undefined
-      const trackB = b.album_track_number ? b.album_track_number : undefined
+      const trackA = a.album_track_number ?? undefined
+      const trackB = b.album_track_number ?? undefined
 
       if (artistA !== undefined && artistB !== undefined) return artistA.localeCompare(artistB)
       if (yearA !== undefined && yearB !== undefined) return yearA.toString().localeCompare(yearB.toString())

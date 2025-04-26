@@ -2,12 +2,12 @@ import { defineConfig } from 'tsup'
 import { fixImportsPlugin } from 'esbuild-fix-imports-plugin'
 
 export default defineConfig({
-  entry: ['src/*.ts'],
+  entry: ['src/**/*.ts'],
   format: ['esm', 'cjs'],
   splitting: false,
   clean: true,
   dts: true,
-  target: 'node18',
+  target: 'node20',
   platform: 'node',
   outDir: 'dist',
   bundle: false,

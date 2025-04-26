@@ -60,7 +60,7 @@ export class RockBandDB {
   static async loadDXUpdates(): Promise<PartialDTAFile[]> {
     const dtaPath = RBTools.getDTAPath()
     const updates = FilePath.of(dtaPath.path, 'dx_updates.json')
-    return await updates.readJSON<PartialDTAFile[]>()
+    return (await updates.readJSON()) as PartialDTAFile[]
   }
 
   /**
@@ -72,14 +72,14 @@ export class RockBandDB {
    */
   static async loadRB3(withUpdates = true): Promise<PartialDTAFile[]> {
     const dtaPath = RBTools.getDTAPath()
-    const rb3 = new DTAParser(await FilePath.of(dtaPath.path, 'rb3.json').readJSON<PartialDTAFile[]>())
+    const rb3 = new DTAParser((await FilePath.of(dtaPath.path, 'rb3.json').readJSON()) as PartialDTAFile[])
 
     const songs: DTAParser[] = []
     songs.push(rb3)
 
     const parsedSongs: PartialDTAFile[] = []
     if (withUpdates) {
-      const updates = await FilePath.of(dtaPath.path, 'dx_updates.json').readJSON<PartialDTAFile[]>()
+      const updates = (await FilePath.of(dtaPath.path, 'dx_updates.json').readJSON()) as PartialDTAFile[]
       for (const song of songs) {
         song.applyUpdates(updates)
         parsedSongs.push(...song.songs)
