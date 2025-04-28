@@ -49,7 +49,7 @@
   "scripts": {
     "build": "tsup && copyfiles -u 1 src/bin/**/* dist",
     "clear": "rimraf dist",
-    "dev": "tsx watch tests/test.ts",
+    "dev": "tsx watch dev/main.ts",
     "format": "prettier --write src",
     "lint": "eslint src/**/*.ts"
   },

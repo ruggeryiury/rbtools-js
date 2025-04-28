@@ -3,6 +3,7 @@ node_modules/
 src/
 src*/
 temp/
+dev/
 tests/
 packages/
 .env

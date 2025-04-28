@@ -16,6 +16,6 @@
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["tests/**/*.ts", "src/**/*"],
+  "include": ["dev/**/*.ts", "dev/**/*.ts", "src/**/*"],
   "exclude": ["node_modules"]
 }
