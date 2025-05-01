@@ -68,16 +68,6 @@ export const quoteToSlashQ = (text: string): string => text.replace(/\\/g, '\\\\
  */
 export const slashQToQuote = (text: string): string => text.replace(/\\\\/g, '\\').replace(/\\q/g, '"')
 
-/**
- * Capitalizes the first letter of any string.
- * - - - -
- * @param {string} text The string you want to process.
- * @returns {string} The string with the first letter capitalized.
- */
-export const capitalizeFirstLetter = (text: string): string => {
-  return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
 export interface StringFormatterOptions {
   /**
    * Removes all characters but characters and numbers. Default is `false`.

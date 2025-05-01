@@ -1,5 +1,5 @@
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import type { TextureFileStatReturnObject } from '../../core'
 import { getDDSHeader, getDDSHeaderSync } from '../../lib'
 

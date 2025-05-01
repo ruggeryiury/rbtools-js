@@ -1,5 +1,5 @@
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../../lib'
@@ -9,7 +9,7 @@ import { execPromise } from '../../lib'
  * - - - -
  * @param {PathLikeTypes} moggFilePath The path of the MOGG file.
  * @param {PathLikeTypes} destPath The new decrypted MOGG file path
- * @returns {Promise<Path>}
+ * @returns {Promise<FilePath>}
  */
 export const moggDecrypt = async (moggFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<FilePath> => {
   const moduleName = 'mogg_decrypt.py'

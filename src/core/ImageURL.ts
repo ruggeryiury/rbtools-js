@@ -1,7 +1,6 @@
 import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { ImgFile } from '../core'
 import { ImageFetchingError } from '../errors'

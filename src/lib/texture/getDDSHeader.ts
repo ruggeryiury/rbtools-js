@@ -1,4 +1,4 @@
-import { FilePath } from 'path-js'
+import { FilePath } from 'node-lib'
 import { RBTools } from '../../index'
 
 export type DDSFormatTypes = 'DXT1' | 'DXT5' | 'NORMAL'

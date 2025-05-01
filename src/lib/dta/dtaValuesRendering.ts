@@ -1,4 +1,4 @@
-import { BinaryWriter } from 'binary-rw'
+import { BinaryWriter } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAIO, quoteToSlashQ, tabNewLineFormatter, type ArrayValueObject, type BooleanFormattingOptions, type BooleanValueObject, type DTAIOAddValueTypes, type DTAIOFormattingOptions, type FloatValueObject, type NumberAndFloatFormattingOptions, type NumberValueObject, type ObjectValueObject, type StringFormattingOptions, type StringValueObject, type StringVariableFormattingOptions, type StringVariableValueObject } from '../../lib'

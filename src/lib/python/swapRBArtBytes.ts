@@ -1,5 +1,5 @@
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
 import { execPromise } from '../../lib'
@@ -9,7 +9,7 @@ import { execPromise } from '../../lib'
  * - - - -
  * @param {PathLikeTypes} srcPath The path of the texture file you want to swap its bytes.
  * @param {PathLikeTypes} destPath The destination path of the new texture file.
- * @returns {Promise<Path>}
+ * @returns {Promise<FilePath>}
  */
 export const swapRBArtBytes = async (srcPath: PathLikeTypes, destPath: PathLikeTypes): Promise<FilePath> => {
   const moduleName = 'swap_rb_art_bytes.py'

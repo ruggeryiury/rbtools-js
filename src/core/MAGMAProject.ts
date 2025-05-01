@@ -1,6 +1,4 @@
-import { BinaryWriter } from 'binary-rw'
-import { FilePath } from 'path-js'
-import { isAbsolute, resolve } from 'path-js/lib'
+import { FilePath, BinaryWriter, isAbsolute, resolve } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { MissingRequiredValueError } from '../errors'
 import { DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib'

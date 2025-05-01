@@ -1,4 +1,4 @@
-import { BinaryWriter } from 'binary-rw'
+import { BinaryWriter } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib'

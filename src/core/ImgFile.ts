@@ -1,5 +1,5 @@
-import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath } from 'node-lib'
+import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors'
 import type { TextureFile } from '../index'

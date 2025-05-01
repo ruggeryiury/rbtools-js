@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 
 /**
  * Computes the SHA-256 hash of a buffer's contents.

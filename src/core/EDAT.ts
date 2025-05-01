@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto'
-import { DirPath, FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { DirPath, FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
 import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors'
 import { RBTools } from '../index'
 import { execPromise } from '../lib'

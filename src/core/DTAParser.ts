@@ -1,6 +1,5 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAParserError, WrongDTATypeError } from '../errors'
@@ -8,6 +7,17 @@ import { calculateHashFromBuffer, depackDTA, detectBufferEncoding, genNumericSon
 import { createDTA, type SongDataCreationObject } from '../lib/dta/createDTA'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
+
+export interface DTAParserFileSaveReturnObject {
+  /**
+   * The path of the saved file.
+   */
+  path: FilePath
+  /**
+   * The contents of the saved file.
+   */
+  content: string
+}
 
 /**
  * A class that represents the contents of a DTA file.
@@ -328,16 +338,9 @@ export class DTAParser {
    * @param {PathLikeTypes} destPath The destination path of the new DTA file.
    * @param {DTAStringifyOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the stringify process.
    * @param {SongEncoding | undefined} encoding The encoding of the DTA file. Default is `utf8`.
-   * @returns {Promise<Path>}
+   * @returns {Promise<DTAParserFileSaveReturnObject>}
    */
-  async saveToFile(
-    destPath: PathLikeTypes,
-    options?: DTAStringifyOptions,
-    encoding: SongEncoding = 'utf8'
-  ): Promise<{
-    path: FilePath
-    content: string
-  }> {
+  async saveToFile(destPath: PathLikeTypes, options?: DTAStringifyOptions, encoding: SongEncoding = 'utf8'): Promise<DTAParserFileSaveReturnObject> {
     const dest = FilePath.of(pathLikeToString(destPath))
     const content = this.toString(options)
     return {

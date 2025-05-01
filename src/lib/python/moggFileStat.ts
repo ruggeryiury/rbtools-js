@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import type { MOGGFileStatRawObject } from '../../core'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'

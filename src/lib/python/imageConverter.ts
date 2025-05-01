@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { ConvertToWEBPDataURLOptions } from '../../core'
 import { PythonExecutionError } from '../../errors'

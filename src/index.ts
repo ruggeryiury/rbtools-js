@@ -1,8 +1,8 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { DirPath, FilePath } from 'path-js'
-import { exists } from 'path-js/lib'
-import { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandDB, STFSFile, TextureFile } from './core'
+import { DirPath, FilePath } from 'node-lib'
+import { exists } from 'node-lib'
+import { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandSongPackage, RockBandDB, STFSFile, TextureFile } from './core'
 import 'dotenv/config'
 
 /**
@@ -53,12 +53,12 @@ export class RBTools {
    * Gets the `dist/bin/dta` path of the module.
    * - - - -
    * @param {string[]} paths Paths to resolve from the DTA folder.
-   * @returns {Path}
+   * @returns {FilePath}
    */
   static getDTAPath(...paths: string[]): FilePath {
     return new FilePath(RBTools.bin.path, 'dta', ...paths)
   }
 }
 
-export { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandDB, STFSFile, TextureFile }
+export { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandSongPackage, RockBandDB, STFSFile, TextureFile }
 export * from './errors'

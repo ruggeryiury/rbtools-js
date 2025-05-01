@@ -1,5 +1,5 @@
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFile, type ConvertToTextureOptions } from '../../core'
 import { FileConvertionError, UnknownFileFormatError } from '../../errors'

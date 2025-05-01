@@ -1,5 +1,5 @@
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString, resolve } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString, resolve } from 'node-lib'
 import { DTAParser, RBTools } from '../index'
 import type { PartialDTAFile } from '../lib'
 

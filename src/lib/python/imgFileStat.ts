@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
-import { FilePath, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { FilePath, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import type { ImgFileStatReturnObject } from '../../core'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'

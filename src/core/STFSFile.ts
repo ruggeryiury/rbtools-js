@@ -1,5 +1,5 @@
-import { type DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'path-js'
-import { pathLikeToString } from 'path-js/lib'
+import { type DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString } from 'node-lib'
 import { STFSFileError, WrongDTATypeError } from '../errors'
 import { DTAParser } from '../index'
 import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib'
