@@ -1,9 +1,9 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
-import { type ConvertToImageOptions, ImgFile } from '../../core'
+import { type ConvertToImageOptions, ImgFile } from '../../core.exports'
 import { ValueError, FileConvertionError } from '../../errors'
-import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../../lib'
+import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../../lib.exports'
 
 /**
  * Asynchronously converts an image file to any other image file format.
@@ -15,7 +15,7 @@ import { imgFileStat, imageConverter, type ArtworkImageFormatTypes } from '../..
  * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
  */
 export const imgToImg = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> => {
-  const { height, interpolation, quality, width } = setDefaultOptions<typeof options>(
+  const { height, interpolation, quality, width } = setDefaultOptions<NonNullable<typeof options>>(
     {
       height: null,
       width: null,

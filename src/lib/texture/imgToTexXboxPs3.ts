@@ -1,9 +1,9 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
-import { TextureFile, type ConvertToTextureOptions } from '../../core'
+import { TextureFile, type ConvertToTextureOptions } from '../../core.exports'
 import { FileConvertionError, UnknownFileFormatError } from '../../errors'
-import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeaders } from '../../lib'
+import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeaders } from '../../lib.exports'
 
 /**
  * Asynchronously converts an image file to PNG_XBOX/PNG_PS3 texture file format.
@@ -15,7 +15,7 @@ import { NVCompress, imageConverter, type ArtworkTextureFormatTypes, imageHeader
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const imgToTexXboxPs3 = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> => {
-  const { DTX5, interpolation, textureSize } = setDefaultOptions<typeof options>(
+  const { DTX5, interpolation, textureSize } = setDefaultOptions<NonNullable<typeof options>>(
     {
       DTX5: true,
       interpolation: 'bilinear',

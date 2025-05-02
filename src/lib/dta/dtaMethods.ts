@@ -1,6 +1,6 @@
 import type { LiteralUnion } from 'type-fest'
-import type { MAGMAProjectSongData } from '../../core'
-import { dtaLocale, type AnimTempoNumbers, type BandFailCue, type DrumBank, type ExtraAuthoringFlags, type PercussionBank, type SoloFlags, type SongEncoding, type SongGameOrigin, type SongGenre, type SongKey, type SongRating, type SongScrollSpeed, type SongSubGenre, type SongTonality, type VocalGender, type VocalParts } from '../../lib'
+import type { MAGMAProjectSongData } from '../../core.exports'
+import { dtaLocale, type AnimTempoNumbers, type BandFailCue, type DrumBank, type ExtraAuthoringFlags, type PercussionBank, type SoloFlags, type SongEncoding, type SongGameOrigin, type SongGenre, type SongKey, type SongRating, type SongScrollSpeed, type SongSubGenre, type SongTonality, type VocalGender, type VocalParts } from '../../lib.exports'
 
 export type DTATracksCountArray = [number, number, number, number, number, number, number?]
 export type MAGMALanguagesTypes = 'English' | 'French' | 'German' | 'Italian' | 'Japanese' | 'Spanish'

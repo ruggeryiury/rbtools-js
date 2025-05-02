@@ -1,7 +1,7 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { ImgFile } from '../../index'
-import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib'
+import { getTPLHeader, WimgtDec, type ArtworkImageFormatTypes } from '../../lib.exports'
 
 /**
  * Asynchronously converts a PNG_WII texture file to any image format.

@@ -1,7 +1,6 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { OnyxCLIError } from '../errors'
-import { execPromise } from '../lib'
 
 export type OnyxCLIOperators = 'import' | 'build' | 'web-player' | 'reaper' | 'pro-keys-hanging' | 'stfs' | 'mogg' | 'encrypt-mogg-rb1' | 'u8' | 'milo' | 'encrypt-gh-fsb' | 'fsb' | 'pak' | 'pkg' | 'edat' | 'port-gh-ps3' | 'extract' | 'unwrap' | 'midi-text' | 'midi-merge' | 'bin-to-dta' | 'dta-to-bin'
 export type STFSGameTypes = 'rb3' | 'rb2' | 'gh2'
@@ -37,7 +36,7 @@ export class OnyxCLI {
    */
   async help(command?: OnyxCLIOperators): Promise<string> {
     const cmd = `"${this.path.path}"${command ? ` ${command}` : ''} --help`
-    const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
+    const { stderr, stdout } = await execAsync(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
   }
@@ -54,7 +53,7 @@ export class OnyxCLI {
     const src = FilePath.of(pathLikeToString(srcFolder))
     const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('')
     const cmd = `"${this.path.path}" stfs "${src.path}" --to ${dest.path} --game ${game}`
-    const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
+    const { stderr, stdout } = await execAsync(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
   }
@@ -71,7 +70,7 @@ export class OnyxCLI {
     const src = FilePath.of(pathLikeToString(srcFolder))
     const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('pkg')
     const cmd = `"${this.path.path}" pkg ${contentID} "${src.path}" --to ${dest.path}`
-    const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
+    const { stderr, stdout } = await execAsync(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
   }
@@ -89,7 +88,7 @@ export class OnyxCLI {
     const src = FilePath.of(pathLikeToString(srcFile))
     const dest = FilePath.of(pathLikeToString(destFile)).changeFileExt('edat')
     const cmd = `"${this.path.path}" edat ${contentID} ${klic} "${src.path}" --to ${dest.path}`
-    const { stderr, stdout } = await execPromise(cmd, { windowsHide: true })
+    const { stderr, stdout } = await execAsync(cmd, { windowsHide: true })
     if (stderr) throw new Error(stderr)
     return stdout
   }

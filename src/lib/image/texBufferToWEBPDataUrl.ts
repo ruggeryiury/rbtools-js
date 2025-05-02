@@ -1,6 +1,6 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
-import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib'
+import { getDDSHeader, imgBufferToWEBPDataURL, webpDataURLPNGWii } from '../../lib.exports'
 
 /**
  * Returns a Base64-encoded Data URL `string` of a texture file.

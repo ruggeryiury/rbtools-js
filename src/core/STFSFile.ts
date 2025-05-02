@@ -2,7 +2,7 @@ import { type DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeT
 import { pathLikeToString } from 'node-lib'
 import { STFSFileError, WrongDTATypeError } from '../errors'
 import { DTAParser } from '../index'
-import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib'
+import { detectBufferEncoding, stfsExtract, stfsExtractAllFiles, stfsFileStat, stfsFileStatSync } from '../lib.exports'
 
 export interface STFSFileStatRawObject {
   /** The name of the package. */

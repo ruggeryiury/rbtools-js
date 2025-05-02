@@ -1,9 +1,9 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
-import type { ConvertTextureToTextureOptions } from '../../core'
+import type { ConvertTextureToTextureOptions } from '../../core.exports'
 import { TextureFile } from '../../index'
-import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swapRBArtBytes } from '../../lib'
+import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swapRBArtBytes } from '../../lib.exports'
 
 /**
  * Asynchronously converts a texture file to any other texture file format.
@@ -15,7 +15,7 @@ import { type ArtworkSizeTypes, type ArtworkTextureFormatTypes, texToImgWii, swa
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
 export const texToTex = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> => {
-  const { DTX5 } = setDefaultOptions<typeof options>(
+  const { DTX5 } = setDefaultOptions<NonNullable<typeof options>>(
     {
       DTX5: true,
     },

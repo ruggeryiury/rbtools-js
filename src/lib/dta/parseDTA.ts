@@ -1,6 +1,6 @@
 import { setDefaultOptions } from 'set-default-options'
 import { WrongDTATypeError } from '../../errors'
-import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFileKeys, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib'
+import { customSourceIfdefDeconstructor, dtaDefault, getCompleteDTAMissingValues, isDTAFile, isTracksCountEmpty, slashQToQuote, sortDTAMap, type DTAFileKeys, type DTAMap, type DTARecord, type PartialDTAFile } from '../../lib.exports'
 
 export type DTAContentParserFormatTypes = 'complete' | 'partial'
 

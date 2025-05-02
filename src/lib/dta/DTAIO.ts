@@ -1,7 +1,7 @@
 import { BinaryWriter } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
-import { dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib'
+import { dtaRenderArray, dtaRenderBoolean, dtaRenderFloat, dtaRenderNumber, dtaRenderObject, dtaRenderString, dtaRenderVariable } from '../../lib.exports'
 
 export type DTADocumentInlineTypes = boolean | 'expanded'
 

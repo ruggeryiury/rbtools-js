@@ -1,7 +1,7 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { RB3SaveFileError, UnknownFileFormatError } from '../errors'
-import type { InstrumentTypes } from '../lib'
+import type { InstrumentTypes } from '../lib.exports'
 
 export type RB3SaveFilePlatformTypes = 'xbox' | 'ps3' | 'wii'
 

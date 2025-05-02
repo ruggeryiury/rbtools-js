@@ -1,7 +1,7 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { ImgFile } from '../../index'
-import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib'
+import { getDDSHeader, imageConverter, type ArtworkImageFormatTypes } from '../../lib.exports'
 
 /**
  * Asynchronously converts a PNG_XBOX or PNG_PS3 texture file to any image format.

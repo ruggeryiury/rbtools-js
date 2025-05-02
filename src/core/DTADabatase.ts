@@ -1,4 +1,4 @@
-import { sortDTA, type DTAFile } from '../lib'
+import { sortDTA, type DTAFile } from '../lib.exports'
 
 /**
  * A class that acts as a DTA file database processor.

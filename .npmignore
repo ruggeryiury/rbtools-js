@@ -1,5 +1,6 @@
 assets/
 node_modules/
+scripts/
 src/
 src*/
 temp/
@@ -9,11 +10,12 @@ packages/
 .env
 .gitignore
 .npmignore
-.prettierrc
+.prettierrc.yaml
+.prettierignore
 eslint.config.js
 pnpm-lock.yaml
 prettier.config.js
 prod.tsconfig.json
 tsconfig.json
-tsup.config.js
-/*.tgz
+tsup.config.ts
+*.tgz

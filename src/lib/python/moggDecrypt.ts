@@ -1,8 +1,7 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously decrypts a MOGG file and returns the new decrypted MOGG file path.
@@ -19,7 +18,7 @@ export const moggDecrypt = async (moggFilePath: PathLikeTypes, destPath: PathLik
   await dest.delete()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest

@@ -1,8 +1,8 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
-import { type TextureFileStatReturnObject } from '../../core'
+import { type TextureFileStatReturnObject } from '../../core.exports'
 import { UnknownFileFormatError } from '../../errors'
-import { imageHeaders } from '../../lib'
+import { imageHeaders } from '../../lib.exports'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.

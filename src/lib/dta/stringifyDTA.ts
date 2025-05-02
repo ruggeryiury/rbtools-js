@@ -1,7 +1,7 @@
 import { setDefaultOptions } from 'set-default-options'
-import type { AllParsedDTATypes } from '../../core'
+import type { AllParsedDTATypes } from '../../core.exports'
 import { DTAParser } from '../../index'
-import { dtaLocale, DTASongContentIO, type DTAContentParserFormatTypes, type SongSortingTypes } from '../../lib'
+import { dtaLocale, DTASongContentIO, type DTAContentParserFormatTypes, type SongSortingTypes } from '../../lib.exports'
 
 export type DTAStringifyFormats = 'rbn' | 'rb3_dlc' | 'rb2'
 

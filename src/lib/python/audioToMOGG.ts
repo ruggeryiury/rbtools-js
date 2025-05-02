@@ -1,8 +1,7 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError, ValueError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../utils/execPromise'
 
 export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLikeTypes, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'
@@ -17,7 +16,7 @@ export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLik
     audioFileInput += `"${FilePath.of(pathLikeToString(file)).path}" `
   }
   const command = `python ${moduleName} ${audioFileInput} -o "${dest.path}" -q ${quality.toString()}`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest

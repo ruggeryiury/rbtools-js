@@ -1,7 +1,7 @@
 import { FilePath, BinaryWriter, isAbsolute, resolve } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { MissingRequiredValueError } from '../errors'
-import { DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib'
+import { DTAIO, formatStringFromDTA, genAudioFileStructure, rankCalculator, type DTAFile } from '../lib.exports'
 
 export type MAGMAAutogenOptions = 'Default' | 'AgressiveMetal' | 'ArenaRock' | 'DarkHeavyRock' | 'DustyVintage' | 'EdgyProgRock' | 'FeelGoodPopRock' | 'GaragePunkRock' | 'PsychJamRock' | 'SlowJam' | 'SynthPop'
 export interface MAGMAProjectSongData {

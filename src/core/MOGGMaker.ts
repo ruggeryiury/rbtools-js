@@ -3,9 +3,9 @@ import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
-import { MOGGFile } from '../core'
+import { MOGGFile } from '../core.exports'
 import { MOGGFileError } from '../errors'
-import { audioToMOGG, MakeMogg } from '../lib'
+import { audioToMOGG, MakeMogg } from '../lib.exports'
 
 export type MOGGFileQualityLevels = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 

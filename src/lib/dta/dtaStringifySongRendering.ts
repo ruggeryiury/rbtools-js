@@ -1,4 +1,4 @@
-import { quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAFile, type DTAStringifyFormats, type PartialDTAFile } from '../../lib'
+import { quoteToSlashQ, type AnimTempoNumbers, type AudioTracksCountObject, type DTAFile, type DTAStringifyFormats, type PartialDTAFile } from '../../lib.exports'
 
 /**
  * Adds tabs at the beginning of each line on a string.

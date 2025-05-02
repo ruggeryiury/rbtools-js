@@ -1,8 +1,7 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously swaps the bytes of `PNG_XBOX` or `PNG_PS3` texture files.
@@ -19,7 +18,7 @@ export const swapRBArtBytes = async (srcPath: PathLikeTypes, destPath: PathLikeT
   await dest.delete()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest

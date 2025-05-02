@@ -1,5 +1,5 @@
 import { RBDTAJSError } from '../../errors'
-import type { DrumTracksTypes, DTAFile, DTATracksCountArray, InstrumentChannelsTypes } from '../../lib'
+import type { DrumTracksTypes, DTAFile, DTATracksCountArray, InstrumentChannelsTypes } from '../../lib.exports'
 
 export interface AudioTracksCountObject {
   /**

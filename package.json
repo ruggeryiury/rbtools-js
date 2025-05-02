@@ -23,16 +23,16 @@
     "dotenv": "^16.5.0",
     "exiftool-vendored": "^29.3.0",
     "jschardet": "^3.1.4",
-    "node-lib": "file:.\\packages\\node-lib-1.0.0.tgz",
-    "set-default-options": "file:.\\packages\\set-default-options-1.0.0.tgz",
+    "node-lib": "file:packages\\node-lib-1.0.0.tgz",
+    "set-default-options": "file:packages\\set-default-options-1.0.0.tgz",
     "tempy": "^3.1.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
-    "@types/node": "^22.15.2",
+    "@types/node": "^22.15.3",
     "copyfiles": "^2.4.1",
-    "esbuild-fix-imports-plugin": "^1.0.19",
+    "esbuild-fix-imports-plugin": "^1.0.20",
     "eslint": "^9.25.1",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-import": "^2.31.0",
@@ -41,17 +41,17 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "tsup": "^8.4.0",
-    "tsx": "^4.19.3",
-    "type-fest": "^4.40.0",
+    "tsx": "^4.19.4",
+    "type-fest": "^4.40.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.31.1"
   },
   "scripts": {
     "build": "tsup && copyfiles -u 1 src/bin/**/* dist",
     "clear": "rimraf dist",
     "dev": "tsx watch dev/main.ts",
     "format": "prettier --write src",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src"
   },
   "exports": {
     ".": {
@@ -59,15 +59,10 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js",
-      "require": "./dist/core.cjs"
-    },
     "./lib": {
-      "types": "./dist/lib.d.ts",
-      "import": "./dist/lib.js",
-      "require": "./dist/lib.cjs"
+      "types": "./dist/lib.exports.d.ts",
+      "import": "./dist/lib.exports.js",
+      "require": "./dist/lib.exports.cjs"
     }
   }
 }

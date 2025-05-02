@@ -1,5 +1,5 @@
 import { RBDTAJSError } from '../../index'
-import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFile, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib'
+import { addTabToAllLines, depackDTA, genTracksCountArray, isDTAFile, renderAnimTempo, renderArray, renderBooleanValue, renderCustomAttributes, renderDrumsCue, renderIfDef, renderNumberOrStringValue, renderSongEntryClose, renderSongEntryOpen, renderStringOnQuotesValue, renderTrackMap, sortDTA, type DTAContentParserFormatTypes, type DTAFile, type DTAFileKeys, type DTAMap, type DTAStringifyOptions, type PartialDTAFile } from '../../lib.exports'
 
 export class DTASongContentIO {
   /**

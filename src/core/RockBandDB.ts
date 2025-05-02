@@ -1,7 +1,7 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString, resolve } from 'node-lib'
 import { DTAParser, RBTools } from '../index'
-import type { PartialDTAFile } from '../lib'
+import type { PartialDTAFile } from '../lib.exports'
 
 /**
  * A class with static methods that fetches information about official and unofficial Rock Band songs.

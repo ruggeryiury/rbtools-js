@@ -1,4 +1,4 @@
-import type { DTAMap, CustomSourceValuesObject } from '../../lib'
+import type { DTAMap, CustomSourceValuesObject } from '../../lib.exports'
 
 /**
  * Removes if statements from common values that generally uses if statements (Game Origin, Genre, and Sub-Genre).

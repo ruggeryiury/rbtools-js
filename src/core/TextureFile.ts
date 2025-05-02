@@ -2,8 +2,8 @@ import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'n
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFileError } from '../errors'
-import { type ImgFile } from '../index'
-import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib'
+import { pngWiiStatSync, pngXboxPs3TexStatSync, type ArtworkTextureFormatTypes, texToTex, type ArtworkImageFormatTypes, texToImgWii, texToImgXboxPs3, texBufferToWEBPDataUrl, pngXboxPs3TexStat, pngWiiStat } from '../lib.exports'
+import type { ImgFile } from './ImgFile'
 
 export interface TextureFileStatReturnObject {
   /** The format of the texture file. */
@@ -119,7 +119,7 @@ export class TextureFile {
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
   async convertToTexture(destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
-    const opts = setDefaultOptions<typeof options>(
+    const opts = setDefaultOptions<NonNullable<typeof options>>(
       {
         DTX5: true,
       },

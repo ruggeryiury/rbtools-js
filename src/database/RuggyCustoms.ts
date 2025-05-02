@@ -1,5 +1,5 @@
-import { DTAParser } from '../core'
-import { sortDTA, type DTAFile } from '../lib'
+import { DTAParser } from '../core.exports'
+import { sortDTA, type DTAFile } from '../lib.exports'
 
 export class RuggyCustoms {
   static readonly songs: DTAFile[] = [

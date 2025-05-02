@@ -1,5 +1,5 @@
 import { detectAll } from 'jschardet'
-import type { PartialDTAFile, SongEncoding } from '../../lib'
+import type { PartialDTAFile, SongEncoding } from '../../lib.exports'
 
 /**
  * Figures out the encoding of a string of buffer for DTA file exporting.

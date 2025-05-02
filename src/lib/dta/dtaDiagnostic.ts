@@ -1,4 +1,4 @@
-import type { DTAFile, DTAFileKeys, PartialDTAFile } from '../../lib'
+import type { DTAFile, DTAFileKeys, PartialDTAFile } from '../../lib.exports'
 
 /**
  * Type guard function to check through all known parsed song types if the provided parsed song

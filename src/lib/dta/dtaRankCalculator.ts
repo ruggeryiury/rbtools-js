@@ -1,5 +1,5 @@
 import { RBDTAJSError } from '../../errors'
-import type { DTAFile, InstrRankingNames, InstrRankingNumbers } from '../../lib'
+import type { DTAFile, InstrRankingNames, InstrRankingNumbers } from '../../lib.exports'
 
 const ranksMap = {
   drum: [124, 151, 178, 242, 345, 448],

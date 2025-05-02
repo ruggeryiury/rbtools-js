@@ -1,4 +1,4 @@
-import { omitLeadingArticle, type AnyDTATypeArray, type DTASelfReturnType, type SongSortingTypes } from '../../lib'
+import { omitLeadingArticle, type AnyDTATypeArray, type DTASelfReturnType, type SongSortingTypes } from '../../lib.exports'
 
 /**
  * Sorts an array of parsed song objects.

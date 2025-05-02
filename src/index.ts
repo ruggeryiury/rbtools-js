@@ -1,8 +1,7 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { DirPath, FilePath } from 'node-lib'
-import { exists } from 'node-lib'
-import { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandSongPackage, RockBandDB, STFSFile, TextureFile } from './core'
+import { exists } from 'node-lib/lib'
 import 'dotenv/config'
 
 /**
@@ -60,5 +59,6 @@ export class RBTools {
   }
 }
 
-export { DTAParser, EDAT, ImageURL, ImgFile, MIDIFile, MOGGFile, MOGGMaker, OnyxCLI, RhythmverseAPI, RockBandSongPackage, RockBandDB, STFSFile, TextureFile }
+export * from './core.exports'
+export * from './lib.exports'
 export * from './errors'

@@ -1,7 +1,7 @@
 import { FilePath } from 'node-lib'
 import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
 import { MOGGFileError } from '../errors'
-import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib'
+import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib.exports'
 
 export interface MOGGFileStatRawObject {
   /** The version of the MOGG encryption. */

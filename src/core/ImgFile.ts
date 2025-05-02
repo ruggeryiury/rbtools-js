@@ -1,9 +1,8 @@
-import { FilePath } from 'node-lib'
-import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { FilePath, pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { FileNotFoundError, ImgFileError } from '../errors'
-import type { TextureFile } from '../index'
-import { imgFileStat, imgFileStatSync, imgToImg, imgToTexWii, imgToTexXboxPs3, webpDataURL, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib'
+import { imgFileStat, imgFileStatSync, imgToImg, imgToTexWii, imgToTexXboxPs3, webpDataURL, type ArtworkImageFormatTypes, type ArtworkInterpolationTypes, type ArtworkSizeTypes, type ArtworkTextureFormatTypes } from '../lib.exports'
+import type { TextureFile } from './TextureFile'
 
 export interface ImgFileStatReturnObject {
   /** The format of the image file. */
@@ -143,7 +142,7 @@ export class ImgFile {
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
   async convertToTexture(destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertToTextureOptions): Promise<TextureFile> {
-    const opts = setDefaultOptions<typeof options>(
+    const opts = setDefaultOptions<NonNullable<typeof options>>(
       {
         DTX5: true,
         interpolation: 'bilinear',
@@ -169,7 +168,7 @@ export class ImgFile {
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
   async convertToImage(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ConvertToImageOptions): Promise<ImgFile> {
-    const opts = setDefaultOptions<typeof options>(
+    const opts = setDefaultOptions<NonNullable<typeof options>>(
       {
         height: null,
         width: null,
@@ -190,7 +189,7 @@ export class ImgFile {
    * @returns {Promise<string>} A Base64-encoded DataURL `string` of the image file.
    */
   async toDataURL(options?: ConvertToWEBPDataURLOptions): Promise<string> {
-    const opts = setDefaultOptions<typeof options>(
+    const opts = setDefaultOptions<NonNullable<typeof options>>(
       {
         width: null,
         height: null,

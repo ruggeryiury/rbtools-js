@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/valid-types */
 
 /**
- * Returns the key from a provided `value` as string that exists inside an `map`.
+ * Returns the key from a `value` that exists inside on a `map`.
  *
  * Returns `null` if the value does not matches on any key.
  * - - - -

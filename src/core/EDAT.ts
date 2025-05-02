@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto'
-import { DirPath, FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
+import { DirPath, FilePath, execAsync, pathLikeToString, type PathLikeTypes } from 'node-lib'
 import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors'
 import { RBTools } from '../index'
-import { execPromise } from '../lib'
 
 const ps3GameIDs = {
   rb2: 'BLUS30050',
@@ -64,7 +63,7 @@ export class EDAT {
     const src = FilePath.of(pathLikeToString(srcFile))
     const dest = FilePath.of(`${src.path}.edat`)
     const command = `${moduleName} encrypt -custom:${devKLic} ${contentID.slice(0, 36)} 00 00 00 "${src.path}" "${dest.path}"`
-    const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
+    const { stderr, stdout } = await execAsync(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
     return stdout
   }
@@ -82,7 +81,7 @@ export class EDAT {
     const src = FilePath.of(pathLikeToString(srcFile))
     const dest = FilePath.of(src.path.replace('.edat', ''))
     const command = `${moduleName} decrypt -custom:${devKLic} "${src.path}" "${dest.path}"`
-    const { stderr, stdout } = await execPromise(command, { cwd: exePath.root, windowsHide: true })
+    const { stderr, stdout } = await execAsync(command, { cwd: exePath.root, windowsHide: true })
     if (stderr) throw new ExecutableError(stderr)
     return stdout
   }

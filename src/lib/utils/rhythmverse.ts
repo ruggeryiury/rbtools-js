@@ -1,4 +1,4 @@
-import type { PartialDTAFile } from '../../lib'
+import type { PartialDTAFile } from '../../lib.exports'
 
 export const rhythmverseAPISourceURL = {
   all: 'https://rhythmverse.co/api/all/songfiles/list',

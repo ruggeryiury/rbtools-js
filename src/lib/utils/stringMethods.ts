@@ -1,5 +1,5 @@
 import { setDefaultOptions } from 'set-default-options'
-import type { DTAFile } from '../../lib'
+import type { DTAFile } from '../../lib.exports'
 
 /**
  * Normalizes a string by removing diacritical marks (accents)

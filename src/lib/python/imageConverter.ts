@@ -1,11 +1,11 @@
 import { spawn } from 'child_process'
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
-import type { ConvertToWEBPDataURLOptions } from '../../core'
+import type { ConvertToWEBPDataURLOptions } from '../../core.exports'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise, type ArtworkInterpolationTypes, type ArtworkImageFormatTypes, getTPLHeader, imgFileStat } from '../../lib'
+import { type ArtworkInterpolationTypes, type ArtworkImageFormatTypes, getTPLHeader, imgFileStat } from '../../lib.exports'
 
 export interface ImageConverterOptions {
   /** The width of the converted image file. Default is `256`. */
@@ -28,7 +28,7 @@ export interface ImageConverterOptions {
  * @returns {Promise<FilePath>}
  */
 export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<FilePath> => {
-  const opts = setDefaultOptions<typeof options>(
+  const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       height: 256,
       width: 256,
@@ -78,7 +78,7 @@ export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFo
  * @returns {Promise<FilePath>}
  */
 export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<FilePath> => {
-  const opts = setDefaultOptions<typeof options>(
+  const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       height: 256,
       width: 256,
@@ -94,7 +94,7 @@ export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeT
   const moduleName = 'image_converter.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const command = `python ${moduleName} "${src.path}" "${dest.changeFileExt(toFormat).path}" -x ${opts.width.toString()} -y ${opts.height.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest
@@ -108,7 +108,7 @@ export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeT
  * @returns {Promise<string>}
  */
 export const webpDataURL = async (srcFile: PathLikeTypes, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
-  const opts = setDefaultOptions<typeof options>(
+  const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       width: null,
       height: null,
@@ -131,7 +131,7 @@ export const webpDataURL = async (srcFile: PathLikeTypes, options?: ConvertToWEB
   const moduleName = 'webp_data_url.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const command = `python ${moduleName} "${src.path}" -x ${usedWidth.toString()} -y ${usedHeight.toString()} -i ${opts.interpolation.toUpperCase()} -q ${opts.quality.toString()}`
-  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stdout, stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return stdout
@@ -193,7 +193,7 @@ export const webpDataURLPNGWii = async (srcFile: PathLikeTypes): Promise<string>
   const moduleName = 'webp_data_url_pngwii.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const command = `python ${moduleName} "${src.path}" -tpl "${base64Header}"`
-  const { stdout, stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stdout, stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
   const [, dataurl] = stdout.split('\r\n')
   return dataurl

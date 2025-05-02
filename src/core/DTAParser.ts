@@ -1,10 +1,9 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
+import { FilePath, createHash, pathLikeToString, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAParserError, WrongDTATypeError } from '../errors'
-import { calculateHashFromBuffer, depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes } from '../lib'
-import { createDTA, type SongDataCreationObject } from '../lib/dta/createDTA'
+import { depackDTA, detectBufferEncoding, genNumericSongID, getCompleteDTAMissingValues, isDTAFile, isURL, parseDTA, patchDTAEncodingFromDTAFileObject, sortDTA, stringifyDTA, type DTAContentParserFormatTypes, type DTAFile, type DTARecord, type DTAStringifyOptions, type PartialDTAFile, type SongEncoding, type SongSortingTypes, createDTA, type SongDataCreationObject } from '../lib.exports'
 
 export type AllParsedDTATypes = PartialDTAFile | PartialDTAFile[]
 
@@ -135,7 +134,7 @@ export class DTAParser {
     }
 
     parsed.sort('ID')
-    return calculateHashFromBuffer(Buffer.from(parsed.toString()))
+    return createHash(Buffer.from(parsed.toString()))
   }
 
   /**
@@ -356,7 +355,7 @@ export class DTAParser {
    */
   calculateHash(): string {
     const dtaBuffer = Buffer.from(stringifyDTA(sortDTA(this.songs, 'ID'), this.type, this.type === 'complete' ? DTAParser.completeDTADefaultOptions : DTAParser.partialDTADefaultOptions))
-    return calculateHashFromBuffer(dtaBuffer)
+    return createHash(dtaBuffer)
   }
 
   /**

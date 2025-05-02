@@ -1,10 +1,9 @@
 import { execSync } from 'child_process'
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
-import type { STFSFileStatRawObject } from '../../core'
+import type { STFSFileStatRawObject } from '../../core.exports'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the CON file.
@@ -17,7 +16,7 @@ export const stfsFileStat = async (stfsFilePath: PathLikeTypes): Promise<STFSFil
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(stfsFilePath))
   const command = `python ${moduleName} "${src.path}"`
-  const { stderr, stdout } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr, stdout } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return JSON.parse(stdout) as STFSFileStatRawObject

@@ -1,7 +1,7 @@
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
-import type { MAGMAProjectSongData } from '../../core'
-import { dtaLocale, genNumericSongID, getKeyFromMapValue, channelsCountToPanArray, rankValuesToDTARankSystem, sortDTAMap, type AnimTempoNames, type BandFailCueNames, type BandRankingNames, type BandRankingNumbers, type DrumBankNames, type DTAFile, type DTAMap, type DTARecord, type PercussionBankNames, type SongGameOriginNames, type SongGenreNames, type SongRatingNames, type SongScrollSpeedNames, type VocalParts, type VocalPartsNames, type SongEncoding, containsLatin1SpecificChars, type SoloFlags, bandAverageRankCalculator, type MAGMALanguagesTypes, type CustomSourceValuesObject, type VocalGenderNames } from '../../lib'
+import type { MAGMAProjectSongData } from '../../core.exports'
+import { dtaLocale, genNumericSongID, getKeyFromMapValue, channelsCountToPanArray, rankValuesToDTARankSystem, sortDTAMap, type AnimTempoNames, type BandFailCueNames, type BandRankingNames, type BandRankingNumbers, type DrumBankNames, type DTAFile, type DTAMap, type DTARecord, type PercussionBankNames, type SongGameOriginNames, type SongGenreNames, type SongRatingNames, type SongScrollSpeedNames, type VocalParts, type VocalPartsNames, type SongEncoding, containsLatin1SpecificChars, type SoloFlags, bandAverageRankCalculator, type MAGMALanguagesTypes, type CustomSourceValuesObject, type VocalGenderNames } from '../../lib.exports'
 
 export type InstrumentChannelsTypes = 'Mono' | 'Stereo' | 1 | 2
 export type DrumTracksTypes = 2 | 'Stereo Else' | 3 | 'Mono Kick + Stereo Else' | 4 | 'Mono Kick + Mono Snare + Stereo Else' | 5 | 'Mono Kick + Stereo Snare + Stereo Else' | 6 | 'Stereo Kick + Stereo Snare + Stereo Else'

@@ -1,7 +1,7 @@
 import { FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
-import type { TextureFileStatReturnObject } from '../../core'
-import { getDDSHeader, getDDSHeaderSync } from '../../lib'
+import type { TextureFileStatReturnObject } from '../../core.exports'
+import { getDDSHeader, getDDSHeaderSync } from '../../lib.exports'
 
 /**
  * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.

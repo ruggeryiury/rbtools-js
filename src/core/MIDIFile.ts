@@ -1,7 +1,7 @@
 import { FilePath } from 'node-lib'
 import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
 import { MIDIFileError } from '../errors'
-import { midiFileStat, midiFileStatSync } from '../lib'
+import { midiFileStat, midiFileStatSync } from '../lib.exports'
 
 export interface MIDIFileStatObject {
   /** The charset of the MIDI file. */

@@ -1,8 +1,7 @@
-import { DirPath, FilePath, type PathLikeTypes } from 'node-lib'
+import { DirPath, execAsync, FilePath, type PathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
-import { execPromise } from '../../lib'
 
 /**
  * Python script: Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
@@ -21,7 +20,7 @@ export const stfsExtract = async (stfsFilePath: PathLikeTypes, destPath: PathLik
   await dest.mkDir()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest
@@ -45,7 +44,7 @@ export const stfsExtractAllFiles = async (stfsFilePath: PathLikeTypes, destPath:
   await dest.mkDir()
 
   const command = `python ${moduleName} "${src.path}" "${dest.path}"`
-  const { stderr } = await execPromise(command, { windowsHide: true, cwd: pyPath.root })
+  const { stderr } = await execAsync(command, { windowsHide: true, cwd: pyPath.root })
   if (stderr) throw new PythonExecutionError(stderr)
 
   return dest
