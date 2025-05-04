@@ -1,7 +1,6 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { DirPath, FilePath } from 'node-lib'
-import { exists } from 'node-lib/lib'
+import { DirPath, FilePath, exists } from 'node-lib'
 import 'dotenv/config'
 
 /**
