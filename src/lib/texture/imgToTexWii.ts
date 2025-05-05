@@ -35,6 +35,7 @@ export const imgToTexWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
   await imageConverter(src.path, png.path, 'png', { width: 256, height: 256, interpolation, quality: 100 })
   try {
     await WimgtEnc(png.path, tpl.path)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     // Do nothing, WIMGT might has this find_fast_cwd error that keeps on appearing
     // but the file is coverted successfully...

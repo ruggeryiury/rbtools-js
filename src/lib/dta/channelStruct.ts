@@ -462,6 +462,8 @@ export const genAudioFileStructure = (song: DTAFile): AudioFileTracksStructureDo
 
   const pans = dtaPans ?? defaultPans
   const vols = dtaVols ?? defaultVols
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cores = dtaCores ?? defaultCores
 
   return {

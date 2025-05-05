@@ -36,6 +36,7 @@ export const texToImgWii = async (srcFile: PathLikeTypes, destPath: PathLikeType
 
   try {
     await WimgtDec(tpl.path, destWithCorrectExt.path)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     // Do nothing, WIMGT might has this find_fast_cwd error that keeps on appearing
     // but the file is coverted successfully...

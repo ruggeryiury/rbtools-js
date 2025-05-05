@@ -1,7 +1,7 @@
-import { BinaryReader, BinaryWriter, compressWithBrotli, decompressBrotli, DirPath, ensurePathIsDir, FilePath, formatNumberWithDots, isAbsolute, pathLikeToFilePath, pathLikeToString, resolve, type PathLikeTypes } from 'node-lib'
+import { BinaryReader, BinaryWriter, compressWithBrotli, decompressBrotli, DirPath, ensurePathIsDir, FilePath, isAbsolute, pathLikeToFilePath, pathLikeToString, resolve, type PathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
-import { formatStringFromDTA, type DTAFile } from '../lib.exports'
+import { formatStringFromDTA, imgBufferToWEBPDataURL, type DTAFile } from '../lib.exports'
 import { MOGGFile } from './MOGGFile'
 
 export interface RockBandSongPackageOptionsObject {
@@ -115,6 +115,25 @@ export interface RockBandSongPackageParsedObject extends RockBandSongPackageHead
    * The song's MOGG file buffer.
    */
   mogg?: Buffer
+}
+
+export interface RockBandSongPackageParsedWebObject extends RockBandSongPackageHeader {
+  /**
+   * The package name.
+   */
+  name: string
+  /**
+   * The song data.
+   */
+  data: DTAFile
+  /**
+   * The markdown file content.
+   */
+  markdown?: string
+  /**
+   * The song's album artwork encoded as DataURL.
+   */
+  albumArt?: string
 }
 
 /**
@@ -355,6 +374,35 @@ export class RockBandSongPackage {
   }
 
   /**
+   * Parses a Rock Song Package File buffer header and its contents for web usage.
+   * - - - -
+   * @param {Buffer | BinaryReader} bufferOrReader A `Buffer` of the RBSP file or a `BinaryReader` class instantiated to a RBSP file.
+   * @param {PathLikeTypes | undefined} [file] `OPTIONAL` The path to the corresponding RBSP file that you've working on. This parameter is only used when passing a `BinaryReader` argument to work upon.
+   * @returns {Promise<RockBandSongPackageParsedWebObject>} An object with all parsed data from the RBSP file.
+   */
+  static async parseBufferForWeb(bufferOrReader: Buffer | BinaryReader, file?: PathLikeTypes) {
+    let reader: BinaryReader
+    if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
+    else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
+    else throw new Error('Unimplemented Exception.')
+
+    const header = await this.parseBufferHeader(reader, file)
+    const contents = new Map<keyof RockBandSongPackageParsedWebObject, any>()
+    contents.set('name', await reader.readUTF8(header.packageNameLength))
+    contents.set('data', JSON.parse(Buffer.from(await reader.readString(header.songDataSize), 'base64').toString()))
+    if (header.markdownFileSize) contents.set('markdown', Buffer.from(await reader.readString(header.songDataSize), 'base64').toString())
+    reader.padding(header.midiFileSize)
+    if (header.albumArtworkSize) contents.set('albumArt', await imgBufferToWEBPDataURL(await decompressBrotli(await reader.read(header.albumArtworkSize))))
+
+    await reader.close()
+
+    return {
+      ...header,
+      ...Object.fromEntries(contents.entries()),
+    } as RockBandSongPackageParsedWebObject
+  }
+
+  /**
    * Creates a new Rock Band Song Package file.
    * - - - -
    * @param {PathLikeTypes} destPath The destination path of the new RBSP file.
@@ -390,6 +438,18 @@ export class RockBandSongPackage {
   static async parseFile(srcPath: PathLikeTypes): Promise<RockBandSongPackageParsedObject> {
     const reader = await BinaryReader.fromFile(srcPath)
     const content = await this.parseBuffer(reader, srcPath)
+    return content
+  }
+
+  /**
+   * Parses a Rock Song Package File header and its contents for web usage.
+   * - - - -
+   * @param {PathLikeTypes} srcPath The path to a RBSP file.
+   * @returns {Promise<RockBandSongPackageParsedWebObject>} An object with all parsed data from the RBSP file.
+   */
+  static async parseFileForWeb(srcPath: PathLikeTypes): Promise<RockBandSongPackageParsedWebObject> {
+    const reader = await BinaryReader.fromFile(srcPath)
+    const content = await this.parseBufferForWeb(reader, srcPath)
     return content
   }
 }

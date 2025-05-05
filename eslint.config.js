@@ -31,7 +31,6 @@ export default tseslint.config({
     'jsdoc/require-returns-description': 'off',
     '@typescript-eslint/non-nullable-type-assertion-style': 'warn',
     '@typescript-eslint/no-dynamic-delete': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import/order': [
