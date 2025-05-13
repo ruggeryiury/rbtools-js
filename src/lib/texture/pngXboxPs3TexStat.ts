@@ -1,4 +1,4 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import type { TextureFileStatReturnObject } from '../../core.exports'
 import { getDDSHeader, getDDSHeaderSync } from '../../lib.exports'
@@ -6,10 +6,10 @@ import { getDDSHeader, getDDSHeaderSync } from '../../lib.exports'
 /**
  * Asynchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.
  * - - - -
- * @param {PathLikeTypes} filePath The path of the PNG_XBOX/PNG_PS3 file.
+ * @param {FilePathLikeTypes} filePath The path of the PNG_XBOX/PNG_PS3 file.
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
-export const pngXboxPs3TexStat = async (filePath: PathLikeTypes): Promise<TextureFileStatReturnObject> => {
+export const pngXboxPs3TexStat = async (filePath: FilePathLikeTypes): Promise<TextureFileStatReturnObject> => {
   const srcPath = FilePath.of(pathLikeToString(filePath))
 
   const srcBuffer = await srcPath.read()
@@ -28,10 +28,10 @@ export const pngXboxPs3TexStat = async (filePath: PathLikeTypes): Promise<Textur
 /**
  * Synchronously returns an object with statistics of a PNG_XBOX/PNG_PS3 texture file.
  * - - - -
- * @param {PathLikeTypes} filePath The path of the PNG_XBOX/PNG_PS3 file.
+ * @param {FilePathLikeTypes} filePath The path of the PNG_XBOX/PNG_PS3 file.
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_XBOX/PNG_PS3 texture file
  */
-export const pngXboxPs3TexStatSync = (filePath: PathLikeTypes): TextureFileStatReturnObject => {
+export const pngXboxPs3TexStatSync = (filePath: FilePathLikeTypes): TextureFileStatReturnObject => {
   const srcPath = FilePath.of(pathLikeToString(filePath))
 
   const srcBuffer = srcPath.readSync()

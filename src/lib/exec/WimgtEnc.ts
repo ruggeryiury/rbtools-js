@@ -1,4 +1,4 @@
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { ExecutableError } from '../../errors'
 import { RBTools } from '../../index'
@@ -6,11 +6,11 @@ import { RBTools } from '../../index'
 /**
  * Asynchronously executes the Wiimms Image Tool encoder.
  * - - - -
- * @param {PathLikeTypes} srcFile The path to the image file to be converted.
- * @param {PathLikeTypes} destPath The path to the new converted TPL file.
+ * @param {FilePathLikeTypes} srcFile The path to the image file to be converted.
+ * @param {FilePathLikeTypes} destPath The path to the new converted TPL file.
  * @returns {Promise<string>}
  */
-export const WimgtEnc = async (srcFile: PathLikeTypes, destPath: PathLikeTypes): Promise<string> => {
+export const WimgtEnc = async (srcFile: FilePathLikeTypes, destPath: FilePathLikeTypes): Promise<string> => {
   const moduleName = 'wimgt.exe'
   const exePath = FilePath.of(RBTools.bin.path, moduleName)
   const src = FilePath.of(pathLikeToString(srcFile))

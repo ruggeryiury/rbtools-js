@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "author": "Ruggery Iury Corrêa <ruggeryiury@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.10.0",
   "keywords": [
     "tool",
     "rock-band",
@@ -22,10 +22,12 @@
     "crc": "^4.3.2",
     "dotenv": "^16.5.0",
     "exiftool-vendored": "^29.3.0",
+    "file-type": "^20.5.0",
     "jschardet": "^3.1.4",
-    "node-lib": "file:packages\\node-lib-1.0.0.tgz",
-    "set-default-options": "file:packages\\set-default-options-1.0.0.tgz",
+    "node-lib": "link:..\\node-lib",
+    "set-default-options": "link:..\\set-default-options",
     "tempy": "^3.1.0",
+    "yaml": "^2.7.1",
     "zod": "^3.24.4"
   },
   "devDependencies": {

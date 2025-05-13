@@ -1,4 +1,4 @@
-import { type DirPath, FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { type DirPath, FilePath, type FilePathJSONRepresentation, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { STFSFileError, WrongDTATypeError } from '../errors'
 import { DTAParser } from '../index'
@@ -42,9 +42,9 @@ export class STFSFile {
   path: FilePath
 
   /**
-   * @param {PathLikeTypes} stfsFilePath The path to the CON file.
+   * @param {FilePathLikeTypes} stfsFilePath The path to the CON file.
    */
-  constructor(stfsFilePath: PathLikeTypes) {
+  constructor(stfsFilePath: FilePathLikeTypes) {
     const path = FilePath.of(pathLikeToString(stfsFilePath))
     this.path = path
 
@@ -152,10 +152,10 @@ export class STFSFile {
   /**
    * Asynchronously extracts the CON file contents and returns the folder path where all contents were extracted.
    * - - - -
-   * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
+   * @param {FilePathLikeTypes} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<DirPath>}
    */
-  async extract(destPath: PathLikeTypes): Promise<DirPath> {
+  async extract(destPath: FilePathLikeTypes): Promise<DirPath> {
     return await stfsExtract(this.path, destPath)
   }
 
@@ -163,10 +163,10 @@ export class STFSFile {
    * Asynchronously extracts all files from a CON file on the root directory of the destination path and returns
    * the folder path where all contents were extracted.
    * - - - -
-   * @param {PathLikeTypes} destPath The folder path where you want the files to be extracted to.
+   * @param {FilePathLikeTypes} destPath The folder path where you want the files to be extracted to.
    * @returns {Promise<DirPath>}
    */
-  async extractAllFiles(destPath: PathLikeTypes): Promise<DirPath> {
+  async extractAllFiles(destPath: FilePathLikeTypes): Promise<DirPath> {
     return await stfsExtractAllFiles(this.path, destPath)
   }
 }

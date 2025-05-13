@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
-import { FilePath, pathLikeToString, type PathLikeTypes } from 'node-lib'
+import { FilePath, pathLikeToString, type FilePathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { ImgFile } from '../core.exports'
 import { ImageFetchingError } from '../errors'
@@ -49,12 +49,12 @@ export class ImageURL {
   /**
    * Asynchronously fetches and download the image, converting to a new image file.
    * - - - -
-   * @param {PathLikeTypes} destPath The path of the new image file.
+   * @param {FilePathLikeTypes} destPath The path of the new image file.
    * @param {ArtworkImageFormatTypes} toFormat `OPTIONAL` The desired image format of the new image file. Default is `'png'`.
    * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new converted image file.
    */
-  async download(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
+  async download(destPath: FilePathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<ImgFile> {
     if (this.buf.length === 0) await this.fetchURL()
     const opts = setDefaultOptions<ImageConverterOptions>(
       {

@@ -1,5 +1,5 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { FilePath, createHash, pathLikeToString, type PathLikeTypes } from 'node-lib'
+import { FilePath, createHash, pathLikeToString, type FilePathLikeTypes } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { RequiredDeep } from 'type-fest'
 import { DTAParserError, WrongDTATypeError } from '../errors'
@@ -106,11 +106,11 @@ export class DTAParser {
   /**
    * Reads a DTA file.
    * - - - -
-   * @param {PathLikeTypes} dtaFilePath The path of the DTA file.
+   * @param {FilePathLikeTypes} dtaFilePath The path of the DTA file.
    * @param {DTAContentParserFormatTypes | undefined} type `OPTIONAL` The type of the DTA file contents. Some DTAs (like from updates, and official pre-RB3 DTA files) might need to set this as `'partial'`, since they might not have all the values expected to be recognized as a song on RB3's music library. Default is `'complete'`.
    * @returns {Promise<DTAParser>}
    */
-  static async fromFile(dtaFilePath: PathLikeTypes, type: DTAContentParserFormatTypes = 'complete'): Promise<DTAParser> {
+  static async fromFile(dtaFilePath: FilePathLikeTypes, type: DTAContentParserFormatTypes = 'complete'): Promise<DTAParser> {
     const path = FilePath.of(pathLikeToString(dtaFilePath))
     if (!path.exists) throw new DTAParserError(`Provided argument "${path.path}" is not a path or the file does not exists`)
     const dtaBuffer = await path.read()
@@ -140,10 +140,10 @@ export class DTAParser {
   /**
    * Asynchronously reads and parses a DTA file and returns a SHA256 hash from it.
    * - - - -
-   * @param {PathLikeTypes} dtaFilePath The path to a DTA file.
+   * @param {FilePathLikeTypes} dtaFilePath The path to a DTA file.
    * @returns {Promise<string>}
    */
-  static async calculateHashFromFile(dtaFilePath: PathLikeTypes): Promise<string> {
+  static async calculateHashFromFile(dtaFilePath: FilePathLikeTypes): Promise<string> {
     const dtaPath = FilePath.of(pathLikeToString(dtaFilePath))
     const dtaBuffer = await dtaPath.read()
     return DTAParser.calculateHashFromBuffer(dtaBuffer)
@@ -334,12 +334,12 @@ export class DTAParser {
   /**
    * Saves all songs from the instantiated class collection to a DTA file.
    * - - - -
-   * @param {PathLikeTypes} destPath The destination path of the new DTA file.
+   * @param {FilePathLikeTypes} destPath The destination path of the new DTA file.
    * @param {DTAStringifyOptions | undefined} options `OPTIONAL` An object with values that changes the behavior of the stringify process.
    * @param {SongEncoding | undefined} encoding The encoding of the DTA file. Default is `utf8`.
    * @returns {Promise<DTAParserFileSaveReturnObject>}
    */
-  async saveToFile(destPath: PathLikeTypes, options?: DTAStringifyOptions, encoding: SongEncoding = 'utf8'): Promise<DTAParserFileSaveReturnObject> {
+  async saveToFile(destPath: FilePathLikeTypes, options?: DTAStringifyOptions, encoding: SongEncoding = 'utf8'): Promise<DTAParserFileSaveReturnObject> {
     const dest = FilePath.of(pathLikeToString(destPath))
     const content = this.toString(options)
     return {

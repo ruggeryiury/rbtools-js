@@ -1,4 +1,4 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { type TextureFileStatReturnObject } from '../../core.exports'
 import { UnknownFileFormatError } from '../../errors'
@@ -7,10 +7,10 @@ import { imageHeaders } from '../../lib.exports'
 /**
  * Asynchronously returns an object with statistics of a PNG_WII texture file.
  * - - - -
- * @param {PathLikeTypes} filePath The path of the PNG_WII file.
+ * @param {FilePathLikeTypes} filePath The path of the PNG_WII file.
  * @returns {Promise<TextureFileStatReturnObject>} An object with statistics of a PNG_WII texture file
  */
-export const pngWiiStat = async (filePath: PathLikeTypes): Promise<TextureFileStatReturnObject> => {
+export const pngWiiStat = async (filePath: FilePathLikeTypes): Promise<TextureFileStatReturnObject> => {
   const srcPath = FilePath.of(pathLikeToString(filePath))
 
   const srcBuffer = await srcPath.read()
@@ -50,10 +50,10 @@ export const pngWiiStat = async (filePath: PathLikeTypes): Promise<TextureFileSt
 /**
  * Synchronously returns an object with statistics of a PNG_WII texture file.
  * - - - -
- * @param {PathLikeTypes} filePath The path of the PNG_WII file.
+ * @param {FilePathLikeTypes} filePath The path of the PNG_WII file.
  * @returns {TextureFileStatReturnObject} An object with statistics of a PNG_WII texture file
  */
-export const pngWiiStatSync = (filePath: PathLikeTypes): TextureFileStatReturnObject => {
+export const pngWiiStatSync = (filePath: FilePathLikeTypes): TextureFileStatReturnObject => {
   const srcPath = FilePath.of(pathLikeToString(filePath))
 
   const srcBuffer = srcPath.readSync()

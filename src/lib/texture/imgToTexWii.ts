@@ -1,4 +1,4 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
@@ -8,12 +8,12 @@ import { WimgtEnc, imageConverter, imageHeaders } from '../../lib.exports'
 /**
  * Asynchronously converts an image file to PNG_WII texture file format.
  * - - - -
- * @param {PathLikeTypes} srcFile The path of the image to want to convert.
- * @param {PathLikeTypes} destPath The path of the new converted texture file.
+ * @param {FilePathLikeTypes} srcFile The path of the image to want to convert.
+ * @param {FilePathLikeTypes} destPath The path of the new converted texture file.
  * @param {Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new converted texture file.
  */
-export const imgToTexWii = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>): Promise<TextureFile> => {
+export const imgToTexWii = async (srcFile: FilePathLikeTypes, destPath: FilePathLikeTypes, options?: Omit<ConvertToTextureOptions, 'DTX5' | 'textureSize'>): Promise<TextureFile> => {
   const { interpolation } = setDefaultOptions<NonNullable<typeof options>>(
     {
       interpolation: 'bilinear',

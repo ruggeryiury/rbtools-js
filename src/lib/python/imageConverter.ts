@@ -1,5 +1,5 @@
 import { spawn } from 'child_process'
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import type { ConvertToWEBPDataURLOptions } from '../../core.exports'
@@ -22,12 +22,12 @@ export interface ImageConverterOptions {
  * Python script: Asynchronously converts an image file `Buffer` to an image file.
  * - - - -
  * @param {Buffer} buf The buffer of the image file.
- * @param {PathLikeTypes} destPath The path of the new converted image file.
+ * @param {FilePathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes | undefined} toFormat The desired image format of the new image file. Default is `'png'`.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<FilePath>}
  */
-export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<FilePath> => {
+export const bufferConverter = async (buf: Buffer, destPath: FilePathLikeTypes, toFormat: ArtworkImageFormatTypes = 'png', options?: ImageConverterOptions): Promise<FilePath> => {
   const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       height: 256,
@@ -71,13 +71,13 @@ export const bufferConverter = async (buf: Buffer, destPath: PathLikeTypes, toFo
  *
  * If no _options_ argument is given, the image converter will return a 256x256 pixels size image file.
  * - - - -
- * @param {PathLikeTypes} srcFile The path of the image to want to convert.
- * @param {PathLikeTypes} destPath The path of the new converted image file.
+ * @param {FilePathLikeTypes} srcFile The path of the image to want to convert.
+ * @param {FilePathLikeTypes} destPath The path of the new converted image file.
  * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
  * @param {ImageConverterOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<FilePath>}
  */
-export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<FilePath> => {
+export const imageConverter = async (srcFile: FilePathLikeTypes, destPath: FilePathLikeTypes, toFormat: ArtworkImageFormatTypes, options?: ImageConverterOptions): Promise<FilePath> => {
   const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       height: 256,
@@ -103,11 +103,11 @@ export const imageConverter = async (srcFile: PathLikeTypes, destPath: PathLikeT
 /**
  * Python script: Asynchronously returns a Base64-encoded DataURL `string` of the image file.
  * - - - -
- * @param {PathLikeTypes} srcFile The path to the image file.
+ * @param {FilePathLikeTypes} srcFile The path to the image file.
  * @param {ConvertToWEBPDataURLOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
  * @returns {Promise<string>}
  */
-export const webpDataURL = async (srcFile: PathLikeTypes, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
+export const webpDataURL = async (srcFile: FilePathLikeTypes, options?: ConvertToWEBPDataURLOptions): Promise<string> => {
   const opts = setDefaultOptions<NonNullable<typeof options>>(
     {
       width: null,
@@ -183,10 +183,10 @@ export const imgBufferToWEBPDataURL = async (buf: Buffer): Promise<string> => {
  * Python script: Asynchronously converts an PNG_WII texture file to a Base64-encoded
  * Data URL `string` of the texture file.
  * - - - -
- * @param {PathLikeTypes} srcFile The path of the PNG_WII file.
+ * @param {FilePathLikeTypes} srcFile The path of the PNG_WII file.
  * @returns {Promise<string>}
  */
-export const webpDataURLPNGWii = async (srcFile: PathLikeTypes): Promise<string> => {
+export const webpDataURLPNGWii = async (srcFile: FilePathLikeTypes): Promise<string> => {
   const src = FilePath.of(pathLikeToString(srcFile))
   const usedHeader = await getTPLHeader(src)
   const base64Header = usedHeader.data.toString('base64')

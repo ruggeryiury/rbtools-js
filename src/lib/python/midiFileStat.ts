@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import type { MIDIFileStatObject } from '../../core.exports'
 import { PythonExecutionError } from '../../errors'
@@ -8,10 +8,10 @@ import { RBTools } from '../../index'
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {PathLikeTypes} midiFilePath The path of the MIDI file.
+ * @param {FilePathLikeTypes} midiFilePath The path of the MIDI file.
  * @returns {Promise<MIDIFileStatObject>}
  */
-export const midiFileStat = async (midiFilePath: PathLikeTypes): Promise<MIDIFileStatObject> => {
+export const midiFileStat = async (midiFilePath: FilePathLikeTypes): Promise<MIDIFileStatObject> => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(midiFilePath))
@@ -25,10 +25,10 @@ export const midiFileStat = async (midiFilePath: PathLikeTypes): Promise<MIDIFil
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the MIDI file.
  * - - - -
- * @param {PathLikeTypes} midiFilePath The path of the MIDI file.
+ * @param {FilePathLikeTypes} midiFilePath The path of the MIDI file.
  * @returns {MIDIFileStatObject}
  */
-export const midiFileStatSync = (midiFilePath: PathLikeTypes): MIDIFileStatObject => {
+export const midiFileStatSync = (midiFilePath: FilePathLikeTypes): MIDIFileStatObject => {
   const moduleName = 'midi_file_stat.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(midiFilePath))

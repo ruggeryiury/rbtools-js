@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import type { STFSFileStatRawObject } from '../../core.exports'
 import { PythonExecutionError } from '../../errors'
@@ -8,10 +8,10 @@ import { RBTools } from '../../index'
 /**
  * Python script: Asynchronously prints a JSON object with the statistics of the CON file.
  * - - - -
- * @param {PathLikeTypes} stfsFilePath The path of the CON file.
+ * @param {FilePathLikeTypes} stfsFilePath The path of the CON file.
  * @returns {Promise<STFSFileStatRawObject>}
  */
-export const stfsFileStat = async (stfsFilePath: PathLikeTypes): Promise<STFSFileStatRawObject> => {
+export const stfsFileStat = async (stfsFilePath: FilePathLikeTypes): Promise<STFSFileStatRawObject> => {
   const moduleName = 'stfs_file_stat.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(stfsFilePath))
@@ -25,10 +25,10 @@ export const stfsFileStat = async (stfsFilePath: PathLikeTypes): Promise<STFSFil
 /**
  * Python script: Synchronously prints a JSON object with the statistics of the CON file.
  * - - - -
- * @param {PathLikeTypes} stfsFilePath The path of the CON file.
+ * @param {FilePathLikeTypes} stfsFilePath The path of the CON file.
  * @returns {STFSFileStatRawObject}
  */
-export const stfsFileStatSync = (stfsFilePath: PathLikeTypes): STFSFileStatRawObject => {
+export const stfsFileStatSync = (stfsFilePath: FilePathLikeTypes): STFSFileStatRawObject => {
   const moduleName = 'stfs_file_stat.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(stfsFilePath))

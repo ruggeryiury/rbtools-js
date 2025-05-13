@@ -1,9 +1,9 @@
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError, ValueError } from '../../errors'
 import { RBTools } from '../../index'
 
-export const audioToMOGG = async (audioFiles: PathLikeTypes[], destPath: PathLikeTypes, quality = 3) => {
+export const audioToMOGG = async (audioFiles: FilePathLikeTypes[], destPath: FilePathLikeTypes, quality = 3) => {
   const moduleName = 'audio_to_mogg.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const dest = FilePath.of(pathLikeToString(destPath))

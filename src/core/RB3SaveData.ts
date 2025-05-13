@@ -1,9 +1,8 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
-import { pathLikeToString } from 'node-lib'
-import { RB3SaveFileError, UnknownFileFormatError } from '../errors'
+import { BinaryReader, type FilePathLikeTypes } from 'node-lib'
+import { UnknownFileFormatError } from '../errors'
 import type { InstrumentTypes } from '../lib.exports'
 
-export type RB3SaveFilePlatformTypes = 'xbox' | 'ps3' | 'wii'
+export type RB3SaveDataPlatformTypes = 'xbox' | 'ps3' | 'wii'
 
 export interface RB3InstrumentScores {
   /**
@@ -48,7 +47,7 @@ export interface RB3InstrumentScores {
   percentExpert: number
 }
 
-export interface RB3ScoresObject {
+export interface RB3Scores {
   /**
    * The title of the song.
    */
@@ -117,31 +116,38 @@ export interface RB3ScoresObject {
 
 export interface ParsedRB3SaveData {
   /**
-   * The profile name.
+   * The platform of the parsed save file.
+   */
+  platform: RB3SaveDataPlatformTypes
+  /**
+   * The player's name.
    */
   profileName: string
   /**
+   * The index of the profile, used only reading Rock Band 3 Wii save files.
+   */
+  profileIndex?: number
+  /**
+   * The most played instrument by the player.
+   */
+  mostPlayedInstrument: InstrumentTypes | null
+  /**
    * An array with all played songs scores.
    */
-  scores: RB3ScoresObject[]
+  scores: RB3Scores[]
 }
 
 /**
- * A class that parses decrypted PS3 Rock Band 3 save data files.
- *
- * _NOTE: The implementation of this class and its methods are focused on properly reading_
- * _decrypted PS3 save files. Not save file editing and rewriting were implemented_
- * _on this code. If you try to read a XBox or Wii save file will return a `RB3SaveFileError`._
- * - - - -
+ * A class with static methods to parse Rock Band 3 save data files.
  */
-export class RB3SaveFilePS3 {
-  private dtbXOR(key: number): number {
+export class RB3SaveData {
+  private static dtbXOR(key: number): number {
     let val = (((key - Math.floor(key / 0x1f31d) * 0x1f31d) * 0x41a7) >>> 0) - ((Math.floor(key / 0x1f31d) * 0xb14) >>> 0)
     if (val <= 0) val = (val - 0x80000000 - 1) >>> 0
     return val
   }
 
-  private newDTBCrypt(input: Buffer): Buffer {
+  private static newDTBCrypt(input: Buffer): Buffer {
     let key = input.readUInt32LE(0)
     const outSize = input.length - 4
     const output = Buffer.alloc(outSize)
@@ -152,45 +158,69 @@ export class RB3SaveFilePS3 {
     return output
   }
 
-  /**
-   * Gets and decrypts score list bytes from a Rock Band 3 save data file.
-   * - - - -
-   * @returns {Buffer[]}
-   */
-  private getScoresListBytes(): Buffer[] {
-    const ps3Start = 0x2c7197
-    const encryptedScoresBlock = this.buffer.subarray(ps3Start, ps3Start + 0x15b33c)
-    let decryptedScoresBlock = this.newDTBCrypt(encryptedScoresBlock)
+  private static getMostPlayedInstrument(scoresList: RB3Scores[]): InstrumentTypes | null {
+    const results: InstrumentTypes[] = []
+    if (scoresList.length === 0) return null
+    for (const score of scoresList) {
+      if (score.bass.topScore > 0) results.push('bass')
+      if (score.drums.topScore > 0) results.push('drums')
+      if (score.guitar.topScore > 0) results.push('guitar')
+      if (score.vocals.topScore > 0) results.push('vocals')
+      if (score.keys.topScore > 0) results.push('keys')
+      if (score.proBass.topScore > 0) results.push('real_bass')
+      if (score.proDrums.topScore > 0) results.push('real_drums')
+      if (score.proGuitar.topScore > 0) results.push('real_guitar')
+      if (score.proKeys.topScore > 0) results.push('real_keys')
+      if (score.harmonies.topScore > 0) results.push('harmonies')
+    }
+
+    const mostFrequent = Array.from(new Set(results)).reduce((prev, curr) => (results.filter((el) => el === curr).length > results.filter((el) => el === prev).length ? curr : prev))
+
+    return mostFrequent
+  }
+
+  private static async getScoresListBytesXboxPS3(reader: BinaryReader, blockStart: number): Promise<Buffer[]> {
+    reader.seek(blockStart)
+    const encScoresBlock = await reader.read(0x15b33c)
+    let decScoresBlock = this.newDTBCrypt(encScoresBlock)
 
     const xboxPS3UnknownBytes = Buffer.alloc(0x84)
-    decryptedScoresBlock.copy(xboxPS3UnknownBytes, 0, 0x15b2b4, 0x15b2b4 + 0x84)
-    decryptedScoresBlock = decryptedScoresBlock.subarray(4)
+    decScoresBlock.copy(xboxPS3UnknownBytes, 0, 0x15b2b4, 0x15b2b4 + 0x84)
+    decScoresBlock = decScoresBlock.subarray(0x04)
 
     const scores: Buffer[] = []
-    for (let i = 0; i < decryptedScoresBlock.length; i++) {
-      const test = decryptedScoresBlock.readUInt32LE(i * 0x1da)
+    for (let i = 0; i < decScoresBlock.length; i++) {
+      const testVal = decScoresBlock.readUInt32LE(i * 0x1da)
 
-      if (test === 0 || i === 0xbb8) {
-        if (i === 0xbb8) {
-          console.warn('More than 3000 songs were detected, but only 2999 can be stored. Only displaying the first 2999 songs')
-        }
+      if (testVal === 0 || i === 0xbb8) {
+        if (i === 0xbb8) console.warn('RB3SaveData WARN: More than 3000 songs were detected, but only 2999 can be stored. Only returning the first 2999 songs.')
         break
       }
       const score = Buffer.alloc(0x1da)
-      decryptedScoresBlock.copy(score, 0, i * 0x1da, i * 0x1da + 0x1da)
+      decScoresBlock.copy(score, 0, i * 0x1da, i * 0x1da + 0x1da)
       scores.push(score)
     }
 
     return scores
   }
 
-  /**
-   * Removes the duplicated ID bytes from a decrypted score list bytes and returns it.
-   * - - - -
-   * @param {Buffer} input The score list bytes to remove the duplicated ID from.
-   * @returns {Buffer}
-   */
-  private removeDupeID0x04(input: Buffer): Buffer {
+  private static async getScoresListBytesWii(reader: BinaryReader, blockStart: number): Promise<Buffer[]> {
+    const wiiScoreBlockLength = 0x1d6 * 1000
+    reader.seek(blockStart)
+    const scoresBlock = await reader.read(wiiScoreBlockLength)
+    const scores: Buffer[] = []
+    for (let i = 0; i < scoresBlock.length; i += 0x1d6) {
+      const testVal = scoresBlock.readUInt32LE(i)
+      if (testVal === 0) break
+      const score = Buffer.alloc(0x1d6)
+      scoresBlock.copy(score, 0, i, i + 0x1d6)
+      scores.push(score)
+    }
+
+    return scores
+  }
+
+  private static removeDupeID0x04(input: Buffer): Buffer {
     // Get the first 4 bytes
     const first = input.subarray(0, 4)
 
@@ -203,14 +233,7 @@ export class RB3SaveFilePS3 {
     return output
   }
 
-  /**
-   * Parses a decrypted score list bytes to object.
-   * - - - -
-   * @param {Buffer} input The score list bytes to be parsed.
-   * @param {boolean} isWiiScore A boolean value that flags if the score are being parsed from Wii save data file.
-   * @returns {RB3ScoresObject}
-   */
-  private bytesToScore(input: Buffer, isWiiScore: boolean): RB3ScoresObject {
+  private static bytesToScore(input: Buffer, isWiiScore: boolean): RB3Scores {
     const score = new Map()
     score.set('song_id', input.readUInt32LE(0x00))
     if (!isWiiScore) {
@@ -374,126 +397,119 @@ export class RB3SaveFilePS3 {
     band.set('percentExpert', input[0x1cf])
     score.set('band', Object.fromEntries(band))
 
-    return Object.fromEntries(score) as RB3ScoresObject
+    return Object.fromEntries(score) as RB3Scores
   }
 
-  /**
-   * Iterates through every decrypted score list bytes and parses one by one.
-   * - - - -
-   * @param {Buffer[]} inputList An array of decrypted scores list as `Buffer`.
-   * @returns {RB3ScoresObject[]}
-   */
-  private getScoresList(inputList: Buffer[]): RB3ScoresObject[] {
-    const scoreList: RB3ScoresObject[] = []
-    if (inputList.length === 0) return scoreList
-    let isWiiScore = false
-    if (inputList[0].length === 0x1d6) isWiiScore = true
-    for (const input of inputList) {
-      const score = this.bytesToScore(input, isWiiScore)
-      scoreList.push(score)
+  private static async getProfileName(reader: BinaryReader, profileIndex: number): Promise<string> {
+    let output = ''
+    for (let i = 0; i < 0x2e; i++) {
+      const start = 0x7c + profileIndex * 0x3b + i
+      reader.seek(start)
+      const c = await reader.readASCII(1)
+      if (c !== '\u0000') output += c
+      else break
     }
-    return scoreList
+    return output
   }
 
-  /**
-   * The path to the Rock Band 3 save file.
-   */
-  path: FilePath
-  /**
-   * The Rock Band 3 save file buffer.
-   */
-  buffer: Buffer
-  /**
-   * The platform of the Rock Band 3 save file.
-   */
-  platform: RB3SaveFilePlatformTypes
-  parsed?: ParsedRB3SaveData
-
-  /**
-   * @param {PathLikeTypes} saveFilePath The path to the Rock Band 3 save file.
-   */
-  constructor(saveFilePath: PathLikeTypes) {
-    this.path = FilePath.of(pathLikeToString(saveFilePath))
-    if (this.path.ext.toLowerCase() !== '.dat') throw new UnknownFileFormatError('Only Wii "band3.dat", Xbox 360 "save.dat", and decrypted PS3 "SAVE.DAT" files are supported.')
-    this.buffer = this.path.readSync()
-
-    if (this.buffer.length === 0xc00000) {
-      throw new RB3SaveFileError('Tried to read a Wii save file, but this class only supports decrypted PS3 .dat files.')
-      // this.platform = 'wii'
-    } else if (this.buffer.length === 0x43a929) {
-      throw new RB3SaveFileError('Tried to read a Xbox 360 save file, but this class only supports decrypted PS3 .dat files.')
-      // this.platform = 'xbox'
-    } else if (this.buffer.length === 0x43a99d) this.platform = 'ps3'
-    else if (this.buffer.length === 0x43a99c) throw new RB3SaveFileError('Tried to read a PS3 save file, but the provided file is not a Title Update 5 save file. This class only supports PS3 TU5 save files.')
-    else throw new UnknownFileFormatError(`Provided file "${this.path.path}" is not supported.`)
-  }
-
-  /**
-   * Returns the username of the save data file.
-   * - - - -
-   * @returns {string}
-   */
-  getXboxPS3BandName(): string {
-    if (this.parsed) return this.parsed.profileName
-    const startOffset = this.platform === 'ps3' ? 0x43a7e7 : 0x43a773
+  private static async getXboxPS3BandName(reader: BinaryReader, platform: RB3SaveDataPlatformTypes): Promise<string> {
+    const startOffset = platform === 'ps3' ? 0x43a7e7 : 0x43a773
     let output = ''
     for (let i = 0; i < 0x2e; i++) {
       const start = startOffset + (i >>> 0)
-      const end = start + 1
-      const c = this.buffer.subarray(start, end).toString('ascii')
+      reader.seek(start)
+      const c = await reader.readASCII(1)
       if (c !== '\u0000') output += c
-      else return output
+      else break
     }
 
     return output
   }
 
-  /**
-   * Calculates all scores and returns the most playable instrument based on each instrument scores count.
-   * - - - -
-   * @returns {InstrumentTypes}
-   */
-  getMostPlayedInstrument(): InstrumentTypes {
-    const { scores } = this.parsed ?? this.parseSaveFile()
-    const results: InstrumentTypes[] = []
-    for (const score of scores) {
-      if (score.bass.topScore > 0) results.push('bass')
-      if (score.drums.topScore > 0) results.push('drums')
-      if (score.guitar.topScore > 0) results.push('guitar')
-      if (score.vocals.topScore > 0) results.push('vocals')
-      if (score.keys.topScore > 0) results.push('keys')
-      if (score.proBass.topScore > 0) results.push('real_bass')
-      if (score.proDrums.topScore > 0) results.push('real_drums')
-      if (score.proGuitar.topScore > 0) results.push('real_guitar')
-      if (score.proKeys.topScore > 0) results.push('real_keys')
-      if (score.harmonies.topScore > 0) results.push('harmonies')
+  static async parseBuffer(bufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes, wiiProfile = 0): Promise<ParsedRB3SaveData> {
+    let reader: BinaryReader
+    if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
+    else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
+    else throw new Error('Uncaught Exception.')
+    if (reader.length === 0x43a99c) throw new Error('Tried to read an encrypted PS3 save file, but this class only supports decrypted PS3 save files.')
+
+    let platform: RB3SaveDataPlatformTypes
+
+    if (reader.length === 0xc00000) platform = 'wii'
+    else if (reader.length === 0x43a929) platform = 'xbox'
+    else if (reader.length === 0x43a99d) platform = 'ps3'
+    else throw new UnknownFileFormatError('Unknown Rock Band 3 save data format.')
+
+    let blockStart: number
+    switch (platform) {
+      case 'ps3':
+      default:
+        blockStart = 0x2c7197
+        break
+      case 'wii': {
+        blockStart = 0
+        if (wiiProfile === 1) blockStart = 0x6c0000
+        else if (wiiProfile === 2) blockStart = 0x840000
+        else if (wiiProfile === 3) blockStart = 0x9c0000
+        else blockStart = 0x540000
+        break
+      }
+      case 'xbox':
+        blockStart = 0x2c7123
+        break
     }
 
-    const mostFrequent = Array.from(new Set(results)).reduce((prev, curr) => (results.filter((el) => el === curr).length > results.filter((el) => el === prev).length ? curr : prev))
+    if (platform !== 'wii') {
+      const scoresBytes = await this.getScoresListBytesXboxPS3(reader, blockStart)
+      const scoresList: RB3Scores[] = []
+      if (scoresBytes.length > 0) {
+        let isWiiScore = false
+        if (scoresBytes[0].length === 0x1d6) isWiiScore = true
+        for (const scoreBytes of scoresBytes) {
+          const score = this.bytesToScore(scoreBytes, isWiiScore)
+          scoresList.push(score)
+        }
+      }
 
-    return mostFrequent
-  }
+      const profileName = await this.getXboxPS3BandName(reader, platform)
 
-  /**
-   * Parses the Rock Band 3 save file data, returning an object will all scores.
-   * - - - -
-   * @returns {ParsedRB3SaveData}
-   */
-  parseSaveFile(): ParsedRB3SaveData {
-    if (this.parsed) return this.parsed
-    // Get the decrypted bytes of all scores
-    const scoresListBytes = this.getScoresListBytes()
+      await reader.close()
 
-    // Convert bytes to array of parsed scores objects
-    const scoresList = this.getScoresList(scoresListBytes)
+      return {
+        platform,
+        mostPlayedInstrument: scoresList.length > 0 ? this.getMostPlayedInstrument(scoresList) : 'band',
+        profileName,
+        scores: scoresList,
+      }
+    }
 
-    // Get profile name
-    const profileName = this.getXboxPS3BandName()
-    const parsed = {
+    const scoresBytes = await this.getScoresListBytesWii(reader, blockStart)
+    const scoresList: RB3Scores[] = []
+    if (scoresBytes.length > 0) {
+      let isWiiScore = false
+      if (scoresBytes[0].length === 0x1d6) isWiiScore = true
+      for (const scoreBytes of scoresBytes) {
+        const score = this.bytesToScore(scoreBytes, isWiiScore)
+        scoresList.push(score)
+      }
+    }
+
+    const profileName = await this.getProfileName(reader, wiiProfile)
+
+    await reader.close()
+
+    return {
+      platform,
+      mostPlayedInstrument: scoresList.length > 0 ? this.getMostPlayedInstrument(scoresList) : 'band',
       profileName,
       scores: scoresList,
-    } as ParsedRB3SaveData
-    this.parsed = parsed
-    return parsed
+      profileIndex: wiiProfile,
+    }
+  }
+
+  static async parseFromFile(filePath: FilePathLikeTypes) {
+    const reader = await BinaryReader.fromFile(filePath)
+    const content = await this.parseBuffer(reader, filePath)
+    return content
   }
 }

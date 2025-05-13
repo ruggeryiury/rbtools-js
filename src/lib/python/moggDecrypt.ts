@@ -1,4 +1,4 @@
-import { execAsync, FilePath, type PathLikeTypes } from 'node-lib'
+import { execAsync, FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { PythonExecutionError } from '../../errors'
 import { RBTools } from '../../index'
@@ -6,11 +6,11 @@ import { RBTools } from '../../index'
 /**
  * Python script: Asynchronously decrypts a MOGG file and returns the new decrypted MOGG file path.
  * - - - -
- * @param {PathLikeTypes} moggFilePath The path of the MOGG file.
- * @param {PathLikeTypes} destPath The new decrypted MOGG file path
+ * @param {FilePathLikeTypes} moggFilePath The path of the MOGG file.
+ * @param {FilePathLikeTypes} destPath The new decrypted MOGG file path
  * @returns {Promise<FilePath>}
  */
-export const moggDecrypt = async (moggFilePath: PathLikeTypes, destPath: PathLikeTypes): Promise<FilePath> => {
+export const moggDecrypt = async (moggFilePath: FilePathLikeTypes, destPath: FilePathLikeTypes): Promise<FilePath> => {
   const moduleName = 'mogg_decrypt.py'
   const pyPath = FilePath.of(RBTools.python.path, moduleName)
   const src = FilePath.of(pathLikeToString(moggFilePath))

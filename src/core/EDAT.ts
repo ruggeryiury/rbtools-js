@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { DirPath, FilePath, execAsync, pathLikeToString, type PathLikeTypes } from 'node-lib'
+import { DirPath, FilePath, execAsync, pathLikeToString, type FilePathLikeTypes } from 'node-lib'
 import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../errors'
 import { RBTools } from '../index'
 
@@ -52,12 +52,12 @@ export class EDAT {
   /**
    * Encrypts any file to EDAT.
    * - - - -
-   * @param {PathLikeTypes} srcFile The path to the file to be encrypted.
+   * @param {FilePathLikeTypes} srcFile The path to the file to be encrypted.
    * @param {string} contentID The content ID. Must be 36 characters long. Ex.: `UP0002-BLUS30487_00-MYPACKAGELABEL00`
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async encryptToEDAT(srcFile: PathLikeTypes, contentID: string, devKLic: string): Promise<string> {
+  static async encryptToEDAT(srcFile: FilePathLikeTypes, contentID: string, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
     const exePath = FilePath.of(RBTools.bin.path, moduleName)
     const src = FilePath.of(pathLikeToString(srcFile))
@@ -71,11 +71,11 @@ export class EDAT {
   /**
    * Decrypts an EDAT file.
    * - - - -
-   * @param {PathLikeTypes} srcFile The path to the EDAT file to be decrypted.
+   * @param {FilePathLikeTypes} srcFile The path to the EDAT file to be decrypted.
    * @param {string} devKLic A 16-byte HEX string (32 chars). Ex.: `d7f3f90a1f012d844ca557e08ee42391`
    * @returns {Promise<string>}
    */
-  static async decryptEDAT(srcFile: PathLikeTypes, devKLic: string): Promise<string> {
+  static async decryptEDAT(srcFile: FilePathLikeTypes, devKLic: string): Promise<string> {
     const moduleName = 'edattool.exe'
     const exePath = FilePath.of(RBTools.bin.path, moduleName)
     const src = FilePath.of(pathLikeToString(srcFile))
@@ -89,10 +89,10 @@ export class EDAT {
   /**
    * Converts all EDAT files from a RPCS3 DLC folder.
    * - - - -
-   * @param {PathLikeTypes} dlcFolder The folder you want to convert all EDAT files. The DLC folder name must be the one that the EDAT file were originally installed to work.
+   * @param {FilePathLikeTypes} dlcFolder The folder you want to convert all EDAT files. The DLC folder name must be the one that the EDAT file were originally installed to work.
    * @returns {Promise<string>}
    */
-  static async decryptRPCS3DLCFolder(dlcFolder: PathLikeTypes): Promise<string> {
+  static async decryptRPCS3DLCFolder(dlcFolder: FilePathLikeTypes): Promise<string> {
     const dlc = DirPath.of(pathLikeToString(dlcFolder))
     const usrDirFolder = DirPath.of(dlc.root)
     const eboot = FilePath.of(usrDirFolder.path, 'EBOOT.BIN')
@@ -116,10 +116,10 @@ export class EDAT {
   /**
    * Decrypts an EDAT file inside a RPCS3 DLC folder. The DLC folder name must be the one that the EDAT file were originally installed to work.
    * - - - -
-   * @param {PathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
+   * @param {FilePathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
    * @returns {Promise<string>}
    */
-  static async decryptEDATFromDLCFolder(edatFilePath: PathLikeTypes): Promise<string> {
+  static async decryptEDATFromDLCFolder(edatFilePath: FilePathLikeTypes): Promise<string> {
     const edat = FilePath.of(pathLikeToString(edatFilePath))
     const midiFile = edat.changeFileName(edat.name.split('.')[0], '.mid')
     if (!midiFile.exists) if (!edat.exists) throw new FileNotFoundError(`Provided path "${edat.path}" does not exists.`)
@@ -134,10 +134,10 @@ export class EDAT {
   /**
    * Checks if the provided EDAT file is encrypted.
    * - - - -
-   * @param {PathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
+   * @param {FilePathLikeTypes} edatFilePath The path to the EDAT file to be decrpted.
    * @returns {Promise<boolean>}
    */
-  static async isEncrypted(edatFilePath: PathLikeTypes): Promise<boolean> {
+  static async isEncrypted(edatFilePath: FilePathLikeTypes): Promise<boolean> {
     const edat = FilePath.of(pathLikeToString(edatFilePath))
     const magic = (await edat.readOffset(0, 3)).toString('ascii')
     if (magic === 'NPD') return true

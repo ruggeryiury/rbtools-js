@@ -1,4 +1,4 @@
-import { FilePath, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { FilePath, type FilePathJSONRepresentation, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { TextureFileError } from '../errors'
@@ -56,7 +56,7 @@ export class TextureFile {
   /**
    * @param {string} textureFilePath The path to the texture file.
    */
-  constructor(textureFilePath: PathLikeTypes) {
+  constructor(textureFilePath: FilePathLikeTypes) {
     this.path = FilePath.of(pathLikeToString(textureFilePath))
     this.checkExistence()
 
@@ -113,12 +113,12 @@ export class TextureFile {
   /**
    * Asynchronously converts this texture file to any other texture file format.
    * - - - -
-   * @param {PathLikeTypes} destPath The path of the new texture file.
+   * @param {FilePathLikeTypes} destPath The path of the new texture file.
    * @param {ArtworkTextureFormatTypes} toFormat The desired image format of the image file.
    * @param {ConvertTextureToTextureOptions} options `OPTIONAL` An object with values that changes the behavior of the converting process.
    * @returns {Promise<TextureFile>} A new instantiated `TextureFile` class pointing to the new texture file.
    */
-  async convertToTexture(destPath: PathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
+  async convertToTexture(destPath: FilePathLikeTypes, toFormat: ArtworkTextureFormatTypes, options?: ConvertTextureToTextureOptions): Promise<TextureFile> {
     const opts = setDefaultOptions<NonNullable<typeof options>>(
       {
         DTX5: true,
@@ -133,11 +133,11 @@ export class TextureFile {
   /**
    * Asynchronously converts this texture file to an image file.
    * - - - -
-   * @param {PathLikeTypes} destPath The path of the new image file.
+   * @param {FilePathLikeTypes} destPath The path of the new image file.
    * @param {ArtworkImageFormatTypes} toFormat The desired image format of the new image file.
    * @returns {Promise<ImgFile>} A new instantiated `ImgFile` class pointing to the new image file.
    */
-  async convertToImage(destPath: PathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
+  async convertToImage(destPath: FilePathLikeTypes, toFormat: ArtworkImageFormatTypes): Promise<ImgFile> {
     const dest = FilePath.of(pathLikeToString(destPath)).changeFileExt(toFormat)
     if (this.path.ext === '.png_wii') return await texToImgWii(this.path, dest, toFormat)
     return await texToImgXboxPs3(this.path, dest, toFormat)

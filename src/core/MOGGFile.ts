@@ -1,5 +1,5 @@
 import { FilePath } from 'node-lib'
-import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString, type FilePathJSONRepresentation, type FilePathLikeTypes } from 'node-lib'
 import { MOGGFileError } from '../errors'
 import { moggDecrypt, moggFileStat, moggFileStatSync } from '../lib.exports'
 
@@ -51,9 +51,9 @@ export class MOGGFile {
   path: FilePath
 
   /**
-   * @param {PathLikeTypes} moggFilePath The path to the MOGG file.
+   * @param {FilePathLikeTypes} moggFilePath The path to the MOGG file.
    */
-  constructor(moggFilePath: PathLikeTypes) {
+  constructor(moggFilePath: FilePathLikeTypes) {
     this.path = FilePath.of(pathLikeToString(moggFilePath))
   }
 
@@ -158,11 +158,11 @@ export class MOGGFile {
    *
    * If the provided MOGG file is already decrypted it will return the path of the MOGG file itself.
    * - - - -
-   * @param {PathLikeTypes | undefined} destPath `OPTIONAL` The path of the new, decrypted MOGG file. If no provided argument, the name
+   * @param {FilePathLikeTypes | undefined} destPath `OPTIONAL` The path of the new, decrypted MOGG file. If no provided argument, the name
    * of the new decrypted MOGG file will be the same of the encrypted one, with a `_decrypted` on the end.
    * @returns {Promise<MOGGFile>}
    */
-  async decrypt(destPath?: PathLikeTypes): Promise<MOGGFile> {
+  async decrypt(destPath?: FilePathLikeTypes): Promise<MOGGFile> {
     this.checkExistence()
     const isEncrypted = await this.isEncrypted()
     if (!isEncrypted) return this

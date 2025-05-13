@@ -1,5 +1,5 @@
 import { FilePath } from 'node-lib'
-import { pathLikeToString, type FilePathJSONRepresentation, type PathLikeTypes } from 'node-lib'
+import { pathLikeToString, type FilePathJSONRepresentation, type FilePathLikeTypes } from 'node-lib'
 import { MIDIFileError } from '../errors'
 import { midiFileStat, midiFileStatSync } from '../lib.exports'
 
@@ -28,9 +28,9 @@ export class MIDIFile {
   path: FilePath
 
   /**
-   * @param {PathLikeTypes} midiFilePath The path to the MIDI file.
+   * @param {FilePathLikeTypes} midiFilePath The path to the MIDI file.
    */
-  constructor(midiFilePath: PathLikeTypes) {
+  constructor(midiFilePath: FilePathLikeTypes) {
     this.path = FilePath.of(pathLikeToString(midiFilePath))
 
     this.checkExistence()

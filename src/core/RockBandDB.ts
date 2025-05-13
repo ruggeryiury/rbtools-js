@@ -1,4 +1,4 @@
-import { FilePath, type PathLikeTypes } from 'node-lib'
+import { FilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString, resolve } from 'node-lib'
 import { DTAParser, RBTools } from '../index'
 import type { PartialDTAFile } from '../lib.exports'
@@ -12,12 +12,12 @@ export class RockBandDB {
    * holds the data about the Rock Band 3 Deluxe official songs updates for quick data
    * fetching without having to parse all the updates DTA files all over again.
    * - - - -
-   * @param {PathLikeTypes} dxSongUpdatesFolder `OPTIONAL` The folder of the Rock Band 3 Deluxe
+   * @param {FilePathLikeTypes} dxSongUpdatesFolder `OPTIONAL` The folder of the Rock Band 3 Deluxe
    * patch that has all the updates DTA to be read. If not provided, the function will try
    * to find these files on `src/bin/dta` folder.
    * @returns {PartialDTAFile[]}
    */
-  static async createUpdatesJSONFile(dxSongUpdatesFolder?: PathLikeTypes): Promise<PartialDTAFile[]> {
+  static async createUpdatesJSONFile(dxSongUpdatesFolder?: FilePathLikeTypes): Promise<PartialDTAFile[]> {
     const dtaPath = dxSongUpdatesFolder ? FilePath.of(pathLikeToString(dxSongUpdatesFolder)) : RBTools.getDTAPath()
     const updates = FilePath.of(dtaPath.path, 'dx_updates.json')
 
