@@ -426,11 +426,19 @@ export class RB3SaveData {
     return output
   }
 
+  /**
+   * Asynchronously parses a Rock Band 3 save data file buffer.
+   * - - - -
+   * @param {Buffer | BinaryReader} bufferOrReader A `Buffer` object with the contents of the Rock Band 3 save data file, or a `BinaryReader` instance for the the Rock Band 3 save data file.
+   * @param {FilePathLikeTypes | undefined} [file] `OPTIONAL` The path of the Rock Band 3 save data file you're working upon, if you're working with an actual file. Providing a `BinaryReader` argument for `bufferOrReader` and not provide an argument for this parameter will result on an `Error`.
+   * @param {number} [wiiProfile] `OPTIONAL` The index of the desired profile. This is only used on Wii save data files. Default is `0`.
+   * @returns {Promise<ParsedRB3SaveData>}
+   */
   static async parseBuffer(bufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes, wiiProfile = 0): Promise<ParsedRB3SaveData> {
     let reader: BinaryReader
     if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
     else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
-    else throw new Error('Uncaught Exception.')
+    else throw new Error(`Invalid argument pairs for "bufferOrReader" and "file" provided while trying to read Rock Band 3 save data file or buffer.`)
     if (reader.length === 0x43a99c) throw new Error('Tried to read an encrypted PS3 save file, but this class only supports decrypted PS3 save files.')
 
     let platform: RB3SaveDataPlatformTypes
@@ -507,7 +515,13 @@ export class RB3SaveData {
     }
   }
 
-  static async parseFromFile(filePath: FilePathLikeTypes) {
+  /**
+   * Asynchronously parses a Rock Band 3 save data file.
+   * - - - -
+   * @param {FilePathLikeTypes} filePath The path to the Rock Band 3 save data file.
+   * @returns {Promise<ParsedRB3SaveData>}
+   */
+  static async parseFromFile(filePath: FilePathLikeTypes): Promise<ParsedRB3SaveData> {
     const reader = await BinaryReader.fromFile(filePath)
     const content = await this.parseBuffer(reader, filePath)
     return content

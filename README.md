@@ -15,9 +15,6 @@
   - [Installation steps](#installation-steps)
 - [Package resources](#package-resources)
 - [API](#api)
-- [Rock Band Song Package File](#rock-band-song-package-file)
-  - [File Header](#file-header)
-  - [File Contents](#file-contents)
 - [Special thanks](#special-thanks)
 - [More Rock Band related projects](#more-rock-band-related-projects)
 
@@ -76,10 +73,11 @@ _Make sure that the `packages` folder are in the project's root folder to instal
 
 Also, **_RBToolsJS_** uses modified Python scripts from:
 
-- [TPL Module (from Wii.py)](https://github.com/DorkmasterFlek/Wii.py)
-- [STFS Module (from py360)](https://github.com/valmyzk/py360)
 - [MOGG Module (from moggulator)](https://github.com/LocalH/moggulator/tree/master)
-- [Swap RB Art Bytes (from RB3DX Dependencies)]()
+- [PKG Module (from PSN_get_pkg_info)](https://github.com/windsurfer1122/PSN_get_pkg_info)
+- [STFS Module (from py360)](https://github.com/valmyzk/py360)
+- [TPL Module (from Wii.py)](https://github.com/DorkmasterFlek/Wii.py)
+- [Swap RB Art Bytes (from RB3DX Dependencies)](https://github.com/hmxmilohax/rock-band-3-deluxe/blob/develop/dependencies/python/swap_rb_art_bytes.py)
 
 At last, **_RBToolsJS_** comes with a few special Node packages made by myself, such as:
 
@@ -91,52 +89,6 @@ At last, **_RBToolsJS_** comes with a few special Node packages made by myself, 
 The main exports of this package consists on classes that represents a file type to be processed. All secondary methods used on these classes is also available to import from `rbtools/lib`.
 
 _API DOCUMENTATION COMING SOON_
-
-# Rock Band Song Package File
-
-The Rock Band Song Package file is a proprietary file created to package a Rock Band 3 custom song. It was created as an alternative way to share a Rock Band song to any player/charter. The extension used for this file is `.rbsp`. The idea is to make a file where you can place all project files of a specific custom song, also with the ability to create CON files, PKG files, or writing a song directly into RPCS3's DLC folder for Rock Band 3 customs. The file might includes:
-
-- The song's REAPER project.
-- All audio files used on the project to create lipsync animations and original stems from the song.
-- All files from the compiled custom: MOGG file, MILO file, MID file.
-- The parsed DTA of the song as JSON.
-- Project version and Markdown file as package description.
-
-## File Header
-
-The Rock Band Song Package file has a fixed header of `0x20` bytes.
-
-| NAME                           | OFFSET | LENGTH | ENCODING TYPE | DESCRIPTION                                                                                                            |
-| ------------------------------ | ------ | ------ | ------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| File Signature                 | `0x00` | `0x04` | `ascii`       | The file signature. Always `52 42 53 50` (RBSP).                                                                       |
-| Package Version                | `0x04` | `0x01` | `uint8`       | The version of the song package.                                                                                       |
-| Package Name Length            | `0x05` | `0x01` | `uint8`       | The length of the package name, up to 255 characters.                                                                  |
-| Song Data Size                 | `0x06` | `0x02` | `uint16le`    | The length of the Song Data `base64` string.                                                                           |
-| Markdown File Size&sup1;       | `0x08` | `0x04` | `uint32le`    | The length of the Markdown file implemented to the song package to be used as a versatile package description display. |
-| MIDI File Size                 | `0x0C` | `0x04` | `uint32le`    | The length of the song's MIDI file.                                                                                    |
-| Album Artwork Size&sup2;       | `0x10` | `0x04` | `uint32le`    | The length of the Album Artwork file.                                                                                  |
-| REAPER Project File Size&sup1; | `0x14` | `0x04` | `uint32le`    | The length of the REAPER Project file.                                                                                 |
-| Song MILO File Size&sup3;      | `0x18` | `0x04` | `uint32le`    | The length of the song's MILO file.                                                                                    |
-| Song MOGG File Size&sup3;      | `0x1C` | `0x04` | `uint32le`    | The length of the song's MOGG file.                                                                                    |
-
-1 &mdash; This file is optional for a RBSP file to have it. On the file header, zero bytes values means the file was not implemented.
-
-2 &mdash; Album artwork is optional. If not used, it will have zero bytes on the file header but the `rock-band-song-packager` will display a placeholder image.
-
-3 &mdash; Compiled song files are optional but highly recommended to be able to re-create CON and PKG files.
-
-## File Contents
-
-| NAME                | ENCODING TYPE                 | DESCRIPTION                     |
-| ------------------- | ----------------------------- | ------------------------------- |
-| Package Name        | `utf8`                        | The parsed song data.           |
-| Song Data           | `base64` => `json`            | The parsed song data.           |
-| Markdown            | `base64` => `utf8`            | The markdown file contents.     |
-| MIDI File           | `compressed binary` => `midi` | The contents of the MIDI file.  |
-| Album Artwork File  | `compressed binary` => `png`  | The album artwork of the song.  |
-| REAPER Project File | `compressed binary` => `rpp`  | The REAPER project of the song. |
-| Song MILO File      | `binary` => `milo`            | The MILO file of the song.      |
-| Song MOGG File      | `binary` => `mogg`            | The MOGG file of the song.      |
 
 # Special thanks
 

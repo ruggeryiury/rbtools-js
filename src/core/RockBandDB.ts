@@ -62,34 +62,4 @@ export class RockBandDB {
     const updates = FilePath.of(dtaPath.path, 'dx_updates.json')
     return (await updates.readJSON()) as PartialDTAFile[]
   }
-
-  /**
-   * Asynchronously loads all Rock Band 3 On-disc songs data from the database.
-   * - - - -
-   * @param {boolean | undefined} withUpdates `OPTIONAL` If `true`, the function will also apply RB3DX
-   * updates on all available songs. Default is `true`.
-   * @returns {Promise<PartialDTAFile[]>}
-   */
-  static async loadRB3(withUpdates = true): Promise<PartialDTAFile[]> {
-    const dtaPath = RBTools.getDTAPath()
-    const rb3 = new DTAParser((await FilePath.of(dtaPath.path, 'rb3.json').readJSON()) as PartialDTAFile[])
-
-    const songs: DTAParser[] = []
-    songs.push(rb3)
-
-    const parsedSongs: PartialDTAFile[] = []
-    if (withUpdates) {
-      const updates = (await FilePath.of(dtaPath.path, 'dx_updates.json').readJSON()) as PartialDTAFile[]
-      for (const song of songs) {
-        song.applyUpdates(updates)
-        parsedSongs.push(...song.songs)
-      }
-    } else {
-      for (const song of songs) {
-        parsedSongs.push(...song.songs)
-      }
-    }
-
-    return parsedSongs
-  }
 }
