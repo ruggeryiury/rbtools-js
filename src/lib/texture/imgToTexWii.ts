@@ -49,16 +49,15 @@ export const imgToTexWii = async (srcFile: FilePathLikeTypes, destPath: FilePath
   // 64 is the size of the TPL file header we need to skip
   const loop = (tplBytes.length - 64) / 4
   const tplBytesWOHeader = tplBytes.subarray(64)
-  destStream.stream.write(Buffer.from(imageHeaders.WII256x256))
+  destStream.write(Buffer.from(imageHeaders.WII256x256))
 
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)
     tplBytesWOHeader.copy(newBuffer, 0, x * 4, x * 4 + 4)
-    destStream.stream.write(newBuffer)
+    destStream.write(newBuffer)
   }
 
-  destStream.stream.end()
-  await destStream.once
+  destStream.end()
 
   await tpl.delete()
   return new TextureFile(dest)

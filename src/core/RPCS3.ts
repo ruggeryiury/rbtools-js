@@ -1,4 +1,5 @@
-import { DirPath, FilePath, isFile, pathLikeToDirPath, pathLikeToFilePath, pathLikeToString, type DirPathLikeTypes, type FilePathLikeTypes } from 'node-lib'
+import { lstat } from 'node:fs/promises'
+import { createHash, DirPath, FilePath, isFile, pathLikeToDirPath, pathLikeToFilePath, pathLikeToString, resolve, type DirPathLikeTypes, type FilePathLikeTypes } from 'node-lib'
 import { parse as parseYAMLBuffer } from 'yaml'
 import type { DTAFile, PartialDTAFile } from '../lib.exports'
 import { DTAParser } from './DTAParser'
@@ -88,12 +89,17 @@ export interface InstalledSongPackagesStats {
   path: string
   /** The name of the package. */
   name: string
-  /** A hash identifying the song package. */
-  packHash: string
+  /**
+   * The hash of the package.
+   *
+   * A song package hash consists of two SHA256 hashes joined together in one string:
+   *
+   * - The first portion of the hash is the hash of the package `songs.dta` file.
+   * - The second portion of the hash is the hash of a text that flags all files and their file sizes.
+   */
+  hash: string
   /** The game this pack belongs to. */
   origin: 'pre_rb3' | 'rb3'
-  /** Whether the package is an official one. */
-  isOfficial: boolean
   /** List of songs included in the package. */
   songs: (DTAFile | PartialDTAFile)[]
 }
@@ -171,50 +177,6 @@ export class RPCS3 {
     if (!gamesConfig.exists) return false
 
     return true
-  }
-
-  /**
-   * Checks if a package DTA file hash has known package data from the database, returning `false` if not.
-   * - - - -
-   * @param {string} packHash The hash of the package's DTA file.
-   * @returns {Partial<InstalledSongPackagesStats> | false}
-   */
-  static checkHashForKnownPackages(packHash: string): Partial<InstalledSongPackagesStats> | false {
-    switch (packHash) {
-      // Rock Band (Export)
-      case 'af0f6d4fa8a5abfcc4226bb7040af04837cc22e644b905e2e04c561360313d02':
-        return { name: 'Rock Band (Export)', isOfficial: true }
-
-      // Rock Band 2 (Export)
-      case '77d80c436f289a6d09bb68dfc4cfe7567b0c99c0fcec1870823ec93be7b7a89f':
-        return { name: 'Rock Band 2 (Export)', isOfficial: true }
-
-      // LEGO Rock Band (Export)
-      case '6bad37e2f03ffe3cde7cbd4de3ebb580d61e1b50dadac59093583abe7a807540':
-        return { name: 'LEGO Rock Band (Export)', isOfficial: true }
-
-      // Rock Band 4 (On-Disc songs)
-      case '50a42083300c3134561c5bd708f8e6a04406d79d4b0535a4cfd247a180374868':
-        return { name: 'Rock Band 4 (On Disc)', isOfficial: true }
-      default:
-        return false
-    }
-  }
-
-  /**
-   * Checks if there's known package information from the internal package database from `hash` and populates a `packMap` with the data, if any.
-   * - - - -
-   * @param {Map<keyof InstalledSongPackagesStats, unknown>} packMap The map with the package data.
-   * @param {string} packHash The hash of the package's DTA file.
-   * @returns {void}
-   */
-  private static populatePackageMapWithKnownPackageData(packMap: Map<keyof InstalledSongPackagesStats, unknown>, packHash: string): void {
-    const data = this.checkHashForKnownPackages(packHash)
-    if (!data) return
-
-    for (const keys of Object.keys(data) as (keyof Partial<InstalledSongPackagesStats>)[]) {
-      packMap.set(keys, data[keys])
-    }
   }
 
   /**
@@ -343,6 +305,23 @@ export class RPCS3 {
     return Object.fromEntries(map.entries()) as Record<keyof RPCS3GamesStats, unknown> as RPCS3GamesStats
   }
 
+  static async calculateSongPackageHash(dtaFilePath: FilePathLikeTypes, parsedDTA?: DTAParser): Promise<string> {
+    const dtaRootFolder = pathLikeToFilePath(dtaFilePath).gotoDir('../')
+    const packFolderName = dtaRootFolder.name
+    const parsed = parsedDTA ?? (await DTAParser.fromFile(dtaFilePath))
+    const dtaFileHash = parsed.calculateHash()
+    let contentHash = ''
+    const packageFiles = (await dtaRootFolder.readDir(false, true)).filter((path) => isFile(resolve(dtaRootFolder.path, path))).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    let i = 0
+    for (const file of packageFiles) {
+      const size = (await lstat(resolve(dtaRootFolder.path, file))).size
+      contentHash += `${i.toString()} USRDIR/${packFolderName}/${file.replace(/\\/g, '/')} ${size.toString()}\n`
+      i++
+    }
+
+    return dtaFileHash + createHash(contentHash)
+  }
+
   /**
    * Returns an object containing information about all installed song packages.
    * - - - -
@@ -367,16 +346,14 @@ export class RPCS3 {
         if (pack.exists) {
           rb3PacksCount++
           const parsedData = await DTAParser.fromFile(pack)
+          const packHash = await RPCS3.calculateSongPackageHash(pack, parsedData)
           rb3SongsCount += parsedData.songs.length
-          const packHash = parsedData.calculateHash()
           const packMap = new Map<keyof InstalledSongPackagesStats, unknown>()
           packMap.set('path', pack.path)
           packMap.set('name', pack.gotoDir('../').name)
-          packMap.set('packHash', packHash)
+          packMap.set('hash', packHash)
           packMap.set('origin', 'rb3')
-          packMap.set('isOfficial', false)
           packMap.set('songs', parsedData.toJSON())
-          RPCS3.populatePackageMapWithKnownPackageData(packMap, packHash)
           packs.push(Object.fromEntries(packMap.entries()) as Record<keyof InstalledSongPackagesStats, unknown> as InstalledSongPackagesStats)
         }
       }
@@ -393,16 +370,14 @@ export class RPCS3 {
         if (pack.exists) {
           preRB3PacksCount++
           const parsedData = await DTAParser.fromFile(pack, 'partial')
+          const packHash = await RPCS3.calculateSongPackageHash(pack, parsedData)
           preRB3SongsCount += parsedData.songs.length
-          const packHash = parsedData.calculateHash()
           const packMap = new Map<keyof InstalledSongPackagesStats, unknown>()
           packMap.set('path', pack.path)
           packMap.set('name', pack.gotoDir('../').name)
-          packMap.set('packHash', packHash)
+          packMap.set('hash', packHash)
           packMap.set('origin', 'pre_rb3')
-          packMap.set('isOfficial', false)
           packMap.set('songs', parsedData.toJSON())
-          RPCS3.populatePackageMapWithKnownPackageData(packMap, packHash)
           packs.push(Object.fromEntries(packMap.entries()) as Record<keyof InstalledSongPackagesStats, unknown> as InstalledSongPackagesStats)
         }
       }

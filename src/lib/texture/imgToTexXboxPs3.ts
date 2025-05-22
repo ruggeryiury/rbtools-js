@@ -59,16 +59,15 @@ export const imgToTexXboxPs3 = async (srcFile: FilePathLikeTypes, destPath: File
   const loop = (ddsBuffer.length - 128) / 4
   const ddsBufferWOHeader = ddsBuffer.subarray(128)
 
-  destStream.stream.write(headerBuffer)
+  destStream.write(headerBuffer)
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)
     ddsBufferWOHeader.copy(newBuffer, 0, x * 4, x * 4 + 4)
     const swappedBytes = toFormat === 'png_ps3' ? newBuffer : Buffer.from([newBuffer[1], newBuffer[0], newBuffer[3], newBuffer[2]])
-    destStream.stream.write(swappedBytes)
+    destStream.write(swappedBytes)
   }
 
-  destStream.stream.end()
-  await destStream.once
+  destStream.end()
 
   await dds.delete()
   return new TextureFile(destWithCorrectExt)

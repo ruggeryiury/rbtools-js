@@ -34,17 +34,16 @@ export const texToImgXboxPs3 = async (srcFile: FilePathLikeTypes, destPath: File
   srcBuffer.copy(shortSrcHeader, 0, 5, 11)
 
   const srcHeader = await getDDSHeader(fullSrcHeader, shortSrcHeader)
-  ddsStream.stream.write(srcHeader.data)
+  ddsStream.write(srcHeader.data)
 
   for (let x = 0; x <= loop; x++) {
     const newBuffer = Buffer.alloc(4)
     srcContents.copy(newBuffer, 0, x * 4, x * 4 + 4)
     const swappedBytes = src.ext === '.png_ps3' ? newBuffer : Buffer.from([newBuffer[1], newBuffer[0], newBuffer[3], newBuffer[2]])
-    ddsStream.stream.write(swappedBytes)
+    ddsStream.write(swappedBytes)
   }
 
-  ddsStream.stream.end()
-  await ddsStream.once
+  ddsStream.end()
 
   await imageConverter(dds.path, destWithCorrectExt.path, toFormat, { width: srcHeader.width, height: srcHeader.height })
 

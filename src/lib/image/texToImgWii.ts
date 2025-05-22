@@ -25,14 +25,13 @@ export const texToImgWii = async (srcFile: FilePathLikeTypes, destPath: FilePath
   const srcHeader = await getTPLHeader(src)
 
   const tplStream = await tpl.createWriteStream()
-  tplStream.stream.write(srcHeader.data)
+  tplStream.write(srcHeader.data)
 
   // 32 is the size of the texture file header we need to skip
   const srcContents = srcBuffer.subarray(32)
-  tplStream.stream.write(srcContents)
+  tplStream.write(srcContents)
 
-  tplStream.stream.end()
-  await tplStream.once
+  tplStream.end()
 
   try {
     await WimgtDec(tpl.path, destWithCorrectExt.path)
