@@ -34,7 +34,7 @@ export interface STFSFileJSONObject extends FilePathJSONRepresentation {
 }
 
 /**
- * STFSFile is a class that represents a Xbox CON file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+ * STFSFile is a class that represents a Xbox 360 CON file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
  * - - - -
  */
 export class STFSFile {
@@ -57,7 +57,7 @@ export class STFSFile {
    * @returns {boolean}
    */
   private checkExistence(): boolean {
-    if (!this.path.exists) throw new STFSFileError(`Xbox CON file "${this.path.path}" does not exists`)
+    if (!this.path.exists) throw new STFSFileError(`Provided Xbox 360 CON file path "${this.path.path}" does not exists.`)
     return true
   }
 

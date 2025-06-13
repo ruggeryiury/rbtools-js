@@ -96,6 +96,24 @@ export class STFSFileError extends Error {
   }
 }
 
+
+
+/**
+ * A generic error that's thrown by the `PKGFile` class.
+ * - - - -
+ */
+export class PKGFileError extends Error {
+  /**
+   * @param {string} message The message you want to display.
+   */
+  constructor(message = '') {
+    super(message)
+    this.name = 'STFSFileError'
+    Error.captureStackTrace(this, STFSFileError)
+    Object.setPrototypeOf(this, STFSFileError.prototype)
+  }
+}
+
 /**
  * A generic error that's thrown by the `MOGGFile` class.
  * - - - -

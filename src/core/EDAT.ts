@@ -4,7 +4,7 @@ import { ExecutableError, FileNotFoundError, UnknownFileFormatError } from '../e
 import { RBTools } from '../index'
 
 const ps3GameIDs = {
-  rb2: 'BLUS30050',
+  rb: 'BLUS30050',
   rb3: 'BLUS30463',
 } as const
 

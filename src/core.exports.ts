@@ -1,4 +1,4 @@
-export * from './core/DTADabatase'
+export * from '../dev/unused/DTADabatase'
 export * from './core/DTAParser'
 export * from './core/EDAT'
 export * from './core/ImageURL'

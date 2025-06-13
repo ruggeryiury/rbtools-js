@@ -1,5 +1,5 @@
-import { BinaryReader, createHash, numberToHexString, padHexToLength, pathLikeToString, type FilePathLikeTypes } from 'node-lib'
-import { DTAParser } from '..'
+import { BinaryReader, createHash, FilePath, numberToHexString, padHexToLength, pathLikeToString, type FilePathLikeTypes } from 'node-lib'
+import { DTAParser, PKGFileError } from '..'
 import { PkgXorSha1Counter, calculateAesAlignedOffsetAndSize, type CalculatedAesOffsetAndSizeObject, type PartialDTAFile } from '../lib.exports'
 
 export interface PKGHeaderData {
@@ -124,13 +124,17 @@ export interface SFOData {
   data: SFODataObject[]
 }
 
+/**
+ * PKGFile is a class that represents a PS3 PKG file. It is initalized passing a path as an argument, pointing the path to the image file to be processed.
+ * - - - -
+ */
 export class PKGFile {
   /**
    * An array with keys that acts as an IV for AES decryption.
    *
    * Not used on this script at all, but kept on this script.
    */
-  private static readonly pkgContentKeys = [
+  static readonly pkgContentKeys = [
     {
       key: Buffer.from('Lntx18nJoU6jIh8YiCi4+A==', 'base64'),
       desc: 'PS3',
@@ -210,30 +214,31 @@ export class PKGFile {
       })
     }
 
-    let i = 0
-    let readKeyBytes = 0
+    let i = 0,
+      readKeyBytes = 0,
+      readDataBytes = 0
+
     for (const entry of data) {
       const keyOffset = keyTableStartOffset + entry.keyOffset
-      let keyLength = 0
-      if (i === data.length - 1) keyLength = dataTableStartOffset - keyOffset
-      else keyLength = data[i + 1].keyOffset - readKeyBytes
+      const dataOffset = dataTableStartOffset + entry.dataOffset
+      let keyLength = 0,
+        dataLength = 0
+      if (i === data.length - 1) {
+        keyLength = dataTableStartOffset - keyOffset
+        dataLength = reader.size - dataOffset
+      } else {
+        keyLength = data[i + 1].keyOffset - readKeyBytes
+        dataLength = data[i + 1].dataOffset - readDataBytes
+      }
+
+      // Read key first
       reader.seek(keyOffset)
       const keyName = await reader.readUTF8(keyLength)
       readKeyBytes += keyLength
-      data[i] = { ...entry, keyName }
-      i++
-    }
 
-    i = 0
-    let readDataBytes = 0
-    for (const entry of data) {
-      const dataOffset = dataTableStartOffset + entry.dataOffset
-      let dataLength = 0
-      if (i === data.length - 1) dataLength = reader.size - dataOffset
-      else dataLength = data[i + 1].dataOffset - readDataBytes
+      // Read data
       reader.seek(dataOffset)
       let entryData
-      reader.seek(dataOffset)
       switch (entry.paramFormat) {
         case 'utf8':
         case 'utf8special':
@@ -244,7 +249,8 @@ export class PKGFile {
           break
       }
       readDataBytes += dataLength
-      data[i] = { ...entry, data: entryData }
+
+      data[i] = { ...entry, keyName, data: entryData }
       i++
     }
 
@@ -605,10 +611,17 @@ export class PKGFile {
     return decryptedBytes
   }
 
-  static async parseFromBuffer(pkgFileBufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<PKGData> {
+  /**
+   * Parses a PKG file buffer.
+   * - - - -
+   * @param {Buffer | BinaryReader} bufferOrReader A `Buffer` of the PKG file or a `BinaryReader` class instantiated to a PKG file.
+   * @param {FilePathLikeTypes} [file] `OPTIONAL` The path to the corresponding PKG file that you've working on. This parameter is only used when passing a `BinaryReader` argument to work upon. Not passing a `file` parameter when an instantiated `BinaryReader` is provided as `bufferOrReader` will throw an Error.
+   * @returns {Promise<PKGData>}
+   */
+  static async parseFromBuffer(bufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<PKGData> {
     let reader: BinaryReader
-    if (Buffer.isBuffer(pkgFileBufferOrReader)) reader = BinaryReader.fromBuffer(pkgFileBufferOrReader)
-    else if (file && pkgFileBufferOrReader instanceof BinaryReader) reader = pkgFileBufferOrReader
+    if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
+    else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
     else throw new Error(`Invalid argument pairs for "bufferOrReader" and "file" provided while trying to read Rock Band 3 PKG file or buffer.`)
     const header = await this.parsePKGHeader(reader, file)
     const entries = await this.parsePKGItemEntries(header, reader, file)
@@ -624,35 +637,61 @@ export class PKGFile {
     }
   }
 
+  /**
+   * Parses a PKG file.
+   * - - - -
+   * @param {FilePathLikeTypes} pkgFilePath The path to the PKG file.
+   * @returns {Promise<PKGData>}
+   */
   static async parseFromFile(pkgFilePath: FilePathLikeTypes): Promise<PKGData> {
     const reader = await BinaryReader.fromFile(pkgFilePath)
     return await this.parseFromBuffer(reader, pkgFilePath)
   }
 
-  static async getSongsDTAFromPKGBuffer(pkgFileBufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<PartialDTAFile[]> {
+  /**
+   * Extracts the `songs.dta` file inside a PKG file buffer.
+   * - - - -
+   * @param {Buffer | BinaryReader} bufferOrReader A `Buffer` of the PKG file or a `BinaryReader` class instantiated to a PKG file.
+   * @param {FilePathLikeTypes} [file] `OPTIONAL` The path to the corresponding PKG file that you've working on. This parameter is only used when passing a `BinaryReader` argument to work upon. Not passing a `file` parameter when an instantiated `BinaryReader` is provided as `bufferOrReader` will throw an Error.
+   * @returns {Promise<PartialDTAFile[]>}
+   */
+  static async getSongsDTAFromPKGBuffer(bufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<PartialDTAFile[]> {
     let reader: BinaryReader
-    if (Buffer.isBuffer(pkgFileBufferOrReader)) reader = BinaryReader.fromBuffer(pkgFileBufferOrReader)
-    else if (file && pkgFileBufferOrReader instanceof BinaryReader) reader = pkgFileBufferOrReader
+    if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
+    else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
     else throw new Error(`Invalid argument pairs for "bufferOrReader" and "file" provided while trying to read Rock Band 3 PKG file or buffer.`)
 
     const header = await this.parsePKGHeader(reader, file)
     const entries = await this.parsePKGItemEntries(header, reader, file)
-    const dtaArray = await this.processPKGItemEntries(header, entries, reader, file, /\.(dta|DTA)$/)
+    const dtaArray = await this.processPKGItemEntries(header, entries, reader, file, /songs\.(dta|DTA)$/)
     if (dtaArray.length === 0) throw new Error(`No DTA file was found on ${file ? `provided PKG path "${pathLikeToString(file)}".` : 'provided PKG file buffer.'}`)
     const dtaFile = DTAParser.fromBuffer(dtaArray[0])
     await reader.close()
     return dtaFile.songs
   }
 
+  /**
+   * Extracts the `songs.dta` file inside a PKG file.
+   * - - - -
+   * @param {FilePathLikeTypes} pkgFilePath The path to the PKG file.
+   * @returns {Promise<PartialDTAFile[]>}
+   */
   static async getSongsDTAFromPKGFile(pkgFilePath: FilePathLikeTypes): Promise<PartialDTAFile[]> {
     const reader = await BinaryReader.fromFile(pkgFilePath)
     return await this.getSongsDTAFromPKGBuffer(reader, pkgFilePath)
   }
 
-  static async calculateHashFromBuffer(pkgFileBufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<string> {
+  /**
+   * Calculates the hash from the DTA file and the PKG file buffer contents.
+   * - - - -
+   * @param {Buffer | BinaryReader} bufferOrReader A `Buffer` of the PKG file or a `BinaryReader` class instantiated to a PKG file.
+   * @param {FilePathLikeTypes} [file] `OPTIONAL` The path to the corresponding PKG file that you've working on. This parameter is only used when passing a `BinaryReader` argument to work upon. Not passing a `file` parameter when an instantiated `BinaryReader` is provided as `bufferOrReader` will throw an Error.
+   * @returns {Promise<string>}
+   */
+  static async calculateHashFromBuffer(bufferOrReader: Buffer | BinaryReader, file?: FilePathLikeTypes): Promise<string> {
     let reader: BinaryReader
-    if (Buffer.isBuffer(pkgFileBufferOrReader)) reader = BinaryReader.fromBuffer(pkgFileBufferOrReader)
-    else if (file && pkgFileBufferOrReader instanceof BinaryReader) reader = pkgFileBufferOrReader
+    if (Buffer.isBuffer(bufferOrReader)) reader = BinaryReader.fromBuffer(bufferOrReader)
+    else if (file && bufferOrReader instanceof BinaryReader) reader = bufferOrReader
     else throw new Error(`Invalid argument pairs for "bufferOrReader" and "file" provided while trying to read Rock Band 3 PKG file or buffer.`)
 
     const header = await this.parsePKGHeader(reader, file)
@@ -674,8 +713,48 @@ export class PKGFile {
     return dtaFileHash + createHash(contentHash)
   }
 
+  /**
+   * Calculates the hash from the DTA file and the PKG file contents.
+   * - - - -
+   * @param {FilePathLikeTypes} pkgFilePath The path to the PKG file.
+   * @returns {Promise<string>}
+   */
   static async calculateHashFromFile(pkgFilePath: FilePathLikeTypes): Promise<string> {
     const reader = await BinaryReader.fromFile(pkgFilePath)
     return await this.calculateHashFromBuffer(reader, pkgFilePath)
+  }
+
+  path: FilePath
+
+  constructor(pkgFilePath: FilePathLikeTypes) {
+    const path = FilePath.of(pathLikeToString(pkgFilePath))
+    this.path = path
+
+    this.checkExistence()
+  }
+
+  /**
+   * Checks if a path resolves to an existing CON file.
+   * - - - -
+   * @returns {boolean}
+   */
+  private checkExistence(): boolean {
+    if (!this.path.exists) throw new PKGFileError(`Provided PKG file path "${this.path.path}" does not exists.`)
+    return true
+  }
+
+  async stat() {
+    this.checkExistence()
+    const data = await PKGFile.parseFromFile(this.path)
+    const dta = DTAParser.fromBuffer((await PKGFile.processPKGItemEntries(data.header, data.entries, await BinaryReader.fromFile(this.path), this.path, /songs\.(dta|DTA)$/))[0])
+
+    return {
+      contentID: data.header.contentID,
+      titleID: data.header.cidTitle1,
+      dlcInstallFolderName: data.entries.dlcFolderName,
+      files: data.entries.items.map((item) => item.name),
+      dta,
+      isPack: dta.songs.length > 1,
+    }
   }
 }

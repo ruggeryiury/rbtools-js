@@ -1,5 +1,5 @@
 import { ExifTool } from 'exiftool-vendored'
-import { FilePath, type FilePathLikeTypes } from 'node-lib'
+import { FilePath, pathLikeToFilePath, type FilePathLikeTypes } from 'node-lib'
 import { pathLikeToString } from 'node-lib'
 import { setDefaultOptions } from 'set-default-options'
 import { temporaryFile } from 'tempy'
@@ -11,9 +11,9 @@ export type MOGGFileQualityLevels = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
 export interface MOGGCreateOptions {
   /** If `false`, the function will not throw an error when trying to create a MOGG file with six channels. Default is `true`. */
-  throwSixChannelsBugError: boolean
+  throwSixChannelsBugError?: boolean
   /** If `'ps3'` or `'xbox'`, the MOGG file will be encrypted using the keys to the specific console. Default is `false`. */
-  encryptMOGG: 'ps3' | 'xbox' | false
+  encryptMOGG?: 'ps3' | 'xbox' | false
 }
 
 /** A class to create a MOGG file from audio files. */
@@ -40,7 +40,7 @@ export class MOGGMaker {
     this.channelsCount = 0
     this.audioDuration = 0
     this.audioSampleRate = 0
-    this.exiftool = new ExifTool({})
+    this.exiftool = new ExifTool()
   }
 
   /**
@@ -48,7 +48,7 @@ export class MOGGMaker {
    * - - - -
    * @returns {number}
    */
-  channels(): number {
+  get channels(): number {
     return this.channelsCount
   }
 
@@ -83,6 +83,9 @@ export class MOGGMaker {
       throw new MOGGFileError(`Provided file "${path.path}" doesn't have the same sample rate from the first audio file added to this class\n\nClass sample rate: ${this.audioSampleRate.toString()}\nProvided file sample rate: ${SampleRate.toString()}`)
     }
 
+    this.channelsCount += NumChannels
+
+    
     this.tracks.push(path)
   }
 
@@ -97,10 +100,10 @@ export class MOGGMaker {
     const { throwSixChannelsBugError } = setDefaultOptions<MOGGCreateOptions>({ encryptMOGG: false, throwSixChannelsBugError: true }, options)
     if (this.channelsCount === 6 && throwSixChannelsBugError) throw new MOGGFileError("Tried to create a MOGG file with six channels, which is known to cause glitches on the audio.\n\nIf you want to create the file anyway, set 'throwSixChannelsError' to false.")
     const newDestPath = FilePath.of(temporaryFile({ extension: '.ogg' }))
-    const newMoggFile = newDestPath.changeFileExt('.mogg')
+    const newMoggFile = pathLikeToFilePath(destPath).changeFileExt('.mogg')
     await this.exiftool.end()
-    await audioToMOGG(this.tracks, FilePath.of(pathLikeToString(newDestPath)))
-    await MakeMogg(destPath, newMoggFile)
+    await audioToMOGG(this.tracks, newDestPath)
+    await MakeMogg(newDestPath, newMoggFile)
     await newDestPath.delete()
     return new MOGGFile(newMoggFile)
   }
